@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='quantastor-pkg',  
-    version='1.0.1',
+    version='1.0.2',
     scripts=['quantastor/qs_client.py'],
     author="Seth Cagampang",
     author_email="seth.cagampang@osnexus.com",

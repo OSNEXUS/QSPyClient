@@ -6,9 +6,9 @@
 # cmd: python3 example.py [host IP]
 # RESULTS: if the host IP exists
 
-from qs_client import QuantastorClient
-from qs_client import quantastor_sdk_enabled
-from qs_client import StorageSystem
+from quantastor.qs_client import QuantastorClient
+from quantastor.qs_client import quantastor_sdk_enabled
+from quantastor.qs_client import StorageSystem
 import requests
 import json
 import sys

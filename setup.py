@@ -8,7 +8,7 @@ setuptools.setup(
 
      name='QSPyClientLib',  
      version='1.0',
-     scripts=['qspyclient'],
+     scripts=['qspyclient','qs_client.py'],
      author="Seth Cagampang",
      author_email="seth.cagampang@osnexus.com",
      description="QuantaStor REST API python library",

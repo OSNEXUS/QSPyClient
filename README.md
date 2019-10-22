@@ -23,6 +23,20 @@ The minimum requirements for your storage system vary based on the workload. Use
 
 To use the QuantaStor Python Client Library, you must first install QuantaStor on your server hardware or use a QuantaStor virtual system. Installation of QuantaStor will also include python3. QuantaStor ISO files are created as hybrid ISO files which can be written to DVD media with DVD writting software or directly copied to a USB flash drive using `dd`. Follow the [installation guide](https://wiki.osnexus.com/index.php?title=%2B_Installation_Guide_Overview) on our support wiki to get started. The installation guide provides instructions for installation and configuration on both server hardware and virtual machines.
 
+### Testing qs_client Installation
+
+Start the python3 interpreter:
+
+    $ python3
+
+Import `quantastor_sdk_enabled()` function from the library:
+
+    >>> from qs_client import quantastor_sdk_enabled
+
+The following should print out 'True':
+
+    >>> print (quantastor_sdk_enabled())
+
 ---
 ## Examples
 

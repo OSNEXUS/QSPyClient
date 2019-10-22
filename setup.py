@@ -6,9 +6,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 
-     name='QSPyClientLib',  
-     version='1.0',
-     scripts=['qspyclient','qs_client.py'],
+     name='quantastor-pkg',  
+     version='0.0.1',
+     scripts=['quantastor/qs_client.py'],
      author="Seth Cagampang",
      author_email="seth.cagampang@osnexus.com",
      description="QuantaStor REST API python library",
@@ -18,7 +18,7 @@ setuptools.setup(
      packages=setuptools.find_packages(),
      classifiers=[
          "Programming Language :: Python :: 3",
-         "License :: OSI Approved :: BSD 2-Clause 'Simplified' License",
+         "License :: OSI Approved :: BSD License",
          "Operating System :: OS Independent",
      ],
  )

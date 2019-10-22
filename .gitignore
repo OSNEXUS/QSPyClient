@@ -1,8 +1,13 @@
 # .gitignore file
 
+# file patterns
+
 *.pyc
-__*__/
 *~
+
+# directories
+
 *.egg-info/
 build/
 dist/
+__pycashe__/

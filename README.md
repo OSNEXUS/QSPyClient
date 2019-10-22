@@ -28,6 +28,7 @@ To use the QuantaStor Python Client Library, you must first install QuantaStor o
 Using the PYPI pip installer run the following command to install the quantastor python client library:
 
 On Linux/Unix
+
     $ sudo python3 -m pip install quantastor-pkg
 
 ### Testing qs_client Installation

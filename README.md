@@ -6,9 +6,9 @@
 The python library for QuantaStor simplifies the process of automating QuantaStor management operations via python scripts.  All of the published QuantaStor REST APIs as documented on the OSNEXUS documentation [wiki](https://wiki.osnexus.com/index.php?title=REST_API_Reference_Guide) are callable via the python client.
 
 ---
-## System Requirements
+## System Requirements for QuantaStor
 
-The minimum requirements for your storage system vary based on the workload. Use our [Solution Design Tools](https://www.osnexus.com/design) to help you find the solution that best fits your use-case and budget. The minimum requirements provided in this documentation serves as the bare minimum to explore using the software and its capabilities.
+The QuantaStor Python Client Library requires a QuantaStor box to interact with. The minimum requirements for your storage system vary based on the workload. Use our [Solution Design Tools](https://www.osnexus.com/design) to help you find the solution that best fits your use-case and budget. The minimum requirements provided in this documentation serves as the bare minimum to explore using the software and its capabilities.
 
 * Intel Xeon or AMD x64 bit server (or virtual server) 
 * 16GB RAM 

@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='quantastor-pkg',  
-    version='1.0.2',
+    version='1.0.3',
     scripts=['quantastor/qs_client.py'],
-    author="Seth Cagampang",
-    author_email="seth.cagampang@osnexus.com",
+    author="OSNEXUS Corporation",
+    author_email="support@osnexus.com",
     description="QuantaStor REST python library",
     long_description=long_description_txt,
     long_description_content_type="text/markdown",
@@ -17,7 +17,7 @@ setuptools.setup(
     install_requires=['urllib3',],
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent"
     ],
 

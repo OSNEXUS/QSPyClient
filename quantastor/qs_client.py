@@ -9523,6 +9523,7 @@ class Provisionable(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Provisionable, self).jsonParse(jsonObj)
         if 'size' in jsonObj:
             self._size = jsonObj['size']
         else:
@@ -9576,6 +9577,7 @@ class Replicatable(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Replicatable, self).jsonParse(jsonObj)
         if 'storagePoolId' in jsonObj:
             self._storagePoolId = jsonObj['storagePoolId']
         else:
@@ -9746,6 +9748,7 @@ class Schedule(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Schedule, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -9845,6 +9848,7 @@ class SiteVifResource(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SiteVifResource, self).jsonParse(jsonObj)
         if 'siteClusterId' in jsonObj:
             self._siteClusterId = jsonObj['siteClusterId']
         else:
@@ -9908,6 +9912,7 @@ class Subject(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Subject, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -9950,6 +9955,7 @@ class Task(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Task, self).jsonParse(jsonObj)
         if 'startTimeStamp' in jsonObj:
             self._startTimeStamp = jsonObj['startTimeStamp']
         else:
@@ -10126,6 +10132,7 @@ class ActiveDirDomain(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ActiveDirDomain, self).jsonParse(jsonObj)
         if 'domain' in jsonObj:
             self._domain = jsonObj['domain']
         else:
@@ -10148,6 +10155,7 @@ class ActiveDirUserGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ActiveDirUserGroup, self).jsonParse(jsonObj)
         if 'domain' in jsonObj:
             self._domain = jsonObj['domain']
         else:
@@ -10216,6 +10224,7 @@ class Alert(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Alert, self).jsonParse(jsonObj)
         if 'objectId' in jsonObj:
             self._objectId = jsonObj['objectId']
         else:
@@ -10351,6 +10360,7 @@ class AlertConfigSettings(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(AlertConfigSettings, self).jsonParse(jsonObj)
         if 'senderEmailAddress' in jsonObj:
             self._senderEmailAddress = jsonObj['senderEmailAddress']
         else:
@@ -10481,6 +10491,7 @@ class AlertType(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(AlertType, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -10560,6 +10571,7 @@ class BackupJob(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(BackupJob, self).jsonParse(jsonObj)
         if 'pid' in jsonObj:
             self._pid = jsonObj['pid']
         else:
@@ -11012,6 +11024,7 @@ class Bucket(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Bucket, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -11148,6 +11161,7 @@ class BucketObject(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(BucketObject, self).jsonParse(jsonObj)
         if 'cephBucketId' in jsonObj:
             self._cephBucketId = jsonObj['cephBucketId']
         else:
@@ -11239,6 +11253,7 @@ class BucketQuota(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(BucketQuota, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -11416,6 +11431,7 @@ class CapabilityMetaData(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CapabilityMetaData, self).jsonParse(jsonObj)
         if 'category' in jsonObj:
             self._category = jsonObj['category']
         else:
@@ -11480,6 +11496,7 @@ class CephCluster(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephCluster, self).jsonParse(jsonObj)
         if 'altName' in jsonObj:
             self._altName = jsonObj['altName']
         else:
@@ -11693,6 +11710,7 @@ class CephClusterMember(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephClusterMember, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -11812,6 +11830,7 @@ class CephCrushRule(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephCrushRule, self).jsonParse(jsonObj)
         if 'ruleId' in jsonObj:
             self._ruleId = jsonObj['ruleId']
         else:
@@ -11929,6 +11948,7 @@ class CephFilesystem(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephFilesystem, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -12115,6 +12135,7 @@ class CephJournalDevice(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephJournalDevice, self).jsonParse(jsonObj)
         if 'physicalDiskId' in jsonObj:
             self._physicalDiskId = jsonObj['physicalDiskId']
         else:
@@ -12243,6 +12264,7 @@ class CephMds(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephMds, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -12380,6 +12402,7 @@ class CephMonitor(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephMonitor, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -12582,6 +12605,7 @@ class CephObjectPoolGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephObjectPoolGroup, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -12706,6 +12730,7 @@ class CephOsd(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephOsd, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -12949,6 +12974,7 @@ class CephPgSet(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephPgSet, self).jsonParse(jsonObj)
         if 'pgCount' in jsonObj:
             self._pgCount = jsonObj['pgCount']
         else:
@@ -13015,6 +13041,7 @@ class CephPool(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephPool, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -13235,6 +13262,7 @@ class CephPoolProfile(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephPoolProfile, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -13358,6 +13386,7 @@ class CephRadosGateway(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephRadosGateway, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -13477,6 +13506,7 @@ class CephUserAccessEntry(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CephUserAccessEntry, self).jsonParse(jsonObj)
         if 'cephClusterId' in jsonObj:
             self._cephClusterId = jsonObj['cephClusterId']
         else:
@@ -13925,6 +13955,7 @@ class CloudContainer(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CloudContainer, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -14160,6 +14191,7 @@ class CloudProvider(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CloudProvider, self).jsonParse(jsonObj)
         if 'providerType' in jsonObj:
             self._providerType = jsonObj['providerType']
         else:
@@ -14225,6 +14257,7 @@ class CloudProviderCredentials(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CloudProviderCredentials, self).jsonParse(jsonObj)
         if 'providerId' in jsonObj:
             self._providerId = jsonObj['providerId']
         else:
@@ -14374,6 +14407,7 @@ class CloudProviderLocation(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(CloudProviderLocation, self).jsonParse(jsonObj)
         if 'locationTag' in jsonObj:
             self._locationTag = jsonObj['locationTag']
         else:
@@ -14494,6 +14528,7 @@ class ClusterRing(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ClusterRing, self).jsonParse(jsonObj)
         if 'siteClusterId' in jsonObj:
             self._siteClusterId = jsonObj['siteClusterId']
         else:
@@ -14604,6 +14639,7 @@ class ClusterRingMember(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ClusterRingMember, self).jsonParse(jsonObj)
         if 'siteClusterId' in jsonObj:
             self._siteClusterId = jsonObj['siteClusterId']
         else:
@@ -14665,6 +14701,7 @@ class ConfigAnalysisReport(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ConfigAnalysisReport, self).jsonParse(jsonObj)
         if 'passedCount' in jsonObj:
             self._passedCount = jsonObj['passedCount']
         else:
@@ -14890,6 +14927,7 @@ class Event(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Event, self).jsonParse(jsonObj)
         if 'index' in jsonObj:
             self._index = jsonObj['index']
         else:
@@ -15164,6 +15202,7 @@ class FcTargetPort(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(FcTargetPort, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -15408,6 +15447,7 @@ class HardwareConfiguration(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HardwareConfiguration, self).jsonParse(jsonObj)
         if 'listHwController' in jsonObj:
             self._listHwController = jsonObj['listHwController']
         else:
@@ -15496,6 +15536,7 @@ class Host(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Host, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -15599,6 +15640,7 @@ class HostGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HostGroup, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -15836,6 +15878,7 @@ class HwAlarm(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwAlarm, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -15918,6 +15961,7 @@ class HwBatteryBackupUnit(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwBatteryBackupUnit, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -16031,6 +16075,7 @@ class HwController(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwController, self).jsonParse(jsonObj)
         if 'controllerGroupId' in jsonObj:
             self._controllerGroupId = jsonObj['controllerGroupId']
         else:
@@ -16253,6 +16298,7 @@ class HwControllerGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwControllerGroup, self).jsonParse(jsonObj)
         if 'vendor' in jsonObj:
             self._vendor = jsonObj['vendor']
         else:
@@ -16422,6 +16468,7 @@ class HwDisk(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwDisk, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -16770,6 +16817,7 @@ class HwEnclosure(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwEnclosure, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -16924,6 +16972,7 @@ class HwEnclosureLayout(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwEnclosureLayout, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -17146,6 +17195,7 @@ class HwLogicalDrive(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwLogicalDrive, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -17258,6 +17308,7 @@ class HwUnit(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(HwUnit, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -17700,6 +17751,7 @@ class IbTargetPort(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(IbTargetPort, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -17828,6 +17880,7 @@ class InitiatorPort(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(InitiatorPort, self).jsonParse(jsonObj)
         if 'ipAddress' in jsonObj:
             self._ipAddress = jsonObj['ipAddress']
         else:
@@ -17875,6 +17928,7 @@ class KeyInfo(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(KeyInfo, self).jsonParse(jsonObj)
         if 'deletedBy' in jsonObj:
             self._deletedBy = jsonObj['deletedBy']
         else:
@@ -18006,6 +18060,7 @@ class KeyVaultModule(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(KeyVaultModule, self).jsonParse(jsonObj)
         if 'tag' in jsonObj:
             self._tag = jsonObj['tag']
         else:
@@ -18080,6 +18135,7 @@ class KeyVaultProfile(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(KeyVaultProfile, self).jsonParse(jsonObj)
         if 'kvAddress' in jsonObj:
             self._kvAddress = jsonObj['kvAddress']
         else:
@@ -18193,6 +18249,7 @@ class LibratoMetricsConfig(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(LibratoMetricsConfig, self).jsonParse(jsonObj)
         if 'username' in jsonObj:
             self._username = jsonObj['username']
         else:
@@ -18310,6 +18367,7 @@ class License(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(License, self).jsonParse(jsonObj)
         if 'licenseKey' in jsonObj:
             self._licenseKey = jsonObj['licenseKey']
         else:
@@ -18573,6 +18631,7 @@ class LicenseActivation(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(LicenseActivation, self).jsonParse(jsonObj)
         if 'licenseKey' in jsonObj:
             self._licenseKey = jsonObj['licenseKey']
         else:
@@ -18656,6 +18715,7 @@ class LicenseLease(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(LicenseLease, self).jsonParse(jsonObj)
         if 'licenseKey' in jsonObj:
             self._licenseKey = jsonObj['licenseKey']
         else:
@@ -18724,6 +18784,7 @@ class Lock(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Lock, self).jsonParse(jsonObj)
         if 'objectId' in jsonObj:
             self._objectId = jsonObj['objectId']
         else:
@@ -18851,6 +18912,7 @@ class MultiFactorAuthConfig(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(MultiFactorAuthConfig, self).jsonParse(jsonObj)
         if 'encodingMode' in jsonObj:
             self._encodingMode = jsonObj['encodingMode']
         else:
@@ -19004,6 +19066,7 @@ class MultiFactorAuthDevice(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(MultiFactorAuthDevice, self).jsonParse(jsonObj)
         if 'capabilities' in jsonObj:
             self._capabilities = jsonObj['capabilities']
         else:
@@ -19052,6 +19115,7 @@ class MultipathConfig(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(MultipathConfig, self).jsonParse(jsonObj)
         if 'vendor' in jsonObj:
             self._vendor = jsonObj['vendor']
         else:
@@ -19349,6 +19413,7 @@ class NetworkShareClient(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(NetworkShareClient, self).jsonParse(jsonObj)
         if 'networkShareId' in jsonObj:
             self._networkShareId = jsonObj['networkShareId']
         else:
@@ -19778,6 +19843,7 @@ class NetworkShareFileLock(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(NetworkShareFileLock, self).jsonParse(jsonObj)
         if 'pid' in jsonObj:
             self._pid = jsonObj['pid']
         else:
@@ -19935,6 +20001,7 @@ class NetworkShareNamespace(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(NetworkShareNamespace, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -20335,6 +20402,7 @@ class NetworkShareServiceConfig(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(NetworkShareServiceConfig, self).jsonParse(jsonObj)
         if 'nfsMode' in jsonObj:
             self._nfsMode = jsonObj['nfsMode']
         else:
@@ -20436,6 +20504,7 @@ class NetworkShareSession(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(NetworkShareSession, self).jsonParse(jsonObj)
         if 'networkShareId' in jsonObj:
             self._networkShareId = jsonObj['networkShareId']
         else:
@@ -20563,6 +20632,7 @@ class NetworkShareUserAccess(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(NetworkShareUserAccess, self).jsonParse(jsonObj)
         if 'networkShareId' in jsonObj:
             self._networkShareId = jsonObj['networkShareId']
         else:
@@ -20798,6 +20868,7 @@ class PasswordPolicy(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(PasswordPolicy, self).jsonParse(jsonObj)
         if 'allowedSpecialChars' in jsonObj:
             self._allowedSpecialChars = jsonObj['allowedSpecialChars']
         else:
@@ -20986,6 +21057,7 @@ class PhysicalDisk(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(PhysicalDisk, self).jsonParse(jsonObj)
         if 'devicePath' in jsonObj:
             self._devicePath = jsonObj['devicePath']
         else:
@@ -21297,6 +21369,7 @@ class PhysicalDiskHotspareMarker(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(PhysicalDiskHotspareMarker, self).jsonParse(jsonObj)
         if 'serialNumber' in jsonObj:
             self._serialNumber = jsonObj['serialNumber']
         else:
@@ -21590,6 +21663,7 @@ class ProviderApp(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ProviderApp, self).jsonParse(jsonObj)
         if 'providerType' in jsonObj:
             self._providerType = jsonObj['providerType']
         else:
@@ -21697,6 +21771,7 @@ class QosPolicy(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(QosPolicy, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -21893,6 +21968,7 @@ class ReplicaAssoc(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ReplicaAssoc, self).jsonParse(jsonObj)
         if 'sourceStorageSystemId' in jsonObj:
             self._sourceStorageSystemId = jsonObj['sourceStorageSystemId']
         else:
@@ -22153,6 +22229,7 @@ class ReplicaReportEntry(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ReplicaReportEntry, self).jsonParse(jsonObj)
         if 'sourceStorageSystemId' in jsonObj:
             self._sourceStorageSystemId = jsonObj['sourceStorageSystemId']
         else:
@@ -22290,6 +22367,7 @@ class ReplicaReportSummary(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ReplicaReportSummary, self).jsonParse(jsonObj)
         if 'sourceStorageSystemId' in jsonObj:
             self._sourceStorageSystemId = jsonObj['sourceStorageSystemId']
         else:
@@ -22766,6 +22844,7 @@ class ResourceDomain(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ResourceDomain, self).jsonParse(jsonObj)
         if 'resourceDomainType' in jsonObj:
             self._resourceDomainType = jsonObj['resourceDomainType']
         else:
@@ -22804,6 +22883,7 @@ class ResourceDomainAssoc(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ResourceDomainAssoc, self).jsonParse(jsonObj)
         if 'resourceDomainId' in jsonObj:
             self._resourceDomainId = jsonObj['resourceDomainId']
         else:
@@ -23006,6 +23086,7 @@ class Role(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Role, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -23284,6 +23365,7 @@ class SecurityConfiguration(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SecurityConfiguration, self).jsonParse(jsonObj)
         if 'listPermissionDefinition' in jsonObj:
             self._listPermissionDefinition = jsonObj['listPermissionDefinition']
         else:
@@ -23363,6 +23445,7 @@ class ServiceFirewallDef(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(ServiceFirewallDef, self).jsonParse(jsonObj)
         if 'tcpPort' in jsonObj:
             self._tcpPort = jsonObj['tcpPort']
         else:
@@ -23431,6 +23514,7 @@ class Session(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(Session, self).jsonParse(jsonObj)
         if 'storageVolumeId' in jsonObj:
             self._storageVolumeId = jsonObj['storageVolumeId']
         else:
@@ -23577,6 +23661,7 @@ class SiteCluster(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SiteCluster, self).jsonParse(jsonObj)
         if 'location' in jsonObj:
             self._location = jsonObj['location']
         else:
@@ -23614,6 +23699,7 @@ class SiteCluster(Object):
 class SiteClusterAssoc(Object):
     _siteClusterId=''
     _nodeSystemId=''
+    _corosyncNodeId=''
     _version=''
     _currentDc=''
     _stack=''
@@ -23627,6 +23713,7 @@ class SiteClusterAssoc(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SiteClusterAssoc, self).jsonParse(jsonObj)
         if 'siteClusterId' in jsonObj:
             self._siteClusterId = jsonObj['siteClusterId']
         else:
@@ -23635,6 +23722,10 @@ class SiteClusterAssoc(Object):
             self._nodeSystemId = jsonObj['nodeSystemId']
         else:
             self._nodeSystemId = ''
+        if 'corosyncNodeId' in jsonObj:
+            self._corosyncNodeId = jsonObj['corosyncNodeId']
+        else:
+            self._corosyncNodeId = ''
         if 'version' in jsonObj:
             self._version = jsonObj['version']
         else:
@@ -23674,6 +23765,7 @@ class SiteClusterAssoc(Object):
         thisJsonObj = {
             'siteClusterId' : self._siteClusterId,
             'nodeSystemId' : self._nodeSystemId,
+            'corosyncNodeId' : self._corosyncNodeId,
             'version' : self._version,
             'currentDc' : self._currentDc,
             'stack' : self._stack,
@@ -23916,6 +24008,7 @@ class SnapshotReference(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SnapshotReference, self).jsonParse(jsonObj)
         if 'isProtected' in jsonObj:
             self._isProtected = jsonObj['isProtected']
         else:
@@ -24220,6 +24313,7 @@ class StorageCloud(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageCloud, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -25008,6 +25102,7 @@ class StoragePoolDevice(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StoragePoolDevice, self).jsonParse(jsonObj)
         if 'storagePoolId' in jsonObj:
             self._storagePoolId = jsonObj['storagePoolId']
         else:
@@ -25181,6 +25276,7 @@ class StoragePoolDeviceGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StoragePoolDeviceGroup, self).jsonParse(jsonObj)
         if 'storagePoolId' in jsonObj:
             self._storagePoolId = jsonObj['storagePoolId']
         else:
@@ -25362,6 +25458,7 @@ class StoragePoolHaFailoverGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StoragePoolHaFailoverGroup, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -25715,6 +25812,7 @@ class StoragePoolHaFailoverModule(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StoragePoolHaFailoverModule, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -25892,6 +25990,7 @@ class StoragePoolProfile(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StoragePoolProfile, self).jsonParse(jsonObj)
         if 'tag' in jsonObj:
             self._tag = jsonObj['tag']
         else:
@@ -26490,6 +26589,7 @@ class StorageSystem(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystem, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -26792,6 +26892,7 @@ class StorageSystemCluster(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemCluster, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -26868,6 +26969,7 @@ class StorageSystemClusterAssoc(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemClusterAssoc, self).jsonParse(jsonObj)
         if 'storageSystemClusterId' in jsonObj:
             self._storageSystemClusterId = jsonObj['storageSystemClusterId']
         else:
@@ -27233,6 +27335,7 @@ class StorageSystemGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemGroup, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -27461,6 +27564,7 @@ class StorageSystemHwConfig(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemHwConfig, self).jsonParse(jsonObj)
         if 'systemManufacturer' in jsonObj:
             self._systemManufacturer = jsonObj['systemManufacturer']
         else:
@@ -27598,6 +27702,7 @@ class StorageSystemLink(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemLink, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -27772,6 +27877,7 @@ class StorageSystemLinkKey(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemLinkKey, self).jsonParse(jsonObj)
         if 'storageSystemLinkId' in jsonObj:
             self._storageSystemLinkId = jsonObj['storageSystemLinkId']
         else:
@@ -27944,6 +28050,7 @@ class StorageSystemRecoveryPoint(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemRecoveryPoint, self).jsonParse(jsonObj)
         if 'filePath' in jsonObj:
             self._filePath = jsonObj['filePath']
         else:
@@ -28123,6 +28230,7 @@ class StorageSystemTunable(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemTunable, self).jsonParse(jsonObj)
         if 'title' in jsonObj:
             self._title = jsonObj['title']
         else:
@@ -28240,6 +28348,7 @@ class StorageSystemTunableProfile(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageSystemTunableProfile, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -28496,6 +28605,7 @@ class StorageTier(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageTier, self).jsonParse(jsonObj)
         if 'performanceLevel' in jsonObj:
             self._performanceLevel = jsonObj['performanceLevel']
         else:
@@ -28879,6 +28989,7 @@ class StorageVolumeAcl(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageVolumeAcl, self).jsonParse(jsonObj)
         if 'hostId' in jsonObj:
             self._hostId = jsonObj['hostId']
         else:
@@ -29172,6 +29283,7 @@ class StorageVolumeGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageVolumeGroup, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -29610,6 +29722,7 @@ class StorageVolumeUtilization(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(StorageVolumeUtilization, self).jsonParse(jsonObj)
         if 'storageVolumeId' in jsonObj:
             self._storageVolumeId = jsonObj['storageVolumeId']
         else:
@@ -29959,6 +30072,7 @@ class SwController(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SwController, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -30035,6 +30149,7 @@ class SwControllerGroup(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SwControllerGroup, self).jsonParse(jsonObj)
         if 'vendor' in jsonObj:
             self._vendor = jsonObj['vendor']
         else:
@@ -30169,6 +30284,7 @@ class SwControllerTarget(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SwControllerTarget, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -30270,6 +30386,7 @@ class SwDiskSession(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SwDiskSession, self).jsonParse(jsonObj)
         if 'controllerId' in jsonObj:
             self._controllerId = jsonObj['controllerId']
         else:
@@ -30479,6 +30596,7 @@ class SystemConfiguration(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(SystemConfiguration, self).jsonParse(jsonObj)
         if 'listStoragePool' in jsonObj:
             self._listStoragePool = jsonObj['listStoragePool']
         else:
@@ -31015,6 +31133,7 @@ class TargetPort(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(TargetPort, self).jsonParse(jsonObj)
         if 'description' in jsonObj:
             self._description = jsonObj['description']
         else:
@@ -31561,6 +31680,7 @@ class TraceLevel(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(TraceLevel, self).jsonParse(jsonObj)
         if 'traceLevel' in jsonObj:
             self._traceLevel = jsonObj['traceLevel']
         else:
@@ -31845,6 +31965,7 @@ class UserAppToken(Object):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
+        super(UserAppToken, self).jsonParse(jsonObj)
         if 'providerAppId' in jsonObj:
             self._providerAppId = jsonObj['providerAppId']
         else:

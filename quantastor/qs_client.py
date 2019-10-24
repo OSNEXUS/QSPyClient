@@ -856,8 +856,10 @@ class QuantastorClient(object):
 
     def ceph_cluster_member_enum(
             self,
+            cephClusterId='',
             flags='0'):
         payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephClusterMemberEnum', payload)
@@ -1083,8 +1085,10 @@ class QuantastorClient(object):
 
     def ceph_journal_device_enum(
             self,
+            cephClusterId='',
             flags='0'):
         payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephJournalDeviceEnum', payload)
@@ -1116,8 +1120,10 @@ class QuantastorClient(object):
 
     def ceph_mds_enum(
             self,
+            cephClusterId='',
             flags='0'):
         payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephMdsEnum', payload)
@@ -1166,8 +1172,10 @@ class QuantastorClient(object):
 
     def ceph_monitor_enum(
             self,
+            cephClusterId='',
             flags='0'):
         payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephMonitorEnum', payload)
@@ -1318,8 +1326,10 @@ class QuantastorClient(object):
 
     def ceph_osd_enum(
             self,
+            cephClusterId='',
             flags='0'):
         payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephOsdEnum', payload)
@@ -1445,8 +1455,10 @@ class QuantastorClient(object):
 
     def ceph_pool_enum(
             self,
+            cephClusterId='',
             flags='0'):
         payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephPoolEnum', payload)
@@ -1585,8 +1597,10 @@ class QuantastorClient(object):
 
     def ceph_rados_gateway_enum(
             self,
+            cephClusterId='',
             flags='0'):
         payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephRadosGatewayEnum', payload)
@@ -31126,6 +31140,9 @@ class TargetPort(Object):
     _objectGatewayEnabled=False
     _firewallMask='0'
     _firewallForceAllowMask='0'
+    _bondStatus=''
+    _permanentMacAddress=''
+    _partnerMacAddress=''
     _childPortList=''
     _virtualInterfaceAssocList=''
 
@@ -31270,6 +31287,18 @@ class TargetPort(Object):
             self._firewallForceAllowMask = jsonObj['firewallForceAllowMask']
         else:
             self._firewallForceAllowMask = '0'
+        if 'bondStatus' in jsonObj:
+            self._bondStatus = jsonObj['bondStatus']
+        else:
+            self._bondStatus = ''
+        if 'permanentMacAddress' in jsonObj:
+            self._permanentMacAddress = jsonObj['permanentMacAddress']
+        else:
+            self._permanentMacAddress = ''
+        if 'partnerMacAddress' in jsonObj:
+            self._partnerMacAddress = jsonObj['partnerMacAddress']
+        else:
+            self._partnerMacAddress = ''
         if 'childPortList' in jsonObj:
             self._childPortList = jsonObj['childPortList']
         else:
@@ -31317,6 +31346,9 @@ class TargetPort(Object):
             'objectGatewayEnabled' : self._objectGatewayEnabled,
             'firewallMask' : self._firewallMask,
             'firewallForceAllowMask' : self._firewallForceAllowMask,
+            'bondStatus' : self._bondStatus,
+            'permanentMacAddress' : self._permanentMacAddress,
+            'partnerMacAddress' : self._partnerMacAddress,
             'childPortList' : self._childPortList,
             'virtualInterfaceAssocList' : self._virtualInterfaceAssocList
         }

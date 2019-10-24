@@ -5,11 +5,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='quantastor-pkg',  
-    version='1.0.4',
+    version='1.0.5',
     scripts=['quantastor/qs_client.py'],
     author="OSNEXUS Corporation",
     author_email="support@osnexus.com",
-    description="QuantaStor REST python library",
+    description="QuantaStor REST API python library",
     long_description=long_description_txt,
     long_description_content_type="text/markdown",
     url="https://github.com/OSNEXUS/QSPyClient",

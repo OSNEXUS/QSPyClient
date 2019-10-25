@@ -5,6 +5,9 @@
 *.pyc
 *~
 
+# explicit files
+osn_pyclientexcludetypes.conf
+
 # directories
 
 *.egg-info/

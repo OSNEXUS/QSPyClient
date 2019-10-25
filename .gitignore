@@ -7,6 +7,7 @@
 
 # explicit files
 osn_pyclientexcludetypes.conf
+update_repo.sh
 
 # directories
 
@@ -14,3 +15,4 @@ osn_pyclientexcludetypes.conf
 build/
 dist/
 __pycashe__/
+revert/

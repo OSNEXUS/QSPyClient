@@ -14,7 +14,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/OSNEXUS/QSPyClient",
     packages=setuptools.find_packages(),
-    install_requires=['urllib3',],
+    install_requires=['urllib3','requests'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",

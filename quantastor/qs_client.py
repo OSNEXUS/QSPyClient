@@ -596,6 +596,28 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('bounce', payload)
         return BounceResponse.responseParse(jsonOutput)
 
+    def bucket_access_key_enum(
+            self,
+            cephClusterId='',
+            flags='0'):
+        payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('bucketAccessKeyEnum', payload)
+        return BucketAccessKeyEnumResponse.responseParse(jsonOutput)
+
+    def bucket_access_key_get(
+            self,
+            accessKeyId='',
+            flags='0'):
+        payload = { 
+            'accessKeyId' : accessKeyId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('bucketAccessKeyGet', payload)
+        return BucketAccessKeyGetResponse.responseParse(jsonOutput)
+
     def bucket_create(
             self,
             name='',
@@ -667,6 +689,19 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('bucketLink', payload)
         return BucketLinkResponse.responseParse(jsonOutput)
 
+    def bucket_modify(
+            self,
+            bucketId='',
+            description='',
+            flags='0'):
+        payload = { 
+            'bucketId' : bucketId,  #xsd:string
+            'description' : description,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('bucketModify', payload)
+        return BucketModifyResponse.responseParse(jsonOutput)
+
     def bucket_object_enum(
             self,
             cephClusterId='',
@@ -687,9 +722,11 @@ class QuantastorClient(object):
     def bucket_quota_enum(
             self,
             cephClusterId='',
+            quotaScope='0',
             flags='0'):
         payload = { 
             'cephClusterId' : cephClusterId,  #xsd:string
+            'quotaScope' : quotaScope,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('bucketQuotaEnum', payload)
@@ -697,14 +734,41 @@ class QuantastorClient(object):
 
     def bucket_quota_get(
             self,
-            cephBucketQuotaId='',
+            bucketQuotaId='',
             flags='0'):
         payload = { 
-            'cephBucketQuotaId' : cephBucketQuotaId,  #xsd:string
+            'bucketQuotaId' : bucketQuotaId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('bucketQuotaGet', payload)
         return BucketQuotaGetResponse.responseParse(jsonOutput)
+
+    def bucket_quota_set_global(
+            self,
+            cephClusterId='',
+            bucketMaxObjectCountEnable=False,
+            bucketMaxObjectCount='0',
+            bucketMaxSizeEnable=False,
+            bucketMaxSize='0',
+            userMaxObjectCountEnable=False,
+            userMaxObjectCount='0',
+            userMaxSizeEnable=False,
+            userMaxSize='0',
+            flags='0'):
+        payload = { 
+            'cephClusterId' : cephClusterId,  #xsd:string
+            'bucketMaxObjectCountEnable' : bucketMaxObjectCountEnable,  #xsd:boolean
+            'bucketMaxObjectCount' : self.size_in_bytes(bucketMaxObjectCount),  #xsd:unsignedLong
+            'bucketMaxSizeEnable' : bucketMaxSizeEnable,  #xsd:boolean
+            'bucketMaxSize' : self.size_in_bytes(bucketMaxSize),  #xsd:unsignedLong
+            'userMaxObjectCountEnable' : userMaxObjectCountEnable,  #xsd:boolean
+            'userMaxObjectCount' : self.size_in_bytes(userMaxObjectCount),  #xsd:unsignedLong
+            'userMaxSizeEnable' : userMaxSizeEnable,  #xsd:boolean
+            'userMaxSize' : self.size_in_bytes(userMaxSize),  #xsd:unsignedLong
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('bucketQuotaSetGlobal', payload)
+        return BucketQuotaSetGlobalResponse.responseParse(jsonOutput)
 
     def bucket_rescan(
             self,
@@ -1641,6 +1705,15 @@ class QuantastorClient(object):
             secretKey='',
             associatedUserId='',
             operationMask='0',
+            bucketMaxObjectCountEnable=False,
+            bucketMaxObjectCount='0',
+            bucketMaxSizeEnable=False,
+            bucketMaxSize='0',
+            userMaxObjectCountEnable=False,
+            userMaxObjectCount='0',
+            userMaxSizeEnable=False,
+            userMaxSize='0',
+            maxBucketCount='0',
             flags='0'):
         payload = { 
             'cephClusterId' : cephClusterId,  #xsd:string
@@ -1652,6 +1725,15 @@ class QuantastorClient(object):
             'secretKey' : secretKey,  #xsd:string
             'associatedUserId' : associatedUserId,  #xsd:string
             'operationMask' : operationMask,  #xsd:unsignedInt
+            'bucketMaxObjectCountEnable' : bucketMaxObjectCountEnable,  #xsd:boolean
+            'bucketMaxObjectCount' : self.size_in_bytes(bucketMaxObjectCount),  #xsd:unsignedLong
+            'bucketMaxSizeEnable' : bucketMaxSizeEnable,  #xsd:boolean
+            'bucketMaxSize' : self.size_in_bytes(bucketMaxSize),  #xsd:unsignedLong
+            'userMaxObjectCountEnable' : userMaxObjectCountEnable,  #xsd:boolean
+            'userMaxObjectCount' : self.size_in_bytes(userMaxObjectCount),  #xsd:unsignedLong
+            'userMaxSizeEnable' : userMaxSizeEnable,  #xsd:boolean
+            'userMaxSize' : self.size_in_bytes(userMaxSize),  #xsd:unsignedLong
+            'maxBucketCount' : maxBucketCount,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephUserAccessEntryCreate', payload)
@@ -1728,6 +1810,15 @@ class QuantastorClient(object):
             secretKeyS3='',
             secretKeySwift='',
             associatedUserId='',
+            bucketMaxObjectCountEnable=False,
+            bucketMaxObjectCount='0',
+            bucketMaxSizeEnable=False,
+            bucketMaxSize='0',
+            userMaxObjectCountEnable=False,
+            userMaxObjectCount='0',
+            userMaxSizeEnable=False,
+            userMaxSize='0',
+            maxBucketCount='0',
             flags='0'):
         payload = { 
             'cephClusterId' : cephClusterId,  #xsd:string
@@ -1738,6 +1829,15 @@ class QuantastorClient(object):
             'secretKeyS3' : secretKeyS3,  #xsd:string
             'secretKeySwift' : secretKeySwift,  #xsd:string
             'associatedUserId' : associatedUserId,  #xsd:string
+            'bucketMaxObjectCountEnable' : bucketMaxObjectCountEnable,  #xsd:boolean
+            'bucketMaxObjectCount' : self.size_in_bytes(bucketMaxObjectCount),  #xsd:unsignedLong
+            'bucketMaxSizeEnable' : bucketMaxSizeEnable,  #xsd:boolean
+            'bucketMaxSize' : self.size_in_bytes(bucketMaxSize),  #xsd:unsignedLong
+            'userMaxObjectCountEnable' : userMaxObjectCountEnable,  #xsd:boolean
+            'userMaxObjectCount' : self.size_in_bytes(userMaxObjectCount),  #xsd:unsignedLong
+            'userMaxSizeEnable' : userMaxSizeEnable,  #xsd:boolean
+            'userMaxSize' : self.size_in_bytes(userMaxSize),  #xsd:unsignedLong
+            'maxBucketCount' : maxBucketCount,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephUserAccessEntryModify', payload)
@@ -6403,10 +6503,12 @@ class QuantastorClient(object):
             self,
             failoverGroup='',
             targetStorageSystem='',
+            failoverReason='0',
             flags='0'):
         payload = { 
             'failoverGroup' : failoverGroup,  #xsd:string
             'targetStorageSystem' : targetStorageSystem,  #xsd:string
+            'failoverReason' : failoverReason,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverGroupFailover', payload)
@@ -11078,6 +11180,86 @@ class Bucket(Object):
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
 
+class BucketAccessKey(Object):
+    _cephClusterId=''
+    _userAccessEntryId=''
+    _user=''
+    _accessKey=''
+    _secretKey=''
+    _keyType='0'
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(BucketAccessKey, self).jsonParse(jsonObj)
+        if 'cephClusterId' in jsonObj:
+            self._cephClusterId = jsonObj['cephClusterId']
+        else:
+            self._cephClusterId = ''
+        if 'userAccessEntryId' in jsonObj:
+            self._userAccessEntryId = jsonObj['userAccessEntryId']
+        else:
+            self._userAccessEntryId = ''
+        if 'user' in jsonObj:
+            self._user = jsonObj['user']
+        else:
+            self._user = ''
+        if 'accessKey' in jsonObj:
+            self._accessKey = jsonObj['accessKey']
+        else:
+            self._accessKey = ''
+        if 'secretKey' in jsonObj:
+            self._secretKey = jsonObj['secretKey']
+        else:
+            self._secretKey = ''
+        if 'keyType' in jsonObj:
+            self._keyType = jsonObj['keyType']
+        else:
+            self._keyType = '0'
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(BucketAccessKey,self).exportJson()
+        thisJsonObj = {
+            'cephClusterId' : self._cephClusterId,
+            'userAccessEntryId' : self._userAccessEntryId,
+            'user' : self._user,
+            'accessKey' : self._accessKey,
+            'secretKey' : self._secretKey,
+            'keyType' : self._keyType
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class BucketAccessKeyEnumResponse(object):
+    _list=''
+
+    def __init__(
+        self,
+        objList=''):
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        objList = []
+        for var in jsonObj:
+            objList.append(BucketAccessKey(var))
+        return objList
+
+class BucketAccessKeyGetResponse(object):
+    _obj=''
+
+    def __init__(
+        self,
+        obj=''):
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        obj = BucketAccessKey(jsonObj)
+        return obj
+
 class BucketCreateResponse(object):
     _task=''
     _obj=''
@@ -11144,6 +11326,23 @@ class BucketGetResponse(object):
         return obj
 
 class BucketLinkResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = Bucket(jsonObj['obj'])
+        return task, obj
+
+class BucketModifyResponse(object):
     _task=''
     _obj=''
 
@@ -11256,12 +11455,13 @@ class BucketObjectEnumResponse(object):
 
 class BucketQuota(Object):
     _cephClusterId=''
-    _cephBucketId=''
+    _bucketId=''
+    _userAccessEntryId=''
     _quotaScope='0'
-    _uid=''
+    _maxObjectCountEnable=False
+    _maxObjectCount='0'
+    _maxSizeEnable=False
     _maxSize='0'
-    _maxObjects='0'
-    _isEnabled=False
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -11272,42 +11472,47 @@ class BucketQuota(Object):
             self._cephClusterId = jsonObj['cephClusterId']
         else:
             self._cephClusterId = ''
-        if 'cephBucketId' in jsonObj:
-            self._cephBucketId = jsonObj['cephBucketId']
+        if 'bucketId' in jsonObj:
+            self._bucketId = jsonObj['bucketId']
         else:
-            self._cephBucketId = ''
+            self._bucketId = ''
+        if 'userAccessEntryId' in jsonObj:
+            self._userAccessEntryId = jsonObj['userAccessEntryId']
+        else:
+            self._userAccessEntryId = ''
         if 'quotaScope' in jsonObj:
             self._quotaScope = jsonObj['quotaScope']
         else:
             self._quotaScope = '0'
-        if 'uid' in jsonObj:
-            self._uid = jsonObj['uid']
+        if 'maxObjectCountEnable' in jsonObj:
+            self._maxObjectCountEnable = jsonObj['maxObjectCountEnable']
         else:
-            self._uid = ''
+            self._maxObjectCountEnable = False
+        if 'maxObjectCount' in jsonObj:
+            self._maxObjectCount = jsonObj['maxObjectCount']
+        else:
+            self._maxObjectCount = '0'
+        if 'maxSizeEnable' in jsonObj:
+            self._maxSizeEnable = jsonObj['maxSizeEnable']
+        else:
+            self._maxSizeEnable = False
         if 'maxSize' in jsonObj:
             self._maxSize = jsonObj['maxSize']
         else:
             self._maxSize = '0'
-        if 'maxObjects' in jsonObj:
-            self._maxObjects = jsonObj['maxObjects']
-        else:
-            self._maxObjects = '0'
-        if 'isEnabled' in jsonObj:
-            self._isEnabled = jsonObj['isEnabled']
-        else:
-            self._isEnabled = False
         return self
 
     def exportJson(self):
         superJsonObj = super(BucketQuota,self).exportJson()
         thisJsonObj = {
             'cephClusterId' : self._cephClusterId,
-            'cephBucketId' : self._cephBucketId,
+            'bucketId' : self._bucketId,
+            'userAccessEntryId' : self._userAccessEntryId,
             'quotaScope' : self._quotaScope,
-            'uid' : self._uid,
-            'maxSize' : self._maxSize,
-            'maxObjects' : self._maxObjects,
-            'isEnabled' : self._isEnabled
+            'maxObjectCountEnable' : self._maxObjectCountEnable,
+            'maxObjectCount' : self._maxObjectCount,
+            'maxSizeEnable' : self._maxSizeEnable,
+            'maxSize' : self._maxSize
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -11339,6 +11544,26 @@ class BucketQuotaGetResponse(object):
     def responseParse(cls,jsonObj):
         obj = BucketQuota(jsonObj)
         return obj
+
+class BucketQuotaSetGlobalResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(BucketQuota(var))
+        return task, objList
 
 class BucketRescanResponse(object):
     _task=''
@@ -11505,6 +11730,7 @@ class CephCluster(Object):
     _pgSetList=''
     _rgwList=''
     _mdsList=''
+    _quotaList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -11587,6 +11813,10 @@ class CephCluster(Object):
             self._mdsList = jsonObj['mdsList']
         else:
             self._mdsList = ''
+        if 'quotaList' in jsonObj:
+            self._quotaList = jsonObj['quotaList']
+        else:
+            self._quotaList = ''
         return self
 
     def exportJson(self):
@@ -11610,7 +11840,8 @@ class CephCluster(Object):
             'monitorList' : self._monitorList,
             'pgSetList' : self._pgSetList,
             'rgwList' : self._rgwList,
-            'mdsList' : self._mdsList
+            'mdsList' : self._mdsList,
+            'quotaList' : self._quotaList
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -13515,6 +13746,9 @@ class CephUserAccessEntry(Object):
     _operationMask='0'
     _accessSuspended=False
     _tenant=''
+    _maxBuckets='0'
+    _quotaList=''
+    _keyList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -13569,6 +13803,18 @@ class CephUserAccessEntry(Object):
             self._tenant = jsonObj['tenant']
         else:
             self._tenant = ''
+        if 'maxBuckets' in jsonObj:
+            self._maxBuckets = jsonObj['maxBuckets']
+        else:
+            self._maxBuckets = '0'
+        if 'quotaList' in jsonObj:
+            self._quotaList = jsonObj['quotaList']
+        else:
+            self._quotaList = ''
+        if 'keyList' in jsonObj:
+            self._keyList = jsonObj['keyList']
+        else:
+            self._keyList = ''
         return self
 
     def exportJson(self):
@@ -13585,7 +13831,10 @@ class CephUserAccessEntry(Object):
             'secretKeySwift' : self._secretKeySwift,
             'operationMask' : self._operationMask,
             'accessSuspended' : self._accessSuspended,
-            'tenant' : self._tenant
+            'tenant' : self._tenant,
+            'maxBuckets' : self._maxBuckets,
+            'quotaList' : self._quotaList,
+            'keyList' : self._keyList
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -24015,6 +24264,7 @@ class SiteVifResourceMoveResponse(object):
 class SnapshotReference(Object):
     _isProtected=False
     _parentId=''
+    _imageId=''
     _snapType='0'
     _spaceUtilized='0'
 
@@ -24031,6 +24281,10 @@ class SnapshotReference(Object):
             self._parentId = jsonObj['parentId']
         else:
             self._parentId = ''
+        if 'imageId' in jsonObj:
+            self._imageId = jsonObj['imageId']
+        else:
+            self._imageId = ''
         if 'snapType' in jsonObj:
             self._snapType = jsonObj['snapType']
         else:
@@ -24046,6 +24300,7 @@ class SnapshotReference(Object):
         thisJsonObj = {
             'isProtected' : self._isProtected,
             'parentId' : self._parentId,
+            'imageId' : self._imageId,
             'snapType' : self._snapType,
             'spaceUtilized' : self._spaceUtilized
         }
@@ -30570,6 +30825,7 @@ class SystemConfiguration(Object):
     _listCephFilesystem=''
     _listBucket=''
     _listBucketQuota=''
+    _listBucketAccessKey=''
     _listSiteCluster=''
     _listSiteClusterAssoc=''
     _listSiteVifResource=''
@@ -30859,6 +31115,10 @@ class SystemConfiguration(Object):
             self._listBucketQuota = jsonObj['listBucketQuota']
         else:
             self._listBucketQuota = ''
+        if 'listBucketAccessKey' in jsonObj:
+            self._listBucketAccessKey = jsonObj['listBucketAccessKey']
+        else:
+            self._listBucketAccessKey = ''
         if 'listSiteCluster' in jsonObj:
             self._listSiteCluster = jsonObj['listSiteCluster']
         else:
@@ -31066,6 +31326,7 @@ class SystemConfiguration(Object):
             'listCephFilesystem' : self._listCephFilesystem,
             'listBucket' : self._listBucket,
             'listBucketQuota' : self._listBucketQuota,
+            'listBucketAccessKey' : self._listBucketAccessKey,
             'listSiteCluster' : self._listSiteCluster,
             'listSiteClusterAssoc' : self._listSiteClusterAssoc,
             'listSiteVifResource' : self._listSiteVifResource,

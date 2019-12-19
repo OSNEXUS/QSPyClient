@@ -29,7 +29,7 @@ Using the PYPI pip installer run the following command to install the quantastor
 
 On Linux/Unix
 
-    $ sudo python3 -m pip install quantastor-pkg
+    $ sudo python3 -m pip install quantastor-qsclient
 
 ### Testing qs_client Installation
 

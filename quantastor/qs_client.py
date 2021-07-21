@@ -4093,7 +4093,7 @@ class QuantastorClient(object):
             self,
             networkShareId='',
             clientFilter='',
-            async=False,
+            isAsync=False,
             secure=False,
             subtreeCheck=False,
             readOnly=False,
@@ -4102,7 +4102,7 @@ class QuantastorClient(object):
         payload = { 
             'networkShareId' : networkShareId,  #xsd:string
             'clientFilter' : clientFilter,  #xsd:string
-            'async' : async,  #xsd:boolean
+            'isAsync' : isAsync,  #xsd:boolean
             'secure' : secure,  #xsd:boolean
             'subtreeCheck' : subtreeCheck,  #xsd:boolean
             'readOnly' : readOnly,  #xsd:boolean
@@ -4142,7 +4142,7 @@ class QuantastorClient(object):
             networkShareClientId='',
             readOnly=False,
             secure=False,
-            async=False,
+            isAsync=False,
             subtreeCheck=False,
             customOptions='',
             flags='0'):
@@ -4151,7 +4151,7 @@ class QuantastorClient(object):
             'networkShareClientId' : networkShareClientId,  #xsd:string
             'readOnly' : readOnly,  #xsd:boolean
             'secure' : secure,  #xsd:boolean
-            'async' : async,  #xsd:boolean
+            'isAsync' : isAsync,  #xsd:boolean
             'subtreeCheck' : subtreeCheck,  #xsd:boolean
             'customOptions' : customOptions,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt

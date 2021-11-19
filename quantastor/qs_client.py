@@ -40,12 +40,12 @@ class QuantastorClient(object):
 
         self._auth=HTTPBasicAuth(self._username,self. _password)
         self._base_url = "https://" + self._hostname + ":8153/qstorapi/"
-    
+
     @classmethod
     def from_module(cls, module):
         cls._module = module
         return cls(hostname=module.params['quantastor_hostname'],username=module.params['quantastor_username'],password=module.params['quantastor_password'],cert=module.params['quantastor_cert'])
-        
+
 
     def make_call(self, api, payload):
         strURL = self._base_url + api
@@ -55,7 +55,7 @@ class QuantastorClient(object):
             certPath = False
         r = requests.get(strURL,  params=payload, verify=certPath, auth=self._auth)
         if r.status_code != 200:
-            raise Exception("Failed to make a request '" + api + "' payload '" + str(payload) + "' status code = " + str(r.status_code))
+            raise Exception("Failed to make a request '" + api + "' payload '" + str(payload) + "' status code = " + str(r.status_code) + "strUrl " + strURL)
         jsonOutput = r.json()
         if isinstance(jsonOutput, dict) and 'RestError' in jsonOutput:
             raise Exception("Failed to make a request '" + api + "' payload '" + str(payload) + "' RestError = " + jsonOutput['RestError'])
@@ -76,7 +76,7 @@ class QuantastorClient(object):
                 taskState = jsonOutput["taskState"]
                 if taskState == 5 : #OSN_TASKSTATE_COMPLETED
                     return jsonOutput["customId"]
-                elif taskState == 4 : #OSN_TASKSTATE_CANCELLED 
+                elif taskState == 4 : #OSN_TASKSTATE_CANCELLED
                     raise Exception("ERROR: Task '" + task_id + "' cancelled at state ("+jsonOutput["description"]+")'")
                 elif taskState == 3 : #OSN_TASKSTATE_FAILED
                     raise Exception("ERROR: Task '" + task_id + "' failed with error ("+jsonOutput["description"]+")'")
@@ -104,10 +104,10 @@ class QuantastorClient(object):
             multiplier = 1024*1024*1024*1024
         elif 'TB' in size:
             multiplier = 1000000000000
-        for char in ' ;KMGTiB': 
+        for char in ' ;KMGTiB':
             size = size.replace(char,'')
         return (multiplier * int(size))
-        
+
 
     #API Method calls.
     def acl_add(
@@ -118,7 +118,7 @@ class QuantastorClient(object):
             objectType='0',
             accessLevel='0',
             flags='0'):
-        payload = { 
+        payload = {
             'ownerId' : ownerId,  #xsd:string
             'ownerType' : ownerType,  #xsd:unsignedInt
             'objectId' : objectId,  #xsd:string
@@ -137,7 +137,7 @@ class QuantastorClient(object):
             objectType='0',
             accessLevel='0',
             flags='0'):
-        payload = { 
+        payload = {
             'ownerId' : ownerId,  #xsd:string
             'ownerType' : ownerType,  #xsd:unsignedInt
             'objectId' : objectId,  #xsd:string
@@ -155,7 +155,7 @@ class QuantastorClient(object):
             objectId='',
             objectType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'ownerId' : ownerId,  #xsd:string
             'ownerType' : ownerType,  #xsd:unsignedInt
             'objectId' : objectId,  #xsd:string
@@ -169,7 +169,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -184,7 +184,7 @@ class QuantastorClient(object):
             filter='',
             organizationalUnit='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'isGroup' : isGroup,  #xsd:boolean
             'domain' : domain,  #xsd:string
@@ -200,7 +200,7 @@ class QuantastorClient(object):
             filter='',
             acknowledgeOnly=False,
             flags='0'):
-        payload = { 
+        payload = {
             'filter' : filter,  #xsd:string
             'acknowledgeOnly' : acknowledgeOnly,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -212,7 +212,7 @@ class QuantastorClient(object):
             self,
             acknowledgeOnly=False,
             flags='0'):
-        payload = { 
+        payload = {
             'acknowledgeOnly' : acknowledgeOnly,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -222,7 +222,7 @@ class QuantastorClient(object):
     def alert_config_get(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('alertConfigGet', payload)
@@ -247,7 +247,7 @@ class QuantastorClient(object):
             disableAlertTypes='',
             pauseAlertTypes='',
             flags='0'):
-        payload = { 
+        payload = {
             'senderEmailAddress' : senderEmailAddress,  #xsd:string
             'smtpServerIpAddress' : smtpServerIpAddress,  #xsd:string
             'smtpServerPort' : smtpServerPort,  #xsd:unsignedInt
@@ -273,7 +273,7 @@ class QuantastorClient(object):
             self,
             filter='',
             flags='0'):
-        payload = { 
+        payload = {
             'filter' : filter,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -284,7 +284,7 @@ class QuantastorClient(object):
             self,
             id='',
             flags='0'):
-        payload = { 
+        payload = {
             'id' : id,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -297,7 +297,7 @@ class QuantastorClient(object):
             message='',
             severity='0',
             flags='0'):
-        payload = { 
+        payload = {
             'title' : title,  #xsd:string
             'message' : message,  #xsd:string
             'severity' : severity,  #xsd:unsignedInt
@@ -309,7 +309,7 @@ class QuantastorClient(object):
     def alert_type_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('alertTypeEnum', payload)
@@ -319,7 +319,7 @@ class QuantastorClient(object):
             self,
             alertType='',
             flags='0'):
-        payload = { 
+        payload = {
             'alertType' : alertType,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -330,7 +330,7 @@ class QuantastorClient(object):
             self,
             backupJob='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupJob' : backupJob,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -340,7 +340,7 @@ class QuantastorClient(object):
     def backup_job_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('backupJobEnum', payload)
@@ -350,7 +350,7 @@ class QuantastorClient(object):
             self,
             backupJob='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupJob' : backupJob,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -361,7 +361,7 @@ class QuantastorClient(object):
             self,
             backupPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupPolicy' : backupPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -372,7 +372,7 @@ class QuantastorClient(object):
             self,
             statusXml='',
             flags='0'):
-        payload = { 
+        payload = {
             'statusXml' : statusXml,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -413,7 +413,7 @@ class QuantastorClient(object):
             maxFileAgeDays='0',
             createLinks=False,
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'networkShareId' : networkShareId,  #xsd:string
@@ -454,7 +454,7 @@ class QuantastorClient(object):
             self,
             backupPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupPolicy' : backupPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -465,7 +465,7 @@ class QuantastorClient(object):
             self,
             backupPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupPolicy' : backupPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -476,7 +476,7 @@ class QuantastorClient(object):
             self,
             backupPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupPolicy' : backupPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -486,7 +486,7 @@ class QuantastorClient(object):
     def backup_policy_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('backupPolicyEnum', payload)
@@ -496,7 +496,7 @@ class QuantastorClient(object):
             self,
             backupPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupPolicy' : backupPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -538,7 +538,7 @@ class QuantastorClient(object):
             maxFileAgeDays='0',
             createLinks=False,
             flags='0'):
-        payload = { 
+        payload = {
             'backupPolicy' : backupPolicy,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -580,7 +580,7 @@ class QuantastorClient(object):
             self,
             backupPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'backupPolicy' : backupPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -595,7 +595,7 @@ class QuantastorClient(object):
             currentCount='0',
             options='',
             flags='0'):
-        payload = { 
+        payload = {
             'bounceFromSystem' : bounceFromSystem,  #xsd:string
             'bounceToSystem' : bounceToSystem,  #xsd:string
             'bounceCount' : bounceCount,  #xsd:unsignedInt
@@ -618,7 +618,7 @@ class QuantastorClient(object):
             enableNetworkShareAccess=False,
             estNumObjects='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'cephClusterId' : cephClusterId,  #xsd:string
             'quotaSize' : self.size_in_bytes(quotaSize),  #xsd:unsignedLong
@@ -639,7 +639,7 @@ class QuantastorClient(object):
             bucketList='',
             cleanupOrphans=False,
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucketList' : bucketList,  #xsd:string
             'cleanupOrphans' : cleanupOrphans,  #xsd:boolean
@@ -652,7 +652,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -664,7 +664,7 @@ class QuantastorClient(object):
             cephClusterId='',
             bucket='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucket' : bucket,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -678,7 +678,7 @@ class QuantastorClient(object):
             bucket='',
             userAccessEntryList='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucket' : bucket,  #xsd:string
             'userAccessEntryList' : userAccessEntryList,  #xsd:string
@@ -694,7 +694,7 @@ class QuantastorClient(object):
             objectLockRetentionDays='0',
             enableNetworkShareAccess=False,
             flags='0'):
-        payload = { 
+        payload = {
             'bucketId' : bucketId,  #xsd:string
             'objectLockMode' : objectLockMode,  #xsd:unsignedInt
             'objectLockRetentionDays' : objectLockRetentionDays,  #xsd:unsignedInt
@@ -711,7 +711,7 @@ class QuantastorClient(object):
             startingIndex='0',
             maxEntries='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucket' : bucket,  #xsd:string
             'startingIndex' : startingIndex,  #xsd:unsignedInt
@@ -726,7 +726,7 @@ class QuantastorClient(object):
             cephClusterId='',
             concurrency='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'concurrency' : concurrency,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -738,7 +738,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -751,7 +751,7 @@ class QuantastorClient(object):
             bucket='',
             userAccessEntryList='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucket' : bucket,  #xsd:string
             'userAccessEntryList' : userAccessEntryList,  #xsd:string
@@ -765,7 +765,7 @@ class QuantastorClient(object):
             cephClusterId='',
             bucketId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucketId' : bucketId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -778,7 +778,7 @@ class QuantastorClient(object):
             bucketId='',
             cephUserAccessId='',
             flags='0'):
-        payload = { 
+        payload = {
             'bucketId' : bucketId,  #xsd:string
             'cephUserAccessId' : cephUserAccessId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -795,7 +795,7 @@ class QuantastorClient(object):
             clusternetwork='',
             enableObjectStore=False,
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'storageSystemId' : storageSystemId,  #xsd:string
             'interfacePortId' : interfacePortId,  #xsd:string
@@ -819,11 +819,13 @@ class QuantastorClient(object):
             clusterAuthMode='0',
             osdOutSubtreeLimit='0',
             enableOsdEncryption=False,
+            encryptionMode='0',
             enableOsdCompression=False,
             osdDownTimeoutSec='0',
             osdOutTimeoutSec='0',
+            keyServerProfileId='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'domainSuffix' : domainSuffix,  #xsd:string
@@ -834,9 +836,11 @@ class QuantastorClient(object):
             'clusterAuthMode' : clusterAuthMode,  #xsd:unsignedInt
             'osdOutSubtreeLimit' : osdOutSubtreeLimit,  #xsd:unsignedInt
             'enableOsdEncryption' : enableOsdEncryption,  #xsd:boolean
+            'encryptionMode' : encryptionMode,  #xsd:unsignedInt
             'enableOsdCompression' : enableOsdCompression,  #xsd:boolean
             'osdDownTimeoutSec' : osdDownTimeoutSec,  #xsd:unsignedInt
             'osdOutTimeoutSec' : osdOutTimeoutSec,  #xsd:unsignedInt
+            'keyServerProfileId' : keyServerProfileId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephClusterCreate', payload)
@@ -846,7 +850,7 @@ class QuantastorClient(object):
             self,
             cluster='',
             flags='0'):
-        payload = { 
+        payload = {
             'cluster' : cluster,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -856,7 +860,7 @@ class QuantastorClient(object):
     def ceph_cluster_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephClusterEnum', payload)
@@ -866,7 +870,7 @@ class QuantastorClient(object):
             self,
             cephCluster='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephCluster' : cephCluster,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -877,7 +881,7 @@ class QuantastorClient(object):
             self,
             cephCluster='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephCluster' : cephCluster,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -888,7 +892,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -899,7 +903,7 @@ class QuantastorClient(object):
             self,
             cephCluster='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephCluster' : cephCluster,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -916,8 +920,9 @@ class QuantastorClient(object):
             nearFillFullPercent='0',
             backFillFullPercent='0',
             fullPercent='0',
+            keyServerProfileId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephCluster' : cephCluster,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -926,6 +931,7 @@ class QuantastorClient(object):
             'nearFillFullPercent' : nearFillFullPercent,  #xsd:unsignedInt
             'backFillFullPercent' : backFillFullPercent,  #xsd:unsignedInt
             'fullPercent' : fullPercent,  #xsd:unsignedInt
+            'keyServerProfileId' : keyServerProfileId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephClusterModify', payload)
@@ -936,7 +942,7 @@ class QuantastorClient(object):
             clusterId='',
             memberNodeId='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'memberNodeId' : memberNodeId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -950,7 +956,7 @@ class QuantastorClient(object):
             prune=False,
             crashIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'prune' : prune,  #xsd:boolean
             'crashIdList' : crashIdList,  #xsd:string
@@ -964,7 +970,7 @@ class QuantastorClient(object):
             clusterId='',
             includeOld=False,
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'includeOld' : includeOld,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -983,7 +989,7 @@ class QuantastorClient(object):
             deviceClass='',
             crushPoolProfileId='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'cephClusterId' : cephClusterId,  #xsd:string
@@ -1001,7 +1007,7 @@ class QuantastorClient(object):
             self,
             cephCrushRuleId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephCrushRuleId' : cephCrushRuleId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1012,7 +1018,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1023,7 +1029,7 @@ class QuantastorClient(object):
             self,
             cephCrushRule='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephCrushRule' : cephCrushRule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1040,8 +1046,10 @@ class QuantastorClient(object):
             minReplicaCount='0',
             cephPoolType='',
             crushProfile='',
+            activeMdsCount='0',
+            standbyMdsCount='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'cephClusterId' : cephClusterId,  #xsd:string
@@ -1050,6 +1058,8 @@ class QuantastorClient(object):
             'minReplicaCount' : minReplicaCount,  #xsd:unsignedInt
             'cephPoolType' : cephPoolType,  #xsd:string
             'crushProfile' : crushProfile,  #xsd:string
+            'activeMdsCount' : activeMdsCount,  #xsd:unsignedInt
+            'standbyMdsCount' : standbyMdsCount,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephFilesystemCreate', payload)
@@ -1059,7 +1069,7 @@ class QuantastorClient(object):
             self,
             cephFilesystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephFilesystemId' : cephFilesystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1070,7 +1080,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1081,7 +1091,7 @@ class QuantastorClient(object):
             self,
             cephFilesystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephFilesystemId' : cephFilesystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1092,10 +1102,14 @@ class QuantastorClient(object):
             self,
             cephFilesystemId='',
             description='',
+            activeMdsCount='0',
+            standbyMdsCount='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephFilesystemId' : cephFilesystemId,  #xsd:string
             'description' : description,  #xsd:string
+            'activeMdsCount' : activeMdsCount,  #xsd:unsignedInt
+            'standbyMdsCount' : standbyMdsCount,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephFilesystemModify', payload)
@@ -1105,7 +1119,7 @@ class QuantastorClient(object):
             self,
             cephFilesystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephFilesystemId' : cephFilesystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1117,7 +1131,7 @@ class QuantastorClient(object):
             cephFilesystemId='',
             cephPoolId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephFilesystemId' : cephFilesystemId,  #xsd:string
             'cephPoolId' : cephPoolId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1131,7 +1145,7 @@ class QuantastorClient(object):
             size='0',
             mirrorJournals=False,
             flags='0'):
-        payload = { 
+        payload = {
             'cephJournalGroup' : cephJournalGroup,  #xsd:string
             'size' : self.size_in_bytes(size),  #xsd:unsignedLong
             'mirrorJournals' : mirrorJournals,  #xsd:boolean
@@ -1144,7 +1158,7 @@ class QuantastorClient(object):
             self,
             cephJournalDevice='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephJournalDevice' : cephJournalDevice,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1155,7 +1169,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1166,7 +1180,7 @@ class QuantastorClient(object):
             self,
             cephJournalDevice='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephJournalDevice' : cephJournalDevice,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1179,7 +1193,7 @@ class QuantastorClient(object):
             cephJournalDevice='',
             newJournalGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephCluster' : cephCluster,  #xsd:string
             'cephJournalDevice' : cephJournalDevice,  #xsd:string
             'newJournalGroup' : newJournalGroup,  #xsd:string
@@ -1193,7 +1207,7 @@ class QuantastorClient(object):
             primaryDisk='',
             secondaryDisk='',
             flags='0'):
-        payload = { 
+        payload = {
             'primaryDisk' : primaryDisk,  #xsd:string
             'secondaryDisk' : secondaryDisk,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1205,7 +1219,7 @@ class QuantastorClient(object):
             self,
             cephJournalGroupId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephJournalGroupId' : cephJournalGroupId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1216,7 +1230,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1227,7 +1241,7 @@ class QuantastorClient(object):
             self,
             cephJournalGroupId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephJournalGroupId' : cephJournalGroupId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1236,12 +1250,12 @@ class QuantastorClient(object):
 
     def ceph_mds_add(
             self,
+            cephMemberIdList='',
             clusterId='',
-            cephMemberId='',
             flags='0'):
-        payload = { 
+        payload = {
+            'cephMemberIdList' : cephMemberIdList,  #xsd:string
             'clusterId' : clusterId,  #xsd:string
-            'cephMemberId' : cephMemberId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephMdsAdd', payload)
@@ -1251,7 +1265,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1262,7 +1276,7 @@ class QuantastorClient(object):
             self,
             cephMds='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephMds' : cephMds,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1274,7 +1288,7 @@ class QuantastorClient(object):
             clusterId='',
             mdsNodeId='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'mdsNodeId' : mdsNodeId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1289,7 +1303,7 @@ class QuantastorClient(object):
             monitorIPAddress='',
             monitorPort='0',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'cephMemberId' : cephMemberId,  #xsd:string
             'monitorIPAddress' : monitorIPAddress,  #xsd:string
@@ -1303,7 +1317,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1314,7 +1328,7 @@ class QuantastorClient(object):
             self,
             cephMonitor='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephMonitor' : cephMonitor,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1326,7 +1340,7 @@ class QuantastorClient(object):
             clusterId='',
             monitorNodeId='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'monitorNodeId' : monitorNodeId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1348,7 +1362,7 @@ class QuantastorClient(object):
             sizeDB='0',
             osdType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'physicalDiskList' : physicalDiskList,  #xsd:string
             'journalDiskList' : journalDiskList,  #xsd:string
@@ -1370,7 +1384,7 @@ class QuantastorClient(object):
             cephClusterId='',
             osdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'osdList' : osdList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1385,21 +1399,21 @@ class QuantastorClient(object):
             zone='',
             zoneGroup='',
             dataPoolType='',
-            minReplicaCount='0',
             maxReplicaCount='0',
+            minReplicaCount='0',
             poolProfile='',
             storageSystemIds='',
             useCase='0',
             scalingFactor='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'description' : description,  #xsd:string
             'zone' : zone,  #xsd:string
             'zoneGroup' : zoneGroup,  #xsd:string
             'dataPoolType' : dataPoolType,  #xsd:string
-            'minReplicaCount' : minReplicaCount,  #xsd:unsignedInt
             'maxReplicaCount' : maxReplicaCount,  #xsd:unsignedInt
+            'minReplicaCount' : minReplicaCount,  #xsd:unsignedInt
             'poolProfile' : poolProfile,  #xsd:string
             'storageSystemIds' : storageSystemIds,  #xsd:string
             'useCase' : useCase,  #xsd:unsignedInt
@@ -1413,7 +1427,7 @@ class QuantastorClient(object):
             self,
             cephObjectStoragePoolGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephObjectStoragePoolGroup' : cephObjectStoragePoolGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1424,7 +1438,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1435,7 +1449,7 @@ class QuantastorClient(object):
             self,
             cephObjectStoragePoolGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephObjectStoragePoolGroup' : cephObjectStoragePoolGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1455,7 +1469,7 @@ class QuantastorClient(object):
             osdType='0',
             weight='0',
             flags='0'):
-        payload = { 
+        payload = {
             'description' : description,  #xsd:string
             'cephClusterId' : cephClusterId,  #xsd:string
             'datastoragePoolId' : datastoragePoolId,  #xsd:string
@@ -1475,7 +1489,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1486,7 +1500,7 @@ class QuantastorClient(object):
             self,
             cephOsd='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephOsd' : cephOsd,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1500,7 +1514,7 @@ class QuantastorClient(object):
             blinkType='0',
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'osdIdList' : osdIdList,  #xsd:string
             'durationInSeconds' : durationInSeconds,  #xsd:unsignedInt
             'blinkType' : blinkType,  #xsd:unsignedInt
@@ -1516,7 +1530,7 @@ class QuantastorClient(object):
             cephOsd='',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'cephOsd' : cephOsd,  #xsd:string
             'description' : description,  #xsd:string
@@ -1531,7 +1545,7 @@ class QuantastorClient(object):
             mode='0',
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'osdIdList' : osdIdList,  #xsd:string
             'mode' : mode,  #xsd:unsignedInt
             'cephClusterId' : cephClusterId,  #xsd:string
@@ -1544,7 +1558,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1555,7 +1569,7 @@ class QuantastorClient(object):
             self,
             cephPgSet='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephPgSet' : cephPgSet,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1571,10 +1585,9 @@ class QuantastorClient(object):
             maxReplicaCount='0',
             minReplicaCount='0',
             cephPoolType='',
-            storagePoolList='',
             crushProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'cephClusterId' : cephClusterId,  #xsd:string
@@ -1582,7 +1595,6 @@ class QuantastorClient(object):
             'maxReplicaCount' : maxReplicaCount,  #xsd:unsignedInt
             'minReplicaCount' : minReplicaCount,  #xsd:unsignedInt
             'cephPoolType' : cephPoolType,  #xsd:string
-            'storagePoolList' : storagePoolList,  #xsd:string
             'crushProfile' : crushProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1594,7 +1606,7 @@ class QuantastorClient(object):
             cephClusterId='',
             cephPool='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'cephPool' : cephPool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1606,7 +1618,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1617,7 +1629,7 @@ class QuantastorClient(object):
             self,
             cephPool='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephPool' : cephPool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1633,7 +1645,7 @@ class QuantastorClient(object):
             maxReplicaCount='0',
             poolCrushRule='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'cephPool' : cephPool,  #xsd:string
             'name' : name,  #xsd:string
@@ -1649,7 +1661,7 @@ class QuantastorClient(object):
             self,
             cephPool='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephPool' : cephPool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1661,7 +1673,7 @@ class QuantastorClient(object):
             cephPool='',
             cephOsd='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephPool' : cephPool,  #xsd:string
             'cephOsd' : cephOsd,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1680,7 +1692,7 @@ class QuantastorClient(object):
             technique='',
             plugin='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'cephClusterId' : cephClusterId,  #xsd:string
@@ -1698,7 +1710,7 @@ class QuantastorClient(object):
             self,
             cephPoolProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephPoolProfile' : cephPoolProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1709,7 +1721,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1720,7 +1732,7 @@ class QuantastorClient(object):
             self,
             cephPoolProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephPoolProfile' : cephPoolProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1730,7 +1742,6 @@ class QuantastorClient(object):
     def ceph_rados_gateway_add(
             self,
             clusterId='',
-            cephMemberId='',
             cephRadosGatewayIPAddress='',
             cephRadosGatewayPort='0',
             serviceEngine='0',
@@ -1739,9 +1750,8 @@ class QuantastorClient(object):
             certificatePemData='',
             redirect=False,
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
-            'cephMemberId' : cephMemberId,  #xsd:string
             'cephRadosGatewayIPAddress' : cephRadosGatewayIPAddress,  #xsd:string
             'cephRadosGatewayPort' : cephRadosGatewayPort,  #xsd:unsignedInt
             'serviceEngine' : serviceEngine,  #xsd:unsignedInt
@@ -1758,7 +1768,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1769,7 +1779,7 @@ class QuantastorClient(object):
             self,
             cephGatewayId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephGatewayId' : cephGatewayId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1782,7 +1792,7 @@ class QuantastorClient(object):
             cephRadosGatewayId='',
             rgwOptions='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'cephRadosGatewayId' : cephRadosGatewayId,  #xsd:string
             'rgwOptions' : rgwOptions,  #xsd:string
@@ -1796,7 +1806,7 @@ class QuantastorClient(object):
             clusterId='',
             cephRadosGatewayId='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterId' : clusterId,  #xsd:string
             'cephRadosGatewayId' : cephRadosGatewayId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -1809,7 +1819,7 @@ class QuantastorClient(object):
             cephRadosGatewayId='',
             modType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephRadosGatewayId' : cephRadosGatewayId,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -1821,7 +1831,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1832,7 +1842,7 @@ class QuantastorClient(object):
             self,
             scheduleId='',
             storageVolumeId=''):
-        payload = { 
+        payload = {
             'scheduleId' : scheduleId,  #xsd:string
             'storageVolumeId' : storageVolumeId,  #xsd:string
             }
@@ -1854,7 +1864,7 @@ class QuantastorClient(object):
             scheduleType='0',
             delayInterval='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'cloudContainerId' : cloudContainerId,  #xsd:string
@@ -1876,7 +1886,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1887,7 +1897,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1898,7 +1908,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1908,7 +1918,7 @@ class QuantastorClient(object):
     def cloud_backup_schedule_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cloudBackupScheduleEnum', payload)
@@ -1918,7 +1928,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1939,7 +1949,7 @@ class QuantastorClient(object):
             scheduleType='0',
             delayInterval='0',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -1960,7 +1970,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -1973,7 +1983,7 @@ class QuantastorClient(object):
             modType='0',
             storageVolumeList='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageVolumeList' : storageVolumeList,  #xsd:string
@@ -2000,7 +2010,7 @@ class QuantastorClient(object):
             vfsCacheMaxAge='',
             vfsCacheMaxSize='0',
             flags='0'):
-        payload = { 
+        payload = {
             'credentialsId' : credentialsId,  #xsd:string
             'locationId' : locationId,  #xsd:string
             'encryptionKey' : encryptionKey,  #xsd:string
@@ -2026,7 +2036,7 @@ class QuantastorClient(object):
             credentialsId='',
             locationId='',
             flags='0'):
-        payload = { 
+        payload = {
             'credentialsId' : credentialsId,  #xsd:string
             'locationId' : locationId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2038,7 +2048,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2055,7 +2065,7 @@ class QuantastorClient(object):
             vfsCacheMaxAge='',
             vfsCacheMaxSize='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cloudSettingsId' : cloudSettingsId,  #xsd:string
             'cacheMode' : cacheMode,  #xsd:unsignedInt
             'dirCacheTime' : dirCacheTime,  #xsd:string
@@ -2088,7 +2098,7 @@ class QuantastorClient(object):
             vfsCacheMaxAge='',
             vfsCacheMaxSize='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'credentialsId' : credentialsId,  #xsd:string
@@ -2115,7 +2125,7 @@ class QuantastorClient(object):
             self,
             container='',
             flags='0'):
-        payload = { 
+        payload = {
             'container' : container,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2126,7 +2136,7 @@ class QuantastorClient(object):
             self,
             container='',
             flags='0'):
-        payload = { 
+        payload = {
             'container' : container,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2138,7 +2148,7 @@ class QuantastorClient(object):
             container='',
             attachToStorageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'container' : container,  #xsd:string
             'attachToStorageSystem' : attachToStorageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2149,7 +2159,7 @@ class QuantastorClient(object):
     def cloud_container_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cloudContainerEnum', payload)
@@ -2159,7 +2169,7 @@ class QuantastorClient(object):
             self,
             container='',
             flags='0'):
-        payload = { 
+        payload = {
             'container' : container,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2170,7 +2180,7 @@ class QuantastorClient(object):
             self,
             container='',
             flags='0'):
-        payload = { 
+        payload = {
             'container' : container,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2189,7 +2199,7 @@ class QuantastorClient(object):
             credProjectId='',
             authFile='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'locationName' : locationName,  #xsd:string
@@ -2213,7 +2223,7 @@ class QuantastorClient(object):
             projectId='',
             authFile='',
             flags='0'):
-        payload = { 
+        payload = {
             'username' : username,  #xsd:string
             'password' : password,  #xsd:string
             'providerId' : providerId,  #xsd:string
@@ -2228,7 +2238,7 @@ class QuantastorClient(object):
     def cloud_provider_credentials_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cloudProviderCredentialsEnum', payload)
@@ -2238,7 +2248,7 @@ class QuantastorClient(object):
             self,
             credentialId='',
             flags='0'):
-        payload = { 
+        payload = {
             'credentialId' : credentialId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2249,7 +2259,7 @@ class QuantastorClient(object):
             self,
             credentialsId='',
             flags='0'):
-        payload = { 
+        payload = {
             'credentialsId' : credentialsId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2259,7 +2269,7 @@ class QuantastorClient(object):
     def cloud_provider_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cloudProviderEnum', payload)
@@ -2269,7 +2279,7 @@ class QuantastorClient(object):
             self,
             providerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'providerId' : providerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2283,7 +2293,7 @@ class QuantastorClient(object):
             locationTag='',
             endpoint='',
             flags='0'):
-        payload = { 
+        payload = {
             'providerId' : providerId,  #xsd:string
             'name' : name,  #xsd:string
             'locationTag' : locationTag,  #xsd:string
@@ -2296,7 +2306,7 @@ class QuantastorClient(object):
     def cloud_provider_location_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cloudProviderLocationEnum', payload)
@@ -2306,7 +2316,7 @@ class QuantastorClient(object):
             self,
             locationId='',
             flags='0'):
-        payload = { 
+        payload = {
             'locationId' : locationId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2317,7 +2327,7 @@ class QuantastorClient(object):
             self,
             locationId='',
             flags='0'):
-        payload = { 
+        payload = {
             'locationId' : locationId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2328,7 +2338,7 @@ class QuantastorClient(object):
             self,
             providerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'providerId' : providerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2344,7 +2354,7 @@ class QuantastorClient(object):
             memberAddresses='',
             options='0',
             flags='0'):
-        payload = { 
+        payload = {
             'siteClusterId' : siteClusterId,  #xsd:string
             'ring' : ring,  #xsd:unsignedInt
             'mcastPort' : mcastPort,  #xsd:unsignedInt
@@ -2360,7 +2370,7 @@ class QuantastorClient(object):
             self,
             clusterRing='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterRing' : clusterRing,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2370,7 +2380,7 @@ class QuantastorClient(object):
     def cluster_ring_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('clusterRingEnum', payload)
@@ -2380,7 +2390,7 @@ class QuantastorClient(object):
             self,
             clusterRing='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterRing' : clusterRing,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2390,7 +2400,7 @@ class QuantastorClient(object):
     def cluster_ring_member_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('clusterRingMemberEnum', payload)
@@ -2400,7 +2410,7 @@ class QuantastorClient(object):
             self,
             clusterRingMember='',
             flags='0'):
-        payload = { 
+        payload = {
             'clusterRingMember' : clusterRingMember,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2412,7 +2422,7 @@ class QuantastorClient(object):
             method='',
             params='',
             flags='0'):
-        payload = { 
+        payload = {
             'method' : method,  #xsd:string
             'params' : params,  #osn:keyValuePair
             'flags' : flags,  #xsd:unsignedInt
@@ -2423,7 +2433,7 @@ class QuantastorClient(object):
     def echo(
             self,
             inputMessage=''):
-        payload = { 
+        payload = {
             'inputMessage' : inputMessage,  #xsd:string
             }
         jsonOutput = self.make_call('echo', payload)
@@ -2434,7 +2444,7 @@ class QuantastorClient(object):
             startingIndex='0',
             maxEvents='0',
             serviceTimeStamp=''):
-        payload = { 
+        payload = {
             'startingIndex' : startingIndex,  #xsd:unsignedInt
             'maxEvents' : maxEvents,  #xsd:unsignedInt
             'serviceTimeStamp' : serviceTimeStamp,  #xsd:dateTime
@@ -2448,7 +2458,7 @@ class QuantastorClient(object):
             list='',
             epoch='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'list' : list,  #osn:event
             'epoch' : self.size_in_bytes(epoch),  #xsd:unsignedLong
@@ -2460,7 +2470,7 @@ class QuantastorClient(object):
     def event_listener_register(
             self,
             eventListenerObj=''):
-        payload = { 
+        payload = {
             'eventListenerObj' : eventListenerObj,  #osn:eventListener
             }
         jsonOutput = self.make_call('eventListenerRegister', payload)
@@ -2469,7 +2479,7 @@ class QuantastorClient(object):
     def event_listener_unregister(
             self,
             listenerId=''):
-        payload = { 
+        payload = {
             'listenerId' : listenerId,  #xsd:string
             }
         jsonOutput = self.make_call('eventListenerUnregister', payload)
@@ -2480,7 +2490,7 @@ class QuantastorClient(object):
             storageSystemId='',
             objectType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'objectType' : objectType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -2492,7 +2502,7 @@ class QuantastorClient(object):
             self,
             externalSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystem' : externalSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2504,7 +2514,7 @@ class QuantastorClient(object):
             externalSystemController='',
             externalSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystemController' : externalSystemController,  #xsd:string
             'externalSystem' : externalSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2521,7 +2531,7 @@ class QuantastorClient(object):
             primaryIp='',
             secondaryIp='',
             flags='0'):
-        payload = { 
+        payload = {
             'modType' : modType,  #xsd:unsignedInt
             'name' : name,  #xsd:string
             'username' : username,  #xsd:string
@@ -2536,7 +2546,7 @@ class QuantastorClient(object):
     def external_system_credentials_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('externalSystemCredentialsEnum', payload)
@@ -2546,7 +2556,7 @@ class QuantastorClient(object):
             self,
             externalSystemCredentials='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystemCredentials' : externalSystemCredentials,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2556,7 +2566,7 @@ class QuantastorClient(object):
     def external_system_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('externalSystemEnum', payload)
@@ -2566,7 +2576,7 @@ class QuantastorClient(object):
             self,
             externalSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystem' : externalSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2578,7 +2588,7 @@ class QuantastorClient(object):
             externalSystem='',
             externalSystemPortGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystem' : externalSystem,  #xsd:string
             'externalSystemPortGroup' : externalSystemPortGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2591,7 +2601,7 @@ class QuantastorClient(object):
             externalSystemMedia='',
             externalSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystemMedia' : externalSystemMedia,  #xsd:string
             'externalSystem' : externalSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2606,7 +2616,7 @@ class QuantastorClient(object):
             description='',
             enclosureLayoutId='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystem' : externalSystem,  #xsd:string
             'altName' : altName,  #xsd:string
             'description' : description,  #xsd:string
@@ -2621,7 +2631,7 @@ class QuantastorClient(object):
             externalSystem='',
             externalSystemPortGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystem' : externalSystem,  #xsd:string
             'externalSystemPortGroup' : externalSystemPortGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2634,7 +2644,7 @@ class QuantastorClient(object):
             externalSystemPort='',
             externalSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystemPort' : externalSystemPort,  #xsd:string
             'externalSystem' : externalSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2646,7 +2656,7 @@ class QuantastorClient(object):
             self,
             externalSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystem' : externalSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2658,7 +2668,7 @@ class QuantastorClient(object):
             externalSystemPortGroup='',
             externalSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystemPortGroup' : externalSystemPortGroup,  #xsd:string
             'externalSystem' : externalSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2673,7 +2683,7 @@ class QuantastorClient(object):
             ipAddress='',
             subnet='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystemPort' : externalSystemPort,  #xsd:string
             'externalSystem' : externalSystem,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
@@ -2688,7 +2698,7 @@ class QuantastorClient(object):
             externalSystemCredentials='',
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'externalSystemCredentials' : externalSystemCredentials,  #xsd:string
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2701,7 +2711,7 @@ class QuantastorClient(object):
             storageSystem='',
             externalSystemMediaList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'externalSystemMediaList' : externalSystemMediaList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2713,7 +2723,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2724,7 +2734,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2734,7 +2744,7 @@ class QuantastorClient(object):
     def fc_target_port_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('fcTargetPortEnum', payload)
@@ -2744,7 +2754,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2754,7 +2764,7 @@ class QuantastorClient(object):
     def get_hardware_config(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('getHardwareConfig', payload)
@@ -2765,7 +2775,7 @@ class QuantastorClient(object):
             locale='',
             i18nStr='',
             flags='0'):
-        payload = { 
+        payload = {
             'locale' : locale,  #xsd:string
             'i18nStr' : i18nStr,  #osn:i18nString
             'flags' : flags,  #xsd:unsignedInt
@@ -2776,7 +2786,7 @@ class QuantastorClient(object):
     def get_multi_factor_auth_devices(
             self,
             authRequestCode=''):
-        payload = { 
+        payload = {
             'authRequestCode' : authRequestCode,  #xsd:string
             }
         jsonOutput = self.make_call('getMultiFactorAuthDevices', payload)
@@ -2786,7 +2796,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2797,7 +2807,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2814,7 +2824,7 @@ class QuantastorClient(object):
             description='',
             iqn='',
             flags='0'):
-        payload = { 
+        payload = {
             'hostname' : hostname,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
             'username' : username,  #xsd:string
@@ -2830,7 +2840,7 @@ class QuantastorClient(object):
     def host_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('hostEnum', payload)
@@ -2840,7 +2850,7 @@ class QuantastorClient(object):
             self,
             host='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2853,7 +2863,7 @@ class QuantastorClient(object):
             description='',
             hostList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'hostList' : hostList,  #xsd:string
@@ -2867,7 +2877,7 @@ class QuantastorClient(object):
             hostGroup='',
             deleteAssociatedHosts=False,
             flags='0'):
-        payload = { 
+        payload = {
             'hostGroup' : hostGroup,  #xsd:string
             'deleteAssociatedHosts' : deleteAssociatedHosts,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -2878,7 +2888,7 @@ class QuantastorClient(object):
     def host_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('hostGroupEnum', payload)
@@ -2888,7 +2898,7 @@ class QuantastorClient(object):
             self,
             hostGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'hostGroup' : hostGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2901,7 +2911,7 @@ class QuantastorClient(object):
             modType='0',
             hostList='',
             flags='0'):
-        payload = { 
+        payload = {
             'hostGroup' : hostGroup,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'hostList' : hostList,  #xsd:string
@@ -2916,7 +2926,7 @@ class QuantastorClient(object):
             newName='',
             newDescription='',
             flags='0'):
-        payload = { 
+        payload = {
             'hostGroup' : hostGroup,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
@@ -2930,7 +2940,7 @@ class QuantastorClient(object):
             host='',
             iqn='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'iqn' : iqn,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2942,7 +2952,7 @@ class QuantastorClient(object):
             self,
             host='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2953,7 +2963,7 @@ class QuantastorClient(object):
             self,
             initiator='',
             flags='0'):
-        payload = { 
+        payload = {
             'initiator' : initiator,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -2965,7 +2975,7 @@ class QuantastorClient(object):
             host='',
             iqn='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'iqn' : iqn,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -2983,7 +2993,7 @@ class QuantastorClient(object):
             newDescription='',
             newHostName='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'newIpAddress' : newIpAddress,  #xsd:string
             'newUsername' : newUsername,  #xsd:string
@@ -3000,7 +3010,7 @@ class QuantastorClient(object):
             self,
             host='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3011,7 +3021,7 @@ class QuantastorClient(object):
             self,
             hwController='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwController' : hwController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3022,7 +3032,7 @@ class QuantastorClient(object):
             self,
             hwAlarm='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwAlarm' : hwAlarm,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3033,7 +3043,7 @@ class QuantastorClient(object):
             self,
             hwController='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwController' : hwController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3044,7 +3054,7 @@ class QuantastorClient(object):
             self,
             hwBatteryBackupUnit='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwBatteryBackupUnit' : hwBatteryBackupUnit,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3057,7 +3067,7 @@ class QuantastorClient(object):
             oldSecurityKey='',
             newSecurityKey='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'oldSecurityKey' : oldSecurityKey,  #xsd:string
             'newSecurityKey' : newSecurityKey,  #xsd:string
@@ -3070,7 +3080,7 @@ class QuantastorClient(object):
             self,
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3082,7 +3092,7 @@ class QuantastorClient(object):
             controllerId='',
             securityKey='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'securityKey' : securityKey,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -3094,7 +3104,7 @@ class QuantastorClient(object):
             self,
             hwControllerGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwControllerGroup' : hwControllerGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3105,7 +3115,7 @@ class QuantastorClient(object):
             self,
             hwController='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwController' : hwController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3115,7 +3125,7 @@ class QuantastorClient(object):
     def hw_controller_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('hwControllerGroupEnum', payload)
@@ -3125,7 +3135,7 @@ class QuantastorClient(object):
             self,
             hwControllerGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwControllerGroup' : hwControllerGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3136,7 +3146,7 @@ class QuantastorClient(object):
             self,
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3149,7 +3159,7 @@ class QuantastorClient(object):
             altName='',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'altName' : altName,  #xsd:string
             'description' : description,  #xsd:string
@@ -3162,7 +3172,7 @@ class QuantastorClient(object):
             self,
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3173,7 +3183,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3184,7 +3194,7 @@ class QuantastorClient(object):
             self,
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3196,7 +3206,7 @@ class QuantastorClient(object):
             storageSystemId='',
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -3208,7 +3218,7 @@ class QuantastorClient(object):
             self,
             hwController='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwController' : hwController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3219,7 +3229,7 @@ class QuantastorClient(object):
             self,
             hwDisk='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwDisk' : hwDisk,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3232,7 +3242,7 @@ class QuantastorClient(object):
             durationInSeconds='0',
             blinkType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'diskIdList' : diskIdList,  #xsd:string
             'durationInSeconds' : durationInSeconds,  #xsd:unsignedInt
             'blinkType' : blinkType,  #xsd:unsignedInt
@@ -3245,7 +3255,7 @@ class QuantastorClient(object):
             self,
             diskIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'diskIdList' : diskIdList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3256,7 +3266,7 @@ class QuantastorClient(object):
             self,
             diskIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'diskIdList' : diskIdList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3269,7 +3279,7 @@ class QuantastorClient(object):
             altName='',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'diskId' : diskId,  #xsd:string
             'altName' : altName,  #xsd:string
             'description' : description,  #xsd:string
@@ -3282,7 +3292,7 @@ class QuantastorClient(object):
             self,
             diskIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'diskIdList' : diskIdList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3293,7 +3303,7 @@ class QuantastorClient(object):
             self,
             diskIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'diskIdList' : diskIdList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3304,7 +3314,7 @@ class QuantastorClient(object):
             self,
             hwController='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwController' : hwController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3315,7 +3325,7 @@ class QuantastorClient(object):
             self,
             hwEnclosure='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwEnclosure' : hwEnclosure,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3325,7 +3335,7 @@ class QuantastorClient(object):
     def hw_enclosure_layout_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('hwEnclosureLayoutEnum', payload)
@@ -3335,7 +3345,7 @@ class QuantastorClient(object):
             self,
             hwEnclosureLayout='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwEnclosureLayout' : hwEnclosureLayout,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3345,7 +3355,7 @@ class QuantastorClient(object):
     def hw_enclosure_layout_vendor_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('hwEnclosureLayoutVendorGroupEnum', payload)
@@ -3355,7 +3365,7 @@ class QuantastorClient(object):
             self,
             hwEnclosureLayoutVendorGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwEnclosureLayoutVendorGroup' : hwEnclosureLayoutVendorGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3370,7 +3380,7 @@ class QuantastorClient(object):
             enclosureLayout='',
             chassisTag='',
             flags='0'):
-        payload = { 
+        payload = {
             'diskId' : diskId,  #xsd:string
             'altName' : altName,  #xsd:string
             'description' : description,  #xsd:string
@@ -3388,7 +3398,7 @@ class QuantastorClient(object):
             durationInSeconds='0',
             blinkType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'enclosureId' : enclosureId,  #xsd:string
             'slotList' : slotList,  #xsd:string
             'durationInSeconds' : durationInSeconds,  #xsd:unsignedInt
@@ -3402,7 +3412,7 @@ class QuantastorClient(object):
             self,
             hwUnit='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwUnit' : hwUnit,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3413,7 +3423,7 @@ class QuantastorClient(object):
             self,
             hwLogicalDrive='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwLogicalDrive' : hwLogicalDrive,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3433,7 +3443,7 @@ class QuantastorClient(object):
             unitCount='0',
             options='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'hwControllerId' : hwControllerId,  #xsd:string
             'raidType' : raidType,  #xsd:unsignedInt
@@ -3457,7 +3467,7 @@ class QuantastorClient(object):
             blockSizeKb='0',
             diskList='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'raidType' : raidType,  #xsd:unsignedInt
             'legLength' : legLength,  #xsd:unsignedInt
@@ -3472,7 +3482,7 @@ class QuantastorClient(object):
             self,
             unitId='',
             flags='0'):
-        payload = { 
+        payload = {
             'unitId' : unitId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3483,7 +3493,7 @@ class QuantastorClient(object):
             self,
             hwUnit='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwUnit' : hwUnit,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3495,7 +3505,7 @@ class QuantastorClient(object):
             hwUnit='',
             hwDisk='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwUnit' : hwUnit,  #xsd:string
             'hwDisk' : hwDisk,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -3508,7 +3518,7 @@ class QuantastorClient(object):
             unitId='',
             options='0',
             flags='0'):
-        payload = { 
+        payload = {
             'unitId' : unitId,  #xsd:string
             'options' : options,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -3520,7 +3530,7 @@ class QuantastorClient(object):
             self,
             hwController='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwController' : hwController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3531,7 +3541,7 @@ class QuantastorClient(object):
             self,
             hwUnit='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwUnit' : hwUnit,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3545,7 +3555,7 @@ class QuantastorClient(object):
             stripeSizeKb='0',
             initPriority='0',
             flags='0'):
-        payload = { 
+        payload = {
             'unitId' : unitId,  #xsd:string
             'diskList' : diskList,  #xsd:string
             'stripeSizeKb' : stripeSizeKb,  #xsd:unsignedInt
@@ -3561,7 +3571,7 @@ class QuantastorClient(object):
             durationInSeconds='0',
             blinkType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'unitId' : unitId,  #xsd:string
             'durationInSeconds' : durationInSeconds,  #xsd:unsignedInt
             'blinkType' : blinkType,  #xsd:unsignedInt
@@ -3576,7 +3586,7 @@ class QuantastorClient(object):
             altName='',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'unitId' : unitId,  #xsd:string
             'altName' : altName,  #xsd:string
             'description' : description,  #xsd:string
@@ -3591,7 +3601,7 @@ class QuantastorClient(object):
             raidType='0',
             ssdDiskList='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'raidType' : raidType,  #xsd:unsignedInt
             'ssdDiskList' : ssdDiskList,  #xsd:string
@@ -3604,7 +3614,7 @@ class QuantastorClient(object):
             self,
             unitId='',
             flags='0'):
-        payload = { 
+        payload = {
             'unitId' : unitId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3616,7 +3626,7 @@ class QuantastorClient(object):
             unitId='',
             unitSsdCacheId='',
             flags='0'):
-        payload = { 
+        payload = {
             'unitId' : unitId,  #xsd:string
             'unitSsdCacheId' : unitSsdCacheId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -3627,7 +3637,7 @@ class QuantastorClient(object):
     def ib_target_port_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('ibTargetPortEnum', payload)
@@ -3637,18 +3647,184 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('ibTargetPortGet', payload)
         return IbTargetPortGetResponse.responseParse(jsonOutput)
 
+    def key_server_profile_create(
+            self,
+            name='',
+            description='',
+            serverType='0',
+            username='',
+            password='',
+            caCert='',
+            clientCert='',
+            clientKey='',
+            host='',
+            kmipConnectionPort='',
+            flags='0'):
+        payload = {
+            'name' : name,  #xsd:string
+            'description' : description,  #xsd:string
+            'serverType' : serverType,  #xsd:unsignedInt
+            'username' : username,  #xsd:string
+            'password' : password,  #xsd:string
+            'caCert' : caCert,  #xsd:string
+            'clientCert' : clientCert,  #xsd:string
+            'clientKey' : clientKey,  #xsd:string
+            'host' : host,  #xsd:string
+            'kmipConnectionPort' : kmipConnectionPort,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileCreate', payload)
+        return KeyServerProfileCreateResponse.responseParse(jsonOutput)
+
+    def key_server_profile_delete(
+            self,
+            keyServerProfile='',
+            flags='0'):
+        payload = {
+            'keyServerProfile' : keyServerProfile,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileDelete', payload)
+        return KeyServerProfileDeleteResponse.responseParse(jsonOutput)
+
+    def key_server_profile_enum(
+            self,
+            flags='0'):
+        payload = {
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileEnum', payload)
+        return KeyServerProfileEnumResponse.responseParse(jsonOutput)
+
+    def key_server_profile_get(
+            self,
+            keyServerProfile='',
+            flags='0'):
+        payload = {
+            'keyServerProfile' : keyServerProfile,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileGet', payload)
+        return KeyServerProfileGetResponse.responseParse(jsonOutput)
+
+    def key_server_profile_key_add(
+            self,
+            keyServerProfile='',
+            name='',
+            description='',
+            keyData='',
+            encoding='0',
+            keyType='0',
+            resourceId='',
+            resourceType='0',
+            flags='0'):
+        payload = {
+            'keyServerProfile' : keyServerProfile,  #xsd:string
+            'name' : name,  #xsd:string
+            'description' : description,  #xsd:string
+            'keyData' : keyData,  #xsd:string
+            'encoding' : encoding,  #xsd:unsignedInt
+            'keyType' : keyType,  #xsd:unsignedInt
+            'resourceId' : resourceId,  #xsd:string
+            'resourceType' : resourceType,  #xsd:unsignedInt
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileKeyAdd', payload)
+        return KeyServerProfileKeyAddResponse.responseParse(jsonOutput)
+
+    def key_server_profile_key_enum(
+            self,
+            keyServerProfile='',
+            flags='0'):
+        payload = {
+            'keyServerProfile' : keyServerProfile,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileKeyEnum', payload)
+        return KeyServerProfileKeyEnumResponse.responseParse(jsonOutput)
+
+    def key_server_profile_key_get(
+            self,
+            keyServerProfileKey='',
+            flags='0'):
+        payload = {
+            'keyServerProfileKey' : keyServerProfileKey,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileKeyGet', payload)
+        return KeyServerProfileKeyGetResponse.responseParse(jsonOutput)
+
+    def key_server_profile_key_modify(
+            self,
+            keyServerProfileKey='',
+            name='',
+            description='',
+            flags='0'):
+        payload = {
+            'keyServerProfileKey' : keyServerProfileKey,  #xsd:string
+            'name' : name,  #xsd:string
+            'description' : description,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileKeyModify', payload)
+        return KeyServerProfileKeyModifyResponse.responseParse(jsonOutput)
+
+    def key_server_profile_key_remove(
+            self,
+            keyServerProfile='',
+            name='',
+            flags='0'):
+        payload = {
+            'keyServerProfile' : keyServerProfile,  #xsd:string
+            'name' : name,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileKeyRemove', payload)
+        return KeyServerProfileKeyRemoveResponse.responseParse(jsonOutput)
+
+    def key_server_profile_modify(
+            self,
+            keyServerProfile='',
+            name='',
+            description='',
+            serverType='0',
+            username='',
+            password='',
+            caCert='',
+            clientCert='',
+            clientKey='',
+            host='',
+            kmipConnectionPort='',
+            flags='0'):
+        payload = {
+            'keyServerProfile' : keyServerProfile,  #xsd:string
+            'name' : name,  #xsd:string
+            'description' : description,  #xsd:string
+            'serverType' : serverType,  #xsd:unsignedInt
+            'username' : username,  #xsd:string
+            'password' : password,  #xsd:string
+            'caCert' : caCert,  #xsd:string
+            'clientCert' : clientCert,  #xsd:string
+            'clientKey' : clientKey,  #xsd:string
+            'host' : host,  #xsd:string
+            'kmipConnectionPort' : kmipConnectionPort,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('keyServerProfileModify', payload)
+        return KeyServerProfileModifyResponse.responseParse(jsonOutput)
+
     def librato_metrics_config_get(
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3665,7 +3841,7 @@ class QuantastorClient(object):
             enableAlertAnnotations=False,
             enableConfigAnnotations=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'username' : username,  #xsd:string
             'token' : token,  #xsd:string
@@ -3682,7 +3858,7 @@ class QuantastorClient(object):
             self,
             activationKey='',
             flags='0'):
-        payload = { 
+        payload = {
             'activationKey' : activationKey,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3694,7 +3870,7 @@ class QuantastorClient(object):
             licenseKey='',
             leaseRenewal=False,
             flags='0'):
-        payload = { 
+        payload = {
             'licenseKey' : licenseKey,  #xsd:string
             'leaseRenewal' : leaseRenewal,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -3707,7 +3883,7 @@ class QuantastorClient(object):
             storageSystem='',
             keyBlock='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'keyBlock' : keyBlock,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -3718,7 +3894,7 @@ class QuantastorClient(object):
     def license_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('licenseEnum', payload)
@@ -3728,7 +3904,7 @@ class QuantastorClient(object):
             self,
             license='',
             flags='0'):
-        payload = { 
+        payload = {
             'license' : license,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3743,7 +3919,7 @@ class QuantastorClient(object):
             resellerEmail='',
             supportContractRef='',
             flags='0'):
-        payload = { 
+        payload = {
             'licenseKey' : licenseKey,  #xsd:string
             'resellerName' : resellerName,  #xsd:string
             'resellerContactNumber' : resellerContactNumber,  #xsd:string
@@ -3758,7 +3934,7 @@ class QuantastorClient(object):
             self,
             license='',
             flags='0'):
-        payload = { 
+        payload = {
             'license' : license,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3769,7 +3945,7 @@ class QuantastorClient(object):
             self,
             reserved='',
             multiFactorAuthToken=''):
-        payload = { 
+        payload = {
             'reserved' : reserved,  #xsd:string
             'multiFactorAuthToken' : multiFactorAuthToken,  #xsd:string
             }
@@ -3780,7 +3956,7 @@ class QuantastorClient(object):
             self,
             authRequestCode='',
             passcode=''):
-        payload = { 
+        payload = {
             'authRequestCode' : authRequestCode,  #xsd:string
             'passcode' : passcode,  #xsd:string
             }
@@ -3790,7 +3966,7 @@ class QuantastorClient(object):
     def logout(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('logout', payload)
@@ -3802,7 +3978,7 @@ class QuantastorClient(object):
             modType='0',
             storagePoolList='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storagePoolList' : storagePoolList,  #xsd:string
@@ -3815,7 +3991,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3826,7 +4002,7 @@ class QuantastorClient(object):
             self,
             scheduleId='',
             storagePoolId=''):
-        payload = { 
+        payload = {
             'scheduleId' : scheduleId,  #xsd:string
             'storagePoolId' : storagePoolId,  #xsd:string
             }
@@ -3846,7 +4022,7 @@ class QuantastorClient(object):
             maintenanceType='0',
             storagePoolList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'setEnabled' : setEnabled,  #xsd:unsignedInt
@@ -3866,7 +4042,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3877,7 +4053,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3888,7 +4064,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3898,7 +4074,7 @@ class QuantastorClient(object):
     def maintenance_schedule_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('maintenanceScheduleEnum', payload)
@@ -3908,7 +4084,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3928,7 +4104,7 @@ class QuantastorClient(object):
             hoursOfDayOffsetMinutes='0',
             maintenanceType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -3948,7 +4124,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3963,7 +4139,7 @@ class QuantastorClient(object):
             name='',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'apiHost' : apiHost,  #xsd:string
             'integrationKey' : integrationKey,  #xsd:string
             'secretKey' : secretKey,  #xsd:string
@@ -3978,7 +4154,7 @@ class QuantastorClient(object):
             self,
             mfaConfigList='',
             flags='0'):
-        payload = { 
+        payload = {
             'mfaConfigList' : mfaConfigList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -3988,7 +4164,7 @@ class QuantastorClient(object):
     def multi_factor_auth_config_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('multiFactorAuthConfigEnum', payload)
@@ -3998,7 +4174,7 @@ class QuantastorClient(object):
             self,
             mfaConfig='',
             flags='0'):
-        payload = { 
+        payload = {
             'mfaConfig' : mfaConfig,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4012,7 +4188,7 @@ class QuantastorClient(object):
             newName='',
             newDescription='',
             flags='0'):
-        payload = { 
+        payload = {
             'mfaConfig' : mfaConfig,  #xsd:string
             'newSecretKey' : newSecretKey,  #xsd:string
             'newName' : newName,  #xsd:string
@@ -4027,7 +4203,7 @@ class QuantastorClient(object):
             configMappings='',
             modType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'configMappings' : configMappings,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -4041,7 +4217,7 @@ class QuantastorClient(object):
             group='',
             quota='0',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'group' : group,  #xsd:string
             'quota' : self.size_in_bytes(quota),  #xsd:unsignedLong
@@ -4056,7 +4232,7 @@ class QuantastorClient(object):
             user='',
             quota='0',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'user' : user,  #xsd:string
             'quota' : self.size_in_bytes(quota),  #xsd:unsignedLong
@@ -4069,7 +4245,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4081,7 +4257,7 @@ class QuantastorClient(object):
             networkShareId='',
             key='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'key' : key,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4099,7 +4275,7 @@ class QuantastorClient(object):
             readOnly=False,
             customOptions='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'clientFilter' : clientFilter,  #xsd:string
             'isAsync' : isAsync,  #xsd:boolean
@@ -4116,7 +4292,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4128,7 +4304,7 @@ class QuantastorClient(object):
             networkShareId='',
             networkShareClientId='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'networkShareClientId' : networkShareClientId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4146,7 +4322,7 @@ class QuantastorClient(object):
             subtreeCheck=False,
             customOptions='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'networkShareClientId' : networkShareClientId,  #xsd:string
             'readOnly' : readOnly,  #xsd:boolean
@@ -4164,7 +4340,7 @@ class QuantastorClient(object):
             networkShareId='',
             networkShareClientId='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'networkShareClientId' : networkShareClientId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4181,7 +4357,7 @@ class QuantastorClient(object):
             readOnly=False,
             isActive=False,
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'cloneName' : cloneName,  #xsd:string
             'description' : description,  #xsd:string
@@ -4202,7 +4378,7 @@ class QuantastorClient(object):
             isActive=False,
             parentShareId='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'provisionableId' : provisionableId,  #xsd:string
@@ -4225,7 +4401,7 @@ class QuantastorClient(object):
             isActive=False,
             forceCreateSubDir=False,
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'parentShareId' : parentShareId,  #xsd:string
@@ -4268,8 +4444,9 @@ class QuantastorClient(object):
             count='0',
             disableSmbSnapsDir=False,
             disableNfsSnapsDir=False,
+            enableNfsSnapBrowsing=False,
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'provisionableId' : provisionableId,  #xsd:string
@@ -4297,6 +4474,7 @@ class QuantastorClient(object):
             'count' : count,  #xsd:unsignedInt
             'disableSmbSnapsDir' : disableSmbSnapsDir,  #xsd:boolean
             'disableNfsSnapsDir' : disableNfsSnapsDir,  #xsd:boolean
+            'enableNfsSnapBrowsing' : enableNfsSnapBrowsing,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareCreateEx', payload)
@@ -4306,7 +4484,7 @@ class QuantastorClient(object):
             self,
             networkShareId='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4317,7 +4495,7 @@ class QuantastorClient(object):
             self,
             networkShareList='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareList' : networkShareList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4328,7 +4506,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4339,7 +4517,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4350,7 +4528,7 @@ class QuantastorClient(object):
             self,
             networkShareList='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareList' : networkShareList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4361,7 +4539,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4374,7 +4552,7 @@ class QuantastorClient(object):
             sourceFilePath='',
             targetFilePath='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'sourceFilePath' : sourceFilePath,  #xsd:string
             'targetFilePath' : targetFilePath,  #xsd:string
@@ -4390,7 +4568,7 @@ class QuantastorClient(object):
             size='0',
             thinProvisioned=False,
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'filePath' : filePath,  #xsd:string
             'size' : self.size_in_bytes(size),  #xsd:unsignedLong
@@ -4405,7 +4583,7 @@ class QuantastorClient(object):
             networkShare='',
             filePath='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'filePath' : filePath,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4420,7 +4598,7 @@ class QuantastorClient(object):
             newSize='0',
             thickProvisioned=False,
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'filePath' : filePath,  #xsd:string
             'newSize' : self.size_in_bytes(newSize),  #xsd:unsignedLong
@@ -4434,7 +4612,7 @@ class QuantastorClient(object):
             self,
             networkShareId='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4445,7 +4623,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4456,12 +4634,38 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareHealthCheck', payload)
         return NetworkShareHealthCheckResponse.responseParse(jsonOutput)
+
+    def network_share_hold_add(
+            self,
+            networkShare='',
+            holdTag='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'holdTag' : holdTag,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareHoldAdd', payload)
+        return NetworkShareHoldAddResponse.responseParse(jsonOutput)
+
+    def network_share_hold_remove(
+            self,
+            networkShare='',
+            holdTag='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'holdTag' : holdTag,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareHoldRemove', payload)
+        return NetworkShareHoldRemoveResponse.responseParse(jsonOutput)
 
     def network_share_join_domain(
             self,
@@ -4480,7 +4684,7 @@ class QuantastorClient(object):
             maxDefaultUid='0',
             rangeSize='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'domain' : domain,  #xsd:string
             'realm' : realm,  #xsd:string
@@ -4507,7 +4711,7 @@ class QuantastorClient(object):
             password='',
             preserveAdUserAccessEntries=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'domainAdmin' : domainAdmin,  #xsd:string
             'password' : password,  #xsd:string
@@ -4542,8 +4746,9 @@ class QuantastorClient(object):
             nfsSecurityPolicy='0',
             disableSmbSnapsDir=False,
             disableNfsSnapsDir=False,
+            enableNfsSnapBrowsing=False,
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -4567,6 +4772,7 @@ class QuantastorClient(object):
             'nfsSecurityPolicy' : nfsSecurityPolicy,  #xsd:unsignedInt
             'disableSmbSnapsDir' : disableSmbSnapsDir,  #xsd:boolean
             'disableNfsSnapsDir' : disableNfsSnapsDir,  #xsd:boolean
+            'enableNfsSnapBrowsing' : enableNfsSnapBrowsing,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareModify', payload)
@@ -4579,7 +4785,7 @@ class QuantastorClient(object):
             preferredPortList='',
             shareList='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'preferredPortList' : preferredPortList,  #xsd:string
@@ -4599,7 +4805,7 @@ class QuantastorClient(object):
             preferredPortList='',
             shareList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'enableMicrosoftDfs' : enableMicrosoftDfs,  #xsd:boolean
@@ -4616,7 +4822,7 @@ class QuantastorClient(object):
             self,
             networkShareNamespace='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4626,7 +4832,7 @@ class QuantastorClient(object):
     def network_share_namespace_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareNamespaceEnum', payload)
@@ -4636,7 +4842,7 @@ class QuantastorClient(object):
             self,
             networkShareNamespace='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4652,7 +4858,7 @@ class QuantastorClient(object):
             enableNfsRefferals=False,
             dfsMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -4668,7 +4874,7 @@ class QuantastorClient(object):
             self,
             networkShareNamespace='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4680,7 +4886,7 @@ class QuantastorClient(object):
             networkShareNamespace='',
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4692,7 +4898,7 @@ class QuantastorClient(object):
             self,
             networkShareNamespace='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4704,7 +4910,7 @@ class QuantastorClient(object):
             networkShareNamespace='',
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareNamespace' : networkShareNamespace,  #xsd:string
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4723,7 +4929,7 @@ class QuantastorClient(object):
             disableBrowsing=False,
             defaultNfsSecurityPolicy='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'nfsMode' : nfsMode,  #xsd:unsignedInt
             'enableKerberos' : enableKerberos,  #xsd:boolean
@@ -4742,7 +4948,7 @@ class QuantastorClient(object):
             networkShare='',
             group='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'group' : group,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4755,7 +4961,7 @@ class QuantastorClient(object):
             networkShare='',
             user='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'user' : user,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4768,7 +4974,7 @@ class QuantastorClient(object):
             networkShare='',
             snapshotShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'snapshotShare' : snapshotShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4781,7 +4987,7 @@ class QuantastorClient(object):
             networkShare='',
             snapshotShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'snapshotShare' : snapshotShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4795,7 +5001,7 @@ class QuantastorClient(object):
             restartNfs=False,
             restartSamba=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'restartNfs' : restartNfs,  #xsd:boolean
             'restartSamba' : restartSamba,  #xsd:boolean
@@ -4808,7 +5014,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4819,7 +5025,7 @@ class QuantastorClient(object):
             self,
             sessionId='',
             flags='0'):
-        payload = { 
+        payload = {
             'sessionId' : sessionId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4831,7 +5037,7 @@ class QuantastorClient(object):
             networkShare='',
             list='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'list' : list,  #osn:networkShareQuota
             'flags' : flags,  #xsd:unsignedInt
@@ -4849,7 +5055,7 @@ class QuantastorClient(object):
             isActive=False,
             uuid='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'snapshotName' : snapshotName,  #xsd:string
             'description' : description,  #xsd:string
@@ -4866,7 +5072,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4877,7 +5083,7 @@ class QuantastorClient(object):
             self,
             networkShareUserAccessId='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShareUserAccessId' : networkShareUserAccessId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4890,7 +5096,7 @@ class QuantastorClient(object):
             propValue='',
             propType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'propKey' : propKey,  #xsd:string
             'propValue' : propValue,  #xsd:string
             'propType' : propType,  #xsd:unsignedInt
@@ -4904,7 +5110,7 @@ class QuantastorClient(object):
             objectId='',
             objectType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'objectId' : objectId,  #xsd:string
             'objectType' : objectType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -4917,7 +5123,7 @@ class QuantastorClient(object):
             objectId='',
             propKey='',
             flags='0'):
-        payload = { 
+        payload = {
             'objectId' : objectId,  #xsd:string
             'propKey' : propKey,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4929,7 +5135,7 @@ class QuantastorClient(object):
             self,
             objectId='',
             flags='0'):
-        payload = { 
+        payload = {
             'objectId' : objectId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -4941,7 +5147,7 @@ class QuantastorClient(object):
             objectId='',
             propKey='',
             flags='0'):
-        payload = { 
+        payload = {
             'objectId' : objectId,  #xsd:string
             'propKey' : propKey,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -4957,7 +5163,7 @@ class QuantastorClient(object):
             propValue='',
             propType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'objectId' : objectId,  #xsd:string
             'objectType' : objectType,  #xsd:unsignedInt
             'propKey' : propKey,  #xsd:string
@@ -4971,7 +5177,7 @@ class QuantastorClient(object):
     def password_policy_get(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('passwordPolicyGet', payload)
@@ -4993,7 +5199,7 @@ class QuantastorClient(object):
             webAccessMode='0',
             accountInactiveDaysUntilLockout='0',
             flags='0'):
-        payload = { 
+        payload = {
             'allowedSpecialChars' : allowedSpecialChars,  #xsd:string
             'complexityReq' : complexityReq,  #xsd:unsignedInt
             'minLength' : minLength,  #xsd:unsignedInt
@@ -5015,7 +5221,7 @@ class QuantastorClient(object):
     def permission_definition_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('permissionDefinitionEnum', payload)
@@ -5031,7 +5237,7 @@ class QuantastorClient(object):
             blockSizeKb='0',
             targetImageFileType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'sourceId' : sourceId,  #xsd:string
             'targetId' : targetId,  #xsd:string
             'sourceType' : sourceType,  #xsd:unsignedInt
@@ -5044,28 +5250,11 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('physicalDiskCopy', payload)
         return PhysicalDiskCopyResponse.responseParse(jsonOutput)
 
-    def physical_disk_data_migration(
-            self,
-            physicalDriveId='',
-            storageVolumeName='',
-            provisionableId='',
-            blockSizeKb='0',
-            flags='0'):
-        payload = { 
-            'physicalDriveId' : physicalDriveId,  #xsd:string
-            'storageVolumeName' : storageVolumeName,  #xsd:string
-            'provisionableId' : provisionableId,  #xsd:string
-            'blockSizeKb' : blockSizeKb,  #xsd:unsignedInt
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('physicalDiskDataMigration', payload)
-        return PhysicalDiskDataMigrationResponse.responseParse(jsonOutput)
-
     def physical_disk_enum(
             self,
             physicalDiskList='',
             flags='0'):
-        payload = { 
+        payload = {
             'physicalDiskList' : physicalDiskList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5079,7 +5268,7 @@ class QuantastorClient(object):
             shredMode='0',
             releaseIoFence=False,
             flags='0'):
-        payload = { 
+        payload = {
             'physicalDriveIdList' : physicalDriveIdList,  #xsd:string
             'quickFormat' : quickFormat,  #xsd:unsignedInt
             'shredMode' : shredMode,  #xsd:unsignedInt
@@ -5093,7 +5282,7 @@ class QuantastorClient(object):
             self,
             physicalDrive='',
             flags='0'):
-        payload = { 
+        payload = {
             'physicalDrive' : physicalDrive,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5105,7 +5294,7 @@ class QuantastorClient(object):
             physicalDriveList='',
             modType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'physicalDriveList' : physicalDriveList,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -5116,7 +5305,7 @@ class QuantastorClient(object):
     def physical_disk_global_spare_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('physicalDiskGlobalSpareEnum', payload)
@@ -5125,7 +5314,7 @@ class QuantastorClient(object):
     def physical_disk_hotspare_marker_cleanup(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('physicalDiskHotspareMarkerCleanup', payload)
@@ -5135,7 +5324,7 @@ class QuantastorClient(object):
             self,
             markerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'markerId' : markerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5145,7 +5334,7 @@ class QuantastorClient(object):
     def physical_disk_hotspare_marker_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('physicalDiskHotspareMarkerEnum', payload)
@@ -5155,7 +5344,7 @@ class QuantastorClient(object):
             self,
             markerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'markerId' : markerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5169,7 +5358,7 @@ class QuantastorClient(object):
             duration='0',
             blinkType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'physicalDrive' : physicalDrive,  #xsd:string
             'pattern' : pattern,  #xsd:string
             'duration' : duration,  #xsd:unsignedInt
@@ -5185,7 +5374,7 @@ class QuantastorClient(object):
             modType='0',
             deviceTagList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'deviceTagList' : deviceTagList,  #xsd:string
@@ -5198,7 +5387,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5209,7 +5398,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5220,7 +5409,7 @@ class QuantastorClient(object):
             self,
             multipathDiskId='',
             flags='0'):
-        payload = { 
+        payload = {
             'multipathDiskId' : multipathDiskId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5232,7 +5421,7 @@ class QuantastorClient(object):
             multipathDiskId='',
             physicalDiskId='',
             flags='0'):
-        payload = { 
+        payload = {
             'multipathDiskId' : multipathDiskId,  #xsd:string
             'physicalDiskId' : physicalDiskId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -5247,7 +5436,7 @@ class QuantastorClient(object):
             blockSize='0',
             blockCount='0',
             flags='0'):
-        payload = { 
+        payload = {
             'physicalDriveIdList' : physicalDriveIdList,  #xsd:string
             'perfTestType' : perfTestType,  #xsd:unsignedInt
             'blockSize' : self.size_in_bytes(blockSize),  #xsd:unsignedLong
@@ -5261,19 +5450,34 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('physicalDiskScan', payload)
         return PhysicalDiskScanResponse.responseParse(jsonOutput)
 
+    def physical_disk_secure_erase_hard_reset(
+            self,
+            physicalDriveList='',
+            psidPassphrase='',
+            options='',
+            flags='0'):
+        payload = {
+            'physicalDriveList' : physicalDriveList,  #xsd:string
+            'psidPassphrase' : psidPassphrase,  #xsd:string
+            'options' : options,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('physicalDiskSecureEraseHardReset', payload)
+        return PhysicalDiskSecureEraseHardResetResponse.responseParse(jsonOutput)
+
     def ping_check(
             self,
             storageSystem='',
             verifyClientIps='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'verifyClientIps' : verifyClientIps,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -5284,7 +5488,7 @@ class QuantastorClient(object):
     def provider_app_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('providerAppEnum', payload)
@@ -5295,7 +5499,7 @@ class QuantastorClient(object):
             storageSystem='',
             providerType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'providerType' : providerType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -5308,7 +5512,7 @@ class QuantastorClient(object):
             storageSystem='',
             providerType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'providerType' : providerType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -5320,7 +5524,7 @@ class QuantastorClient(object):
             self,
             providerApp='',
             flags='0'):
-        payload = { 
+        payload = {
             'providerApp' : providerApp,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5336,7 +5540,7 @@ class QuantastorClient(object):
             qosReadBandwidth='0',
             qosWriteBandwidth='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'qosReadIops' : self.size_in_bytes(qosReadIops),  #xsd:unsignedLong
@@ -5352,7 +5556,7 @@ class QuantastorClient(object):
             self,
             qosPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'qosPolicy' : qosPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5362,7 +5566,7 @@ class QuantastorClient(object):
     def qos_policy_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('qosPolicyEnum', payload)
@@ -5372,7 +5576,7 @@ class QuantastorClient(object):
             self,
             qosPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'qosPolicy' : qosPolicy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5389,7 +5593,7 @@ class QuantastorClient(object):
             qosReadBandwidth='0',
             qosWriteBandwidth='0',
             flags='0'):
-        payload = { 
+        payload = {
             'qosPolicy' : qosPolicy,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -5407,7 +5611,7 @@ class QuantastorClient(object):
             token='',
             signedToken='',
             flags='0'):
-        payload = { 
+        payload = {
             'token' : token,  #xsd:string
             'signedToken' : signedToken,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -5421,7 +5625,7 @@ class QuantastorClient(object):
             nfsHostname='',
             backupPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'nfsHostname' : nfsHostname,  #xsd:string
             'backupPolicy' : backupPolicy,  #xsd:string
@@ -5434,7 +5638,7 @@ class QuantastorClient(object):
             self,
             remoteStorageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'remoteStorageSystemId' : remoteStorageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5448,7 +5652,7 @@ class QuantastorClient(object):
             deleteTargetReplicatable=False,
             deleteReplicaAssocHead=False,
             flags='0'):
-        payload = { 
+        payload = {
             'assocId' : assocId,  #xsd:string
             'deleteSourceReplicatable' : deleteSourceReplicatable,  #xsd:boolean
             'deleteTargetReplicatable' : deleteTargetReplicatable,  #xsd:boolean
@@ -5464,7 +5668,7 @@ class QuantastorClient(object):
             sourcesOnly=False,
             targetsOnly=False,
             flags='0'):
-        payload = { 
+        payload = {
             'replicatableId' : replicatableId,  #xsd:string
             'sourcesOnly' : sourcesOnly,  #xsd:boolean
             'targetsOnly' : targetsOnly,  #xsd:boolean
@@ -5477,7 +5681,7 @@ class QuantastorClient(object):
             self,
             assocId='',
             flags='0'):
-        payload = { 
+        payload = {
             'assocId' : assocId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5488,7 +5692,7 @@ class QuantastorClient(object):
             self,
             assocObj='',
             flags='0'):
-        payload = { 
+        payload = {
             'assocObj' : assocObj,  #osn:replicaAssoc
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5507,7 +5711,7 @@ class QuantastorClient(object):
             forcePrimary=False,
             reserved='',
             flags='0'):
-        payload = { 
+        payload = {
             'replicatableId' : replicatableId,  #xsd:string
             'storageSystemLinkId' : storageSystemLinkId,  #xsd:string
             'replicaName' : replicaName,  #xsd:string
@@ -5526,7 +5730,7 @@ class QuantastorClient(object):
             self,
             summaryId='',
             flags='0'):
-        payload = { 
+        payload = {
             'summaryId' : summaryId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5537,7 +5741,7 @@ class QuantastorClient(object):
             self,
             entryId='',
             flags='0'):
-        payload = { 
+        payload = {
             'entryId' : entryId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5548,7 +5752,7 @@ class QuantastorClient(object):
             self,
             summaryId='',
             flags='0'):
-        payload = { 
+        payload = {
             'summaryId' : summaryId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5559,7 +5763,7 @@ class QuantastorClient(object):
             self,
             scheduleId='',
             flags='0'):
-        payload = { 
+        payload = {
             'scheduleId' : scheduleId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5570,7 +5774,7 @@ class QuantastorClient(object):
             self,
             entryId='',
             flags='0'):
-        payload = { 
+        payload = {
             'entryId' : entryId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5581,7 +5785,7 @@ class QuantastorClient(object):
             self,
             assocId='',
             flags='0'):
-        payload = { 
+        payload = {
             'assocId' : assocId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5592,7 +5796,7 @@ class QuantastorClient(object):
             self,
             assocId='',
             flags='0'):
-        payload = { 
+        payload = {
             'assocId' : assocId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5603,7 +5807,7 @@ class QuantastorClient(object):
             self,
             assocId='',
             flags='0'):
-        payload = { 
+        payload = {
             'assocId' : assocId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5617,7 +5821,7 @@ class QuantastorClient(object):
             networkShareList='',
             autoCreateAliases=False,
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'storageVolumeList' : storageVolumeList,  #xsd:string
             'networkShareList' : networkShareList,  #xsd:string
@@ -5634,7 +5838,7 @@ class QuantastorClient(object):
             storageVolumeList='',
             networkShareList='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageVolumeList' : storageVolumeList,  #xsd:string
@@ -5648,7 +5852,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5659,7 +5863,7 @@ class QuantastorClient(object):
             self,
             scheduleId='',
             replicatableId=''):
-        payload = { 
+        payload = {
             'scheduleId' : scheduleId,  #xsd:string
             'replicatableId' : replicatableId,  #xsd:string
             }
@@ -5699,7 +5903,7 @@ class QuantastorClient(object):
             reuseTargetChkpnt=False,
             scheduleActivationVifId='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'storageCloudId' : storageCloudId,  #xsd:string
@@ -5742,7 +5946,7 @@ class QuantastorClient(object):
             networkShareList='',
             reenableSchedule=False,
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'storageVolumeList' : storageVolumeList,  #xsd:string
             'networkShareList' : networkShareList,  #xsd:string
@@ -5756,7 +5960,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5767,7 +5971,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5778,7 +5982,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5788,7 +5992,7 @@ class QuantastorClient(object):
     def replication_schedule_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('replicationScheduleEnum', payload)
@@ -5798,7 +6002,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5833,7 +6037,7 @@ class QuantastorClient(object):
             reuseTargetChkpnt=False,
             scheduleActivationVifId='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -5870,7 +6074,7 @@ class QuantastorClient(object):
             reuseSourceSnapshot=False,
             reuseTargetChkpnt=False,
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'reuseSourceSnapshot' : reuseSourceSnapshot,  #xsd:boolean
             'reuseTargetChkpnt' : reuseTargetChkpnt,  #xsd:boolean
@@ -5891,7 +6095,7 @@ class QuantastorClient(object):
             maxSubdirs='0',
             minSubdirUsedSpace='0',
             flags='0'):
-        payload = { 
+        payload = {
             'reportType' : reportType,  #xsd:unsignedInt
             'categories' : categories,  #xsd:unsignedInt
             'reportToEmail' : reportToEmail,  #xsd:string
@@ -5912,7 +6116,7 @@ class QuantastorClient(object):
             modType='0',
             reportableIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'reportableIdList' : reportableIdList,  #xsd:string
@@ -5925,7 +6129,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5936,7 +6140,7 @@ class QuantastorClient(object):
             self,
             scheduleId='',
             reportableId=''):
-        payload = { 
+        payload = {
             'scheduleId' : scheduleId,  #xsd:string
             'reportableId' : reportableId,  #xsd:string
             }
@@ -5962,7 +6166,7 @@ class QuantastorClient(object):
             minSubdirUsedSpace='0',
             reportableIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'reportToEmail' : reportToEmail,  #xsd:string
@@ -5988,7 +6192,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -5999,7 +6203,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6010,7 +6214,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6020,7 +6224,7 @@ class QuantastorClient(object):
     def report_schedule_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('reportScheduleEnum', payload)
@@ -6030,7 +6234,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6056,7 +6260,7 @@ class QuantastorClient(object):
             maxSubdirsPerShare='0',
             minSubdirUsedSpace='0',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -6082,7 +6286,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6092,7 +6296,7 @@ class QuantastorClient(object):
     def resource_domain_assoc_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('resourceDomainAssocEnum', payload)
@@ -6103,7 +6307,7 @@ class QuantastorClient(object):
             resourceDomainAssocId='',
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'resourceDomainAssocId' : resourceDomainAssocId,  #xsd:string
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6118,7 +6322,7 @@ class QuantastorClient(object):
             resourceDomainType='0',
             resourceDomainParentId='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'resourceDomainType' : resourceDomainType,  #xsd:unsignedInt
@@ -6132,7 +6336,7 @@ class QuantastorClient(object):
             self,
             resourceDomain='',
             flags='0'):
-        payload = { 
+        payload = {
             'resourceDomain' : resourceDomain,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6142,7 +6346,7 @@ class QuantastorClient(object):
     def resource_domain_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('resourceDomainEnum', payload)
@@ -6152,7 +6356,7 @@ class QuantastorClient(object):
             self,
             resourceDomain='',
             flags='0'):
-        payload = { 
+        payload = {
             'resourceDomain' : resourceDomain,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6167,7 +6371,7 @@ class QuantastorClient(object):
             resourceDomainType='0',
             resourceDomainParentId='',
             flags='0'):
-        payload = { 
+        payload = {
             'resourceDomainId' : resourceDomainId,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -6184,7 +6388,7 @@ class QuantastorClient(object):
             modType='0',
             storageSystemList='',
             flags='0'):
-        payload = { 
+        payload = {
             'resourceDomain' : resourceDomain,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageSystemList' : storageSystemList,  #xsd:string
@@ -6201,7 +6405,7 @@ class QuantastorClient(object):
             inheritsFrom='',
             ldapGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'permissionList' : permissionList,  #osn:permissionAssignment
@@ -6216,7 +6420,7 @@ class QuantastorClient(object):
             self,
             role='',
             flags='0'):
-        payload = { 
+        payload = {
             'role' : role,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6226,7 +6430,7 @@ class QuantastorClient(object):
     def role_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('roleEnum', payload)
@@ -6236,7 +6440,7 @@ class QuantastorClient(object):
             self,
             role='',
             flags='0'):
-        payload = { 
+        payload = {
             'role' : role,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6250,7 +6454,7 @@ class QuantastorClient(object):
             newDescription='',
             ldapGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'role' : role,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
@@ -6264,7 +6468,7 @@ class QuantastorClient(object):
             self,
             roleId='',
             flags='0'):
-        payload = { 
+        payload = {
             'roleId' : roleId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6277,7 +6481,7 @@ class QuantastorClient(object):
             objectType='',
             operation='',
             flags='0'):
-        payload = { 
+        payload = {
             'role' : role,  #xsd:string
             'objectType' : objectType,  #xsd:string
             'operation' : operation,  #xsd:string
@@ -6292,7 +6496,7 @@ class QuantastorClient(object):
             modType='0',
             permissionList='',
             flags='0'):
-        payload = { 
+        payload = {
             'role' : role,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'permissionList' : permissionList,  #osn:permissionAssignment
@@ -6305,7 +6509,7 @@ class QuantastorClient(object):
             self,
             role='',
             flags='0'):
-        payload = { 
+        payload = {
             'role' : role,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6317,7 +6521,7 @@ class QuantastorClient(object):
             role='',
             subject='',
             flags='0'):
-        payload = { 
+        payload = {
             'role' : role,  #xsd:string
             'subject' : subject,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6336,7 +6540,7 @@ class QuantastorClient(object):
             sslCertificateKey='',
             portNums='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -6354,7 +6558,7 @@ class QuantastorClient(object):
             self,
             s3Proxy='',
             flags='0'):
-        payload = { 
+        payload = {
             's3Proxy' : s3Proxy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6364,7 +6568,7 @@ class QuantastorClient(object):
     def s3_proxy_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('s3ProxyEnum', payload)
@@ -6374,7 +6578,7 @@ class QuantastorClient(object):
             self,
             s3Proxy='',
             flags='0'):
-        payload = { 
+        payload = {
             's3Proxy' : s3Proxy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6392,7 +6596,7 @@ class QuantastorClient(object):
             sslCertificateKey='',
             portNums='',
             flags='0'):
-        payload = { 
+        payload = {
             's3Proxy' : s3Proxy,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -6411,7 +6615,7 @@ class QuantastorClient(object):
             cephClusterId='',
             quotaScope='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'quotaScope' : quotaScope,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -6423,7 +6627,7 @@ class QuantastorClient(object):
             self,
             bucketQuotaId='',
             flags='0'):
-        payload = { 
+        payload = {
             'bucketQuotaId' : bucketQuotaId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6442,7 +6646,7 @@ class QuantastorClient(object):
             userMaxSizeEnable=False,
             userMaxSize='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucketMaxObjectCountEnable' : bucketMaxObjectCountEnable,  #xsd:boolean
             'bucketMaxObjectCount' : self.size_in_bytes(bucketMaxObjectCount),  #xsd:unsignedLong
@@ -6464,7 +6668,7 @@ class QuantastorClient(object):
             secretKey='',
             keyType='0',
             flags='0'):
-        payload = { 
+        payload = {
             's3UserId' : s3UserId,  #xsd:string
             'accessKey' : accessKey,  #xsd:string
             'secretKey' : secretKey,  #xsd:string
@@ -6478,7 +6682,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6489,7 +6693,7 @@ class QuantastorClient(object):
             self,
             accessKeyId='',
             flags='0'):
-        payload = { 
+        payload = {
             'accessKeyId' : accessKeyId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6502,7 +6706,7 @@ class QuantastorClient(object):
             accessKey='',
             newSecretKey='',
             flags='0'):
-        payload = { 
+        payload = {
             's3UserId' : s3UserId,  #xsd:string
             'accessKey' : accessKey,  #xsd:string
             'newSecretKey' : newSecretKey,  #xsd:string
@@ -6516,7 +6720,7 @@ class QuantastorClient(object):
             s3UserId='',
             accessKey='',
             flags='0'):
-        payload = { 
+        payload = {
             's3UserId' : s3UserId,  #xsd:string
             'accessKey' : accessKey,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6544,7 +6748,7 @@ class QuantastorClient(object):
             userMaxSize='0',
             maxBucketCount='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'tenant' : tenant,  #xsd:string
             'name' : name,  #xsd:string
@@ -6574,7 +6778,7 @@ class QuantastorClient(object):
             deleteData=False,
             deleteKey=False,
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             's3UserId' : s3UserId,  #xsd:string
             'deleteData' : deleteData,  #xsd:boolean
@@ -6588,7 +6792,7 @@ class QuantastorClient(object):
             self,
             s3UserId='',
             flags='0'):
-        payload = { 
+        payload = {
             's3UserId' : s3UserId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6599,7 +6803,7 @@ class QuantastorClient(object):
             self,
             s3UserId='',
             flags='0'):
-        payload = { 
+        payload = {
             's3UserId' : s3UserId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6610,7 +6814,7 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6621,7 +6825,7 @@ class QuantastorClient(object):
             self,
             userId='',
             flags='0'):
-        payload = { 
+        payload = {
             'userId' : userId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6644,7 +6848,7 @@ class QuantastorClient(object):
             userMaxSize='0',
             maxBucketCount='0',
             flags='0'):
-        payload = { 
+        payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             's3UserId' : s3UserId,  #xsd:string
             'displayName' : displayName,  #xsd:string
@@ -6666,7 +6870,7 @@ class QuantastorClient(object):
     def service_firewall_def_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('serviceFirewallDefEnum', payload)
@@ -6677,7 +6881,7 @@ class QuantastorClient(object):
             storageVolume='',
             sessionList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'sessionList' : sessionList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6690,7 +6894,7 @@ class QuantastorClient(object):
             host='',
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6702,7 +6906,7 @@ class QuantastorClient(object):
             self,
             sessionId='',
             flags='0'):
-        payload = { 
+        payload = {
             'sessionId' : sessionId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6715,7 +6919,7 @@ class QuantastorClient(object):
             authMode='0',
             device='',
             passcode=''):
-        payload = { 
+        payload = {
             'authRequestCode' : authRequestCode,  #xsd:string
             'authMode' : authMode,  #xsd:unsignedInt
             'device' : device,  #osn:multiFactorAuthDevice
@@ -6727,7 +6931,7 @@ class QuantastorClient(object):
     def single_sign_on_policy_get(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('singleSignOnPolicyGet', payload)
@@ -6739,7 +6943,7 @@ class QuantastorClient(object):
             ldapServer='',
             ldapBaseDn='',
             flags='0'):
-        payload = { 
+        payload = {
             'isEnabled' : isEnabled,  #xsd:boolean
             'ldapServer' : ldapServer,  #xsd:string
             'ldapBaseDn' : ldapBaseDn,  #xsd:string
@@ -6751,7 +6955,7 @@ class QuantastorClient(object):
     def site_cluster_assoc_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('siteClusterAssocEnum', payload)
@@ -6762,7 +6966,7 @@ class QuantastorClient(object):
             siteAssocId='',
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteAssocId' : siteAssocId,  #xsd:string
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6777,7 +6981,7 @@ class QuantastorClient(object):
             location='',
             storageSystemList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'location' : location,  #xsd:string
@@ -6791,7 +6995,7 @@ class QuantastorClient(object):
             self,
             site='',
             flags='0'):
-        payload = { 
+        payload = {
             'site' : site,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6801,7 +7005,7 @@ class QuantastorClient(object):
     def site_cluster_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('siteClusterEnum', payload)
@@ -6811,7 +7015,7 @@ class QuantastorClient(object):
             self,
             site='',
             flags='0'):
-        payload = { 
+        payload = {
             'site' : site,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6825,7 +7029,7 @@ class QuantastorClient(object):
             description='',
             location='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteClusterId' : siteClusterId,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -6839,7 +7043,7 @@ class QuantastorClient(object):
             self,
             siteCluster='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteCluster' : siteCluster,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6850,7 +7054,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6863,7 +7067,7 @@ class QuantastorClient(object):
             modType='0',
             storageSystemList='',
             flags='0'):
-        payload = { 
+        payload = {
             'site' : site,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageSystemList' : storageSystemList,  #xsd:string
@@ -6876,7 +7080,7 @@ class QuantastorClient(object):
             self,
             siteVifResource='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteVifResource' : siteVifResource,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6888,7 +7092,7 @@ class QuantastorClient(object):
             siteVifResourceId='',
             nodeSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteVifResourceId' : siteVifResourceId,  #xsd:string
             'nodeSystemId' : nodeSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6913,7 +7117,7 @@ class QuantastorClient(object):
             mtu='0',
             fqdn='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteClusterId' : siteClusterId,  #xsd:string
             'parentInterfaceName' : parentInterfaceName,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
@@ -6937,7 +7141,7 @@ class QuantastorClient(object):
             self,
             siteVifResource='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteVifResource' : siteVifResource,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6947,7 +7151,7 @@ class QuantastorClient(object):
     def site_vif_resource_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('siteVifResourceEnum', payload)
@@ -6957,7 +7161,7 @@ class QuantastorClient(object):
             self,
             siteVifResource='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteVifResource' : siteVifResource,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -6970,7 +7174,7 @@ class QuantastorClient(object):
             description='',
             locationConfigList='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteVifResource' : siteVifResource,  #xsd:string
             'description' : description,  #xsd:string
             'locationConfigList' : locationConfigList,  #xsd:string
@@ -6984,7 +7188,7 @@ class QuantastorClient(object):
             siteVifResource='',
             moveToSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'siteVifResource' : siteVifResource,  #xsd:string
             'moveToSystem' : moveToSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -6996,7 +7200,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7007,7 +7211,7 @@ class QuantastorClient(object):
             self,
             scheduleId='',
             storageVolumeId=''):
-        payload = { 
+        payload = {
             'scheduleId' : scheduleId,  #xsd:string
             'storageVolumeId' : storageVolumeId,  #xsd:string
             }
@@ -7035,7 +7239,7 @@ class QuantastorClient(object):
             retentionCountMonthlies='0',
             retentionCountQuarterlies='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'storageCloudId' : storageCloudId,  #xsd:string
@@ -7063,7 +7267,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7074,7 +7278,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7085,7 +7289,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7095,7 +7299,7 @@ class QuantastorClient(object):
     def snapshot_schedule_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('snapshotScheduleEnum', payload)
@@ -7105,7 +7309,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7132,7 +7336,7 @@ class QuantastorClient(object):
             retentionCountMonthlies='0',
             retentionCountQuarterlies='0',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -7159,7 +7363,7 @@ class QuantastorClient(object):
             self,
             schedule='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7173,7 +7377,7 @@ class QuantastorClient(object):
             storageVolumeList='',
             networkShareList='',
             flags='0'):
-        payload = { 
+        payload = {
             'schedule' : schedule,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageVolumeList' : storageVolumeList,  #xsd:string
@@ -7195,7 +7399,7 @@ class QuantastorClient(object):
             defaultChapUsername='',
             defaultChapPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'userList' : userList,  #osn:storageCloudSubjectAssoc
@@ -7214,7 +7418,7 @@ class QuantastorClient(object):
             self,
             storageCloud='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7224,7 +7428,7 @@ class QuantastorClient(object):
     def storage_cloud_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageCloudEnum', payload)
@@ -7234,7 +7438,7 @@ class QuantastorClient(object):
             self,
             storageCloud='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7252,7 +7456,7 @@ class QuantastorClient(object):
             defaultChapUsername='',
             defaultChapPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -7272,7 +7476,7 @@ class QuantastorClient(object):
             modType='0',
             resourceList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'resourceList' : resourceList,  #osn:storageCloudResourceAssoc
@@ -7285,7 +7489,7 @@ class QuantastorClient(object):
             self,
             resource='',
             flags='0'):
-        payload = { 
+        payload = {
             'resource' : resource,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7297,7 +7501,7 @@ class QuantastorClient(object):
             storageCloud='',
             resource='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'resource' : resource,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7311,7 +7515,7 @@ class QuantastorClient(object):
             resource='',
             accessMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'resource' : resource,  #xsd:string
             'accessMode' : accessMode,  #xsd:unsignedInt
@@ -7324,7 +7528,7 @@ class QuantastorClient(object):
             self,
             subject='',
             flags='0'):
-        payload = { 
+        payload = {
             'subject' : subject,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7336,7 +7540,7 @@ class QuantastorClient(object):
             storageCloud='',
             subject='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'subject' : subject,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7350,7 +7554,7 @@ class QuantastorClient(object):
             modType='0',
             userList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageCloud' : storageCloud,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'userList' : userList,  #osn:storageCloudSubjectAssoc
@@ -7368,7 +7572,7 @@ class QuantastorClient(object):
             specialOffloadDeviceList='',
             dedupOffloadDeviceList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'readCacheDeviceList' : readCacheDeviceList,  #xsd:string
@@ -7397,9 +7601,11 @@ class QuantastorClient(object):
             enableEncryption=False,
             encryptionType='',
             encryptionKeyPassphrase='',
+            keyServerType='0',
+            keyServerProfileId='',
             ashift='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'physicalDiskList' : physicalDiskList,  #xsd:string
             'description' : description,  #xsd:string
@@ -7415,6 +7621,8 @@ class QuantastorClient(object):
             'enableEncryption' : enableEncryption,  #xsd:boolean
             'encryptionType' : encryptionType,  #xsd:string
             'encryptionKeyPassphrase' : encryptionKeyPassphrase,  #xsd:string
+            'keyServerType' : keyServerType,  #xsd:unsignedInt
+            'keyServerProfileId' : keyServerProfileId,  #xsd:string
             'ashift' : ashift,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7427,7 +7635,7 @@ class QuantastorClient(object):
             deleteKeys=False,
             dataShredMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'deleteKeys' : deleteKeys,  #xsd:boolean
             'dataShredMode' : dataShredMode,  #xsd:unsignedInt
@@ -7440,7 +7648,7 @@ class QuantastorClient(object):
             self,
             storagePoolId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolId' : storagePoolId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7451,7 +7659,7 @@ class QuantastorClient(object):
             self,
             storagePoolDevice='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolDevice' : storagePoolDevice,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7462,7 +7670,7 @@ class QuantastorClient(object):
             self,
             storagePoolId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolId' : storagePoolId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7473,7 +7681,7 @@ class QuantastorClient(object):
             self,
             storagePoolDeviceGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolDeviceGroup' : storagePoolDeviceGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7486,7 +7694,7 @@ class QuantastorClient(object):
             durationInSeconds='0',
             blinkType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolDeviceGroup' : storagePoolDeviceGroup,  #xsd:string
             'durationInSeconds' : durationInSeconds,  #xsd:unsignedInt
             'blinkType' : blinkType,  #xsd:unsignedInt
@@ -7499,7 +7707,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7511,7 +7719,7 @@ class QuantastorClient(object):
             storageSystem='',
             keyBlock='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'keyBlock' : keyBlock,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7522,7 +7730,7 @@ class QuantastorClient(object):
     def storage_pool_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolEnum', payload)
@@ -7532,7 +7740,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7544,7 +7752,7 @@ class QuantastorClient(object):
             storagePool='',
             releaseIoFence=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'releaseIoFence' : releaseIoFence,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -7556,7 +7764,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7569,7 +7777,7 @@ class QuantastorClient(object):
             physicalDiskList='',
             raidType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'physicalDiskList' : physicalDiskList,  #xsd:string
             'raidType' : raidType,  #xsd:unsignedInt
@@ -7582,7 +7790,7 @@ class QuantastorClient(object):
             self,
             failoverGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7598,8 +7806,13 @@ class QuantastorClient(object):
             secondaryStorageSystemId='',
             tertiaryStorageSystemId='',
             settleTimeInSec='0',
+            verifyClientIps='',
+            haClientFailoverPolicy='0',
+            haLinkStateFailoverPolicy='0',
+            haFcLinkStateFailoverPolicy='0',
+            exportTimeout='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolId' : storagePoolId,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -7607,6 +7820,11 @@ class QuantastorClient(object):
             'secondaryStorageSystemId' : secondaryStorageSystemId,  #xsd:string
             'tertiaryStorageSystemId' : tertiaryStorageSystemId,  #xsd:string
             'settleTimeInSec' : settleTimeInSec,  #xsd:unsignedInt
+            'verifyClientIps' : verifyClientIps,  #xsd:string
+            'haClientFailoverPolicy' : haClientFailoverPolicy,  #xsd:unsignedInt
+            'haLinkStateFailoverPolicy' : haLinkStateFailoverPolicy,  #xsd:unsignedInt
+            'haFcLinkStateFailoverPolicy' : haFcLinkStateFailoverPolicy,  #xsd:unsignedInt
+            'exportTimeout' : exportTimeout,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverGroupCreate', payload)
@@ -7616,7 +7834,7 @@ class QuantastorClient(object):
             self,
             failoverGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7627,7 +7845,7 @@ class QuantastorClient(object):
             self,
             failoverGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7637,7 +7855,7 @@ class QuantastorClient(object):
     def storage_pool_ha_failover_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverGroupEnum', payload)
@@ -7649,7 +7867,7 @@ class QuantastorClient(object):
             targetStorageSystem='',
             failoverReason='0',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'targetStorageSystem' : targetStorageSystem,  #xsd:string
             'failoverReason' : failoverReason,  #xsd:unsignedInt
@@ -7662,7 +7880,7 @@ class QuantastorClient(object):
             self,
             failoverGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7684,7 +7902,7 @@ class QuantastorClient(object):
             haFcLinkStateFailoverPolicy='0',
             exportTimeout='0',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -7716,7 +7934,7 @@ class QuantastorClient(object):
             nvmeofEnabled=False,
             fqdn='',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'tag' : tag,  #xsd:string
             'parentInterfaceName' : parentInterfaceName,  #xsd:string
@@ -7738,7 +7956,7 @@ class QuantastorClient(object):
             failoverGroup='',
             failoverInterface='',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'failoverInterface' : failoverInterface,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7749,7 +7967,7 @@ class QuantastorClient(object):
     def storage_pool_ha_failover_interface_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverInterfaceEnum', payload)
@@ -7760,7 +7978,7 @@ class QuantastorClient(object):
             failoverGroup='',
             failoverInterface='',
             flags='0'):
-        payload = { 
+        payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'failoverInterface' : failoverInterface,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7772,7 +7990,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7785,7 +8003,7 @@ class QuantastorClient(object):
             durationInSeconds='0',
             blinkType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'durationInSeconds' : durationInSeconds,  #xsd:unsignedInt
             'blinkType' : blinkType,  #xsd:unsignedInt
@@ -7799,7 +8017,7 @@ class QuantastorClient(object):
             storageSystem='',
             storagePoolList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'storagePoolList' : storagePoolList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7813,7 +8031,7 @@ class QuantastorClient(object):
             storagePoolList='',
             encryptionKeyPassphrase='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'storagePoolList' : storagePoolList,  #xsd:string
             'encryptionKeyPassphrase' : encryptionKeyPassphrase,  #xsd:string
@@ -7837,8 +8055,10 @@ class QuantastorClient(object):
             compressionType='',
             hotspareRepairPolicy='0',
             copies='0',
+            keyServerProfileId='',
+            keyServerType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
@@ -7852,6 +8072,8 @@ class QuantastorClient(object):
             'compressionType' : compressionType,  #xsd:string
             'hotspareRepairPolicy' : hotspareRepairPolicy,  #xsd:unsignedInt
             'copies' : copies,  #xsd:unsignedInt
+            'keyServerProfileId' : keyServerProfileId,  #xsd:string
+            'keyServerType' : keyServerType,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolModify', payload)
@@ -7861,7 +8083,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7871,7 +8093,7 @@ class QuantastorClient(object):
     def storage_pool_profile_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolProfileEnum', payload)
@@ -7881,7 +8103,7 @@ class QuantastorClient(object):
             self,
             storagePoolProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolProfile' : storagePoolProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7893,7 +8115,7 @@ class QuantastorClient(object):
             storagePoolId='',
             bRequiresReboot=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storagePoolId' : storagePoolId,  #xsd:string
             'bRequiresReboot' : bRequiresReboot,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -7906,7 +8128,7 @@ class QuantastorClient(object):
             storageSystem='',
             options='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'options' : options,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7918,7 +8140,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7929,7 +8151,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7942,7 +8164,7 @@ class QuantastorClient(object):
             oldEncryptionKeyPassphrase='',
             newEncryptionKeyPassphrase='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'oldEncryptionKeyPassphrase' : oldEncryptionKeyPassphrase,  #xsd:string
             'newEncryptionKeyPassphrase' : newEncryptionKeyPassphrase,  #xsd:string
@@ -7957,7 +8179,7 @@ class QuantastorClient(object):
             modType='0',
             physicalDiskList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'physicalDiskList' : physicalDiskList,  #xsd:string
@@ -7971,7 +8193,7 @@ class QuantastorClient(object):
             storagePool='',
             encryptionKeyPassphrase='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'encryptionKeyPassphrase' : encryptionKeyPassphrase,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -7983,7 +8205,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -7994,7 +8216,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8005,7 +8227,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8024,7 +8246,7 @@ class QuantastorClient(object):
             maxShares='0',
             policyFlags='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'storagePoolId' : storagePoolId,  #xsd:string
@@ -8043,7 +8265,7 @@ class QuantastorClient(object):
             self,
             storageQuota='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageQuota' : storageQuota,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8053,7 +8275,7 @@ class QuantastorClient(object):
     def storage_quota_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageQuotaEnum', payload)
@@ -8063,7 +8285,7 @@ class QuantastorClient(object):
             self,
             storageQuota='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageQuota' : storageQuota,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8082,7 +8304,7 @@ class QuantastorClient(object):
             maxShares='0',
             policyFlags='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageQuota' : storageQuota,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -8103,7 +8325,7 @@ class QuantastorClient(object):
             modType='0',
             storageShareList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageQuota' : storageQuota,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageShareList' : storageShareList,  #xsd:string
@@ -8116,7 +8338,7 @@ class QuantastorClient(object):
             self,
             networkShare='',
             flags='0'):
-        payload = { 
+        payload = {
             'networkShare' : networkShare,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8127,7 +8349,7 @@ class QuantastorClient(object):
             self,
             storageQuotaId='',
             shareId=''):
-        payload = { 
+        payload = {
             'storageQuotaId' : storageQuotaId,  #xsd:string
             'shareId' : shareId,  #xsd:string
             }
@@ -8140,7 +8362,7 @@ class QuantastorClient(object):
             modType='0',
             storageVolumeList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageQuota' : storageQuota,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageVolumeList' : storageVolumeList,  #xsd:string
@@ -8153,7 +8375,7 @@ class QuantastorClient(object):
             self,
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8164,7 +8386,7 @@ class QuantastorClient(object):
             self,
             storageQuotaId='',
             storageVolumeId=''):
-        payload = { 
+        payload = {
             'storageQuotaId' : storageQuotaId,  #xsd:string
             'storageVolumeId' : storageVolumeId,  #xsd:string
             }
@@ -8174,7 +8396,7 @@ class QuantastorClient(object):
     def storage_system_cluster_assoc_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemClusterAssocEnum', payload)
@@ -8185,7 +8407,7 @@ class QuantastorClient(object):
             storageSystemClusterId='',
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemClusterId' : storageSystemClusterId,  #xsd:string
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8199,7 +8421,7 @@ class QuantastorClient(object):
             description='',
             storageSystemIds='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'storageSystemIds' : storageSystemIds,  #xsd:string
@@ -8211,7 +8433,7 @@ class QuantastorClient(object):
     def storage_system_cluster_delete(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemClusterDelete', payload)
@@ -8220,7 +8442,7 @@ class QuantastorClient(object):
     def storage_system_cluster_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemClusterEnum', payload)
@@ -8230,7 +8452,7 @@ class QuantastorClient(object):
             self,
             storageSystemCluster='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemCluster' : storageSystemCluster,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8241,7 +8463,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8254,7 +8476,7 @@ class QuantastorClient(object):
             nodeAdminUsername='',
             nodeAdminPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'masterNodeIpAddress' : masterNodeIpAddress,  #xsd:string
             'nodeAdminUsername' : nodeAdminUsername,  #xsd:string
             'nodeAdminPassword' : nodeAdminPassword,  #xsd:string
@@ -8268,7 +8490,7 @@ class QuantastorClient(object):
             name='',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8282,7 +8504,7 @@ class QuantastorClient(object):
             nodeAdminUsername='',
             nodeAdminPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'nodeIpAddress' : nodeIpAddress,  #xsd:string
             'nodeAdminUsername' : nodeAdminUsername,  #xsd:string
             'nodeAdminPassword' : nodeAdminPassword,  #xsd:string
@@ -8295,7 +8517,7 @@ class QuantastorClient(object):
             self,
             storageSystemClusterObj='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemClusterObj' : storageSystemClusterObj,  #osn:storageSystemCluster
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8307,7 +8529,7 @@ class QuantastorClient(object):
             storageSystemClusterObj='',
             masterNode='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemClusterObj' : storageSystemClusterObj,  #osn:storageSystemCluster
             'masterNode' : masterNode,  #osn:storageSystem
             'flags' : flags,  #xsd:unsignedInt
@@ -8319,7 +8541,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8330,7 +8552,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8342,7 +8564,7 @@ class QuantastorClient(object):
             storageSystemClusterObj='',
             masterNode='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemClusterObj' : storageSystemClusterObj,  #osn:storageSystemCluster
             'masterNode' : masterNode,  #osn:storageSystem
             'flags' : flags,  #xsd:unsignedInt
@@ -8354,7 +8576,7 @@ class QuantastorClient(object):
             self,
             memberIds='',
             flags='0'):
-        payload = { 
+        payload = {
             'memberIds' : memberIds,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8367,7 +8589,7 @@ class QuantastorClient(object):
             targetPortIdList='',
             options='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'targetPortIdList' : targetPortIdList,  #xsd:string
             'options' : options,  #xsd:unsignedInt
@@ -8381,7 +8603,7 @@ class QuantastorClient(object):
             newGridName='',
             storageSystemIds='',
             flags='0'):
-        payload = { 
+        payload = {
             'newGridName' : newGridName,  #xsd:string
             'storageSystemIds' : storageSystemIds,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8395,7 +8617,7 @@ class QuantastorClient(object):
             certificatesPath='',
             stageCertsOnly=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'certificatesPath' : certificatesPath,  #xsd:string
             'stageCertsOnly' : stageCertsOnly,  #xsd:boolean
@@ -8407,7 +8629,7 @@ class QuantastorClient(object):
     def storage_system_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemEnum', payload)
@@ -8417,7 +8639,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8430,7 +8652,7 @@ class QuantastorClient(object):
             linkIdList='',
             modType='0',
             flags='0'):
-        payload = { 
+        payload = {
             'groupId' : groupId,  #xsd:string
             'linkIdList' : linkIdList,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
@@ -8442,7 +8664,7 @@ class QuantastorClient(object):
     def storage_system_group_assoc_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemGroupAssocEnum', payload)
@@ -8453,7 +8675,7 @@ class QuantastorClient(object):
             groupId='',
             linkId='',
             flags='0'):
-        payload = { 
+        payload = {
             'groupId' : groupId,  #xsd:string
             'linkId' : linkId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8468,7 +8690,7 @@ class QuantastorClient(object):
             virtualIpAddress='',
             groupPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'virtualIpAddress' : virtualIpAddress,  #xsd:string
@@ -8483,7 +8705,7 @@ class QuantastorClient(object):
             groupId='',
             deleteAssociatedLinks=False,
             flags='0'):
-        payload = { 
+        payload = {
             'groupId' : groupId,  #xsd:string
             'deleteAssociatedLinks' : deleteAssociatedLinks,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -8494,7 +8716,7 @@ class QuantastorClient(object):
     def storage_system_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemGroupEnum', payload)
@@ -8504,7 +8726,7 @@ class QuantastorClient(object):
             self,
             groupId='',
             flags='0'):
-        payload = { 
+        payload = {
             'groupId' : groupId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8518,7 +8740,7 @@ class QuantastorClient(object):
             description='',
             virtualIpAddress='',
             flags='0'):
-        payload = { 
+        payload = {
             'groupId' : groupId,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -8533,7 +8755,7 @@ class QuantastorClient(object):
             groupId='',
             groupPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'groupId' : groupId,  #xsd:string
             'groupPassword' : groupPassword,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8551,7 +8773,7 @@ class QuantastorClient(object):
             linkType='0',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'remoteSystemId' : remoteSystemId,  #xsd:string
             'localIpAddress' : localIpAddress,  #xsd:string
@@ -8568,7 +8790,7 @@ class QuantastorClient(object):
             self,
             linkId='',
             flags='0'):
-        payload = { 
+        payload = {
             'linkId' : linkId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8579,7 +8801,7 @@ class QuantastorClient(object):
             self,
             remoteStorageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'remoteStorageSystemId' : remoteStorageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8589,7 +8811,7 @@ class QuantastorClient(object):
     def storage_system_link_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemLinkEnum', payload)
@@ -8599,7 +8821,7 @@ class QuantastorClient(object):
             self,
             linkObj='',
             flags='0'):
-        payload = { 
+        payload = {
             'linkObj' : linkObj,  #osn:storageSystemLink
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8610,7 +8832,7 @@ class QuantastorClient(object):
             self,
             linkId='',
             flags='0'):
-        payload = { 
+        payload = {
             'linkId' : linkId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8626,7 +8848,7 @@ class QuantastorClient(object):
             linkType='0',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'linkId' : linkId,  #xsd:string
             'remoteIpAddress' : remoteIpAddress,  #xsd:string
             'localIpAddress' : localIpAddress,  #xsd:string
@@ -8642,7 +8864,7 @@ class QuantastorClient(object):
             self,
             linkId='',
             flags='0'):
-        payload = { 
+        payload = {
             'linkId' : linkId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8655,7 +8877,7 @@ class QuantastorClient(object):
             remoteAdminUser='',
             remoteAdminPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'linkId' : linkId,  #xsd:string
             'remoteAdminUser' : remoteAdminUser,  #xsd:string
             'remoteAdminPassword' : remoteAdminPassword,  #xsd:string
@@ -8668,7 +8890,7 @@ class QuantastorClient(object):
             self,
             linkObj='',
             flags='0'):
-        payload = { 
+        payload = {
             'linkObj' : linkObj,  #osn:storageSystemLink
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8680,7 +8902,7 @@ class QuantastorClient(object):
             storageSystemList='',
             maintenanceFlags='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemList' : storageSystemList,  #xsd:string
             'maintenanceFlags' : maintenanceFlags,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -8710,7 +8932,7 @@ class QuantastorClient(object):
             firewallMask='0',
             disableIoFencing=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
@@ -8739,7 +8961,7 @@ class QuantastorClient(object):
             self,
             eventType='',
             eventMessage=''):
-        payload = { 
+        payload = {
             'eventType' : eventType,  #xsd:string
             'eventMessage' : eventMessage,  #xsd:string
             }
@@ -8752,7 +8974,7 @@ class QuantastorClient(object):
             recoveryPoint='',
             recoverNetworkConfig=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'recoveryPoint' : recoveryPoint,  #xsd:string
             'recoverNetworkConfig' : recoverNetworkConfig,  #xsd:boolean
@@ -8765,7 +8987,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8776,7 +8998,7 @@ class QuantastorClient(object):
             self,
             storageSystemIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemIdList' : storageSystemIdList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8787,7 +9009,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8799,7 +9021,7 @@ class QuantastorClient(object):
             storageSystem='',
             servicesList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'servicesList' : servicesList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8811,7 +9033,7 @@ class QuantastorClient(object):
             self,
             storageSystemIdList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemIdList' : storageSystemIdList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8823,7 +9045,7 @@ class QuantastorClient(object):
             storageSystem='',
             managerClass='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'managerClass' : managerClass,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -8835,7 +9057,7 @@ class QuantastorClient(object):
             self,
             searchFilter='',
             flags='0'):
-        payload = { 
+        payload = {
             'searchFilter' : searchFilter,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8847,7 +9069,7 @@ class QuantastorClient(object):
             storageSystem='',
             timeZone='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'timeZone' : timeZone,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8859,7 +9081,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8871,7 +9093,7 @@ class QuantastorClient(object):
             storageSystem='',
             tunableId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'tunableId' : tunableId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8884,7 +9106,7 @@ class QuantastorClient(object):
             storageSystem='',
             tunableProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'tunableProfile' : tunableProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -8898,7 +9120,7 @@ class QuantastorClient(object):
             description='',
             tunableList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'tunableList' : tunableList,  #xsd:string
@@ -8911,7 +9133,7 @@ class QuantastorClient(object):
             self,
             tunableProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'tunableProfile' : tunableProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8921,7 +9143,7 @@ class QuantastorClient(object):
     def storage_system_tunable_profile_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemTunableProfileEnum', payload)
@@ -8931,7 +9153,7 @@ class QuantastorClient(object):
             self,
             tunableProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'tunableProfile' : tunableProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8945,7 +9167,7 @@ class QuantastorClient(object):
             description='',
             tunableList='',
             flags='0'):
-        payload = { 
+        payload = {
             'tunableProfile' : tunableProfile,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -8961,7 +9183,7 @@ class QuantastorClient(object):
             tunableList='',
             option='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'tunableList' : tunableList,  #xsd:string
             'option' : option,  #xsd:unsignedInt
@@ -8974,7 +9196,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -8989,7 +9211,7 @@ class QuantastorClient(object):
             allowReboot=False,
             coreOnly=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemIdList' : storageSystemIdList,  #xsd:string
             'includeKernel' : includeKernel,  #xsd:boolean
             'distroUpgrade' : distroUpgrade,  #xsd:boolean
@@ -9003,7 +9225,7 @@ class QuantastorClient(object):
     def storage_system_version(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemVersion', payload)
@@ -9013,7 +9235,7 @@ class QuantastorClient(object):
             self,
             storagePool='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9024,7 +9246,7 @@ class QuantastorClient(object):
             self,
             storageTierId='',
             storagePoolId=''):
-        payload = { 
+        payload = {
             'storageTierId' : storageTierId,  #xsd:string
             'storagePoolId' : storagePoolId,  #xsd:string
             }
@@ -9040,7 +9262,7 @@ class QuantastorClient(object):
             performanceLevel='0',
             poolList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'storageClass' : storageClass,  #xsd:string
@@ -9056,7 +9278,7 @@ class QuantastorClient(object):
             self,
             storageTier='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageTier' : storageTier,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9066,7 +9288,7 @@ class QuantastorClient(object):
     def storage_tier_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageTierEnum', payload)
@@ -9076,7 +9298,7 @@ class QuantastorClient(object):
             self,
             storageTier='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageTier' : storageTier,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9092,7 +9314,7 @@ class QuantastorClient(object):
             storageType='0',
             performanceLevel='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageTier' : storageTier,  #xsd:string
             'newName' : newName,  #xsd:string
             'description' : description,  #xsd:string
@@ -9110,7 +9332,7 @@ class QuantastorClient(object):
             modType='0',
             poolList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageTier' : storageTier,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'poolList' : poolList,  #xsd:string
@@ -9125,7 +9347,7 @@ class QuantastorClient(object):
             modType='0',
             hostList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'hostList' : hostList,  #xsd:string
@@ -9140,7 +9362,7 @@ class QuantastorClient(object):
             modType='0',
             storageVolumeList='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageVolumeList' : storageVolumeList,  #xsd:string
@@ -9154,7 +9376,7 @@ class QuantastorClient(object):
             host='',
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -9167,7 +9389,7 @@ class QuantastorClient(object):
             host='',
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'host' : host,  #xsd:string
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -9183,7 +9405,7 @@ class QuantastorClient(object):
             provisionableId='',
             accessMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'cloneName' : cloneName,  #xsd:string
             'description' : description,  #xsd:string
@@ -9203,7 +9425,7 @@ class QuantastorClient(object):
             priority='0',
             reserved='',
             flags='0'):
-        payload = { 
+        payload = {
             'sourceVolumeId' : sourceVolumeId,  #xsd:string
             'cloudContainerId' : cloudContainerId,  #xsd:string
             'backupVolumeName' : backupVolumeName,  #xsd:string
@@ -9224,7 +9446,7 @@ class QuantastorClient(object):
             priority='0',
             reserved='',
             flags='0'):
-        payload = { 
+        payload = {
             'sourceVolumeId' : sourceVolumeId,  #xsd:string
             'storagePoolId' : storagePoolId,  #xsd:string
             'recoveredVolumeName' : recoveredVolumeName,  #xsd:string
@@ -9251,7 +9473,7 @@ class QuantastorClient(object):
             qosPolicy='',
             profile='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'provisionableId' : provisionableId,  #xsd:string
@@ -9291,7 +9513,7 @@ class QuantastorClient(object):
             profile='',
             spaceReserved='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'provisionableId' : provisionableId,  #xsd:string
@@ -9330,7 +9552,7 @@ class QuantastorClient(object):
             profile='',
             passthruMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'physicalDiskList' : physicalDiskList,  #xsd:string
@@ -9352,7 +9574,7 @@ class QuantastorClient(object):
             storageVolumeList='',
             recursivelyDeleteSnapshots=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeList' : storageVolumeList,  #xsd:string
             'recursivelyDeleteSnapshots' : recursivelyDeleteSnapshots,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -9364,7 +9586,7 @@ class QuantastorClient(object):
             self,
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9375,7 +9597,7 @@ class QuantastorClient(object):
             self,
             storageVolumeList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeList' : storageVolumeList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9386,7 +9608,7 @@ class QuantastorClient(object):
             self,
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9397,7 +9619,7 @@ class QuantastorClient(object):
             self,
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9408,7 +9630,7 @@ class QuantastorClient(object):
             self,
             storageVolumeGroupId='',
             storageVolumeId=''):
-        payload = { 
+        payload = {
             'storageVolumeGroupId' : storageVolumeGroupId,  #xsd:string
             'storageVolumeId' : storageVolumeId,  #xsd:string
             }
@@ -9423,7 +9645,7 @@ class QuantastorClient(object):
             provisionableId='',
             accessMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeGroup' : storageVolumeGroup,  #xsd:string
             'cloneNamePrefix' : cloneNamePrefix,  #xsd:string
             'description' : description,  #xsd:string
@@ -9440,7 +9662,7 @@ class QuantastorClient(object):
             description='',
             storageVolumeList='',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'storageVolumeList' : storageVolumeList,  #xsd:string
@@ -9454,7 +9676,7 @@ class QuantastorClient(object):
             storageVolumeGroup='',
             deleteAssociatedVolumes=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeGroup' : storageVolumeGroup,  #xsd:string
             'deleteAssociatedVolumes' : deleteAssociatedVolumes,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -9465,7 +9687,7 @@ class QuantastorClient(object):
     def storage_volume_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeGroupEnum', payload)
@@ -9475,7 +9697,7 @@ class QuantastorClient(object):
             self,
             storageVolumeGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeGroup' : storageVolumeGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9488,7 +9710,7 @@ class QuantastorClient(object):
             newName='',
             newDescription='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeGroup' : storageVolumeGroup,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
@@ -9506,7 +9728,7 @@ class QuantastorClient(object):
             count='0',
             accessMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeGroup' : storageVolumeGroup,  #xsd:string
             'snapshotNamePrefix' : snapshotNamePrefix,  #xsd:string
             'description' : description,  #xsd:string
@@ -9524,7 +9746,7 @@ class QuantastorClient(object):
             modType='0',
             storageVolumeList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeGroup' : storageVolumeGroup,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'storageVolumeList' : storageVolumeList,  #xsd:string
@@ -9537,12 +9759,38 @@ class QuantastorClient(object):
             self,
             storageVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeHealthCheck', payload)
         return StorageVolumeHealthCheckResponse.responseParse(jsonOutput)
+
+    def storage_volume_hold_add(
+            self,
+            storageVolume='',
+            holdTag='',
+            flags='0'):
+        payload = {
+            'storageVolume' : storageVolume,  #xsd:string
+            'holdTag' : holdTag,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storageVolumeHoldAdd', payload)
+        return StorageVolumeHoldAddResponse.responseParse(jsonOutput)
+
+    def storage_volume_hold_remove(
+            self,
+            storageVolume='',
+            holdTag='',
+            flags='0'):
+        payload = {
+            'storageVolume' : storageVolume,  #xsd:string
+            'holdTag' : holdTag,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storageVolumeHoldRemove', payload)
+        return StorageVolumeHoldRemoveResponse.responseParse(jsonOutput)
 
     def storage_volume_import(
             self,
@@ -9551,7 +9799,7 @@ class QuantastorClient(object):
             cleanupSnapshots=False,
             replicationScheduleId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storagePool' : storagePool,  #xsd:string
             'importTypes' : importTypes,  #xsd:unsignedInt
             'cleanupSnapshots' : cleanupSnapshots,  #xsd:boolean
@@ -9580,7 +9828,7 @@ class QuantastorClient(object):
             profile='',
             spaceReserved='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
@@ -9605,7 +9853,7 @@ class QuantastorClient(object):
     def storage_volume_profile_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeProfileEnum', payload)
@@ -9615,7 +9863,7 @@ class QuantastorClient(object):
             self,
             storageVolumeProfile='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolumeProfile' : storageVolumeProfile,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9628,7 +9876,7 @@ class QuantastorClient(object):
             schedule='',
             recursiveUpdateGmtSnaps=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'schedule' : schedule,  #xsd:string
             'recursiveUpdateGmtSnaps' : recursiveUpdateGmtSnaps,  #xsd:boolean
@@ -9643,7 +9891,7 @@ class QuantastorClient(object):
             provisionableId='',
             newSizeInBytes='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'provisionableId' : provisionableId,  #xsd:string
             'newSizeInBytes' : self.size_in_bytes(newSizeInBytes),  #xsd:unsignedLong
@@ -9657,7 +9905,7 @@ class QuantastorClient(object):
             storageVolume='',
             snapshotVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'snapshotVolume' : snapshotVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -9670,7 +9918,7 @@ class QuantastorClient(object):
             storageVolume='',
             snapshotVolume='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'snapshotVolume' : snapshotVolume,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -9687,7 +9935,7 @@ class QuantastorClient(object):
             qosWriteBandwidth='0',
             qosPolicy='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'qosReadIops' : self.size_in_bytes(qosReadIops),  #xsd:unsignedLong
             'qosWriteIops' : self.size_in_bytes(qosWriteIops),  #xsd:unsignedLong
@@ -9708,7 +9956,7 @@ class QuantastorClient(object):
             accessMode='0',
             count='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'snapshotName' : snapshotName,  #xsd:string
             'description' : description,  #xsd:string
@@ -9725,7 +9973,7 @@ class QuantastorClient(object):
             storageVolume='',
             preserveExistingSnapshot=False,
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'preserveExistingSnapshot' : preserveExistingSnapshot,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -9739,7 +9987,7 @@ class QuantastorClient(object):
             offsetDays='0',
             numberOfDays='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'offsetDays' : offsetDays,  #xsd:unsignedInt
             'numberOfDays' : numberOfDays,  #xsd:unsignedInt
@@ -9752,7 +10000,7 @@ class QuantastorClient(object):
             self,
             utilizationId='',
             flags='0'):
-        payload = { 
+        payload = {
             'utilizationId' : utilizationId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9762,7 +10010,7 @@ class QuantastorClient(object):
     def storage_volume_utilization_get_retention_period(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeUtilizationGetRetentionPeriod', payload)
@@ -9772,7 +10020,7 @@ class QuantastorClient(object):
             self,
             daysToRetain='0',
             flags='0'):
-        payload = { 
+        payload = {
             'daysToRetain' : daysToRetain,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9783,7 +10031,7 @@ class QuantastorClient(object):
             self,
             swControllerGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'swControllerGroup' : swControllerGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9794,7 +10042,7 @@ class QuantastorClient(object):
             self,
             swController='',
             flags='0'):
-        payload = { 
+        payload = {
             'swController' : swController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9804,7 +10052,7 @@ class QuantastorClient(object):
     def sw_controller_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('swControllerGroupEnum', payload)
@@ -9814,7 +10062,7 @@ class QuantastorClient(object):
             self,
             swControllerGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'swControllerGroup' : swControllerGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9826,7 +10074,7 @@ class QuantastorClient(object):
             storageSystemList='',
             storageVolumeList='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemList' : storageSystemList,  #xsd:string
             'storageVolumeList' : storageVolumeList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -9845,7 +10093,7 @@ class QuantastorClient(object):
             chapUsername='',
             chapPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemList' : storageSystemList,  #xsd:string
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
@@ -9863,7 +10111,7 @@ class QuantastorClient(object):
             self,
             hwController='',
             flags='0'):
-        payload = { 
+        payload = {
             'hwController' : hwController,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9874,7 +10122,7 @@ class QuantastorClient(object):
             self,
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9885,7 +10133,7 @@ class QuantastorClient(object):
             self,
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9896,7 +10144,7 @@ class QuantastorClient(object):
             self,
             swControllerTarget='',
             flags='0'):
-        payload = { 
+        payload = {
             'swControllerTarget' : swControllerTarget,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9908,7 +10156,7 @@ class QuantastorClient(object):
             controllerId='',
             targetList='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'targetList' : targetList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -9921,7 +10169,7 @@ class QuantastorClient(object):
             controllerId='',
             targetList='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'targetList' : targetList,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -9933,7 +10181,7 @@ class QuantastorClient(object):
             self,
             controllerId='',
             flags='0'):
-        payload = { 
+        payload = {
             'controllerId' : controllerId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9944,7 +10192,7 @@ class QuantastorClient(object):
             self,
             swDiskSession='',
             flags='0'):
-        payload = { 
+        payload = {
             'swDiskSession' : swDiskSession,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9954,7 +10202,7 @@ class QuantastorClient(object):
     def system_capability_meta_data_get(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('systemCapabilityMetaDataGet', payload)
@@ -9964,7 +10212,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9975,7 +10223,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -9985,7 +10233,7 @@ class QuantastorClient(object):
     def target_port_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortEnum', payload)
@@ -9995,7 +10243,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10019,7 +10267,7 @@ class QuantastorClient(object):
             firewallForceAllowMask='0',
             autoTuningEnabled=False,
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'configType' : configType,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
@@ -10043,7 +10291,7 @@ class QuantastorClient(object):
             self,
             storageSystem='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10054,7 +10302,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10069,7 +10317,7 @@ class QuantastorClient(object):
             destinationNetmask='',
             gatewayIpAddress='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystem' : storageSystem,  #xsd:string
             'targetPort' : targetPort,  #xsd:string
             'destinationIpAddress' : destinationIpAddress,  #xsd:string
@@ -10084,7 +10332,7 @@ class QuantastorClient(object):
             self,
             routeId='',
             flags='0'):
-        payload = { 
+        payload = {
             'routeId' : routeId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10094,7 +10342,7 @@ class QuantastorClient(object):
     def target_port_static_route_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortStaticRouteEnum', payload)
@@ -10104,7 +10352,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10123,7 +10371,7 @@ class QuantastorClient(object):
             mtu='0',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'parentPortId' : parentPortId,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
@@ -10143,7 +10391,7 @@ class QuantastorClient(object):
             virtualInterfaceId='',
             targetPortId='',
             flags='0'):
-        payload = { 
+        payload = {
             'virtualInterfaceId' : virtualInterfaceId,  #xsd:string
             'targetPortId' : targetPortId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -10163,7 +10411,7 @@ class QuantastorClient(object):
             description='',
             bondMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
             'netmask' : netmask,  #xsd:string
@@ -10182,7 +10430,7 @@ class QuantastorClient(object):
             self,
             port='',
             flags='0'):
-        payload = { 
+        payload = {
             'port' : port,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10201,7 +10449,7 @@ class QuantastorClient(object):
             mtu='0',
             description='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'parentPortId' : parentPortId,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
@@ -10220,7 +10468,7 @@ class QuantastorClient(object):
             self,
             id='',
             flags='0'):
-        payload = { 
+        payload = {
             'id' : id,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10230,7 +10478,7 @@ class QuantastorClient(object):
     def task_clear_all(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('taskClearAll', payload)
@@ -10240,7 +10488,7 @@ class QuantastorClient(object):
             self,
             taskIdlist='',
             flags='0'):
-        payload = { 
+        payload = {
             'taskIdlist' : taskIdlist,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10251,7 +10499,7 @@ class QuantastorClient(object):
             self,
             id='',
             flags='0'):
-        payload = { 
+        payload = {
             'id' : id,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10262,7 +10510,7 @@ class QuantastorClient(object):
             self,
             storageSystemId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10274,7 +10522,7 @@ class QuantastorClient(object):
             storageSystemId='',
             taskId='',
             flags='0'):
-        payload = { 
+        payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
             'taskId' : taskId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -10287,7 +10535,7 @@ class QuantastorClient(object):
             id='',
             options='0',
             flags='0'):
-        payload = { 
+        payload = {
             'id' : id,  #xsd:string
             'options' : options,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
@@ -10302,7 +10550,7 @@ class QuantastorClient(object):
             progress='0',
             state='0',
             flags='0'):
-        payload = { 
+        payload = {
             'taskId' : taskId,  #xsd:string
             'description' : description,  #xsd:string
             'progress' : progress,  #xsd:unsignedInt
@@ -10315,7 +10563,7 @@ class QuantastorClient(object):
     def trace_level_get(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('traceLevelGet', payload)
@@ -10329,7 +10577,7 @@ class QuantastorClient(object):
             traceOptions='',
             eventVerboseFilter='',
             flags='0'):
-        payload = { 
+        payload = {
             'traceLevel' : traceLevel,  #xsd:unsignedInt
             'stdOut' : stdOut,  #xsd:boolean
             'traceFilter' : traceFilter,  #xsd:string
@@ -10345,7 +10593,7 @@ class QuantastorClient(object):
             traceLevel='0',
             messages='',
             flags='0'):
-        payload = { 
+        payload = {
             'traceLevel' : traceLevel,  #xsd:unsignedInt
             'messages' : messages,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -10375,7 +10623,7 @@ class QuantastorClient(object):
             enableMultiFactorAuth=False,
             mfaConfig='',
             flags='0'):
-        payload = { 
+        payload = {
             'username' : username,  #xsd:string
             'password' : password,  #xsd:string
             'role' : role,  #xsd:string
@@ -10409,7 +10657,7 @@ class QuantastorClient(object):
             isReadOnly=False,
             appAccessMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'user' : user,  #xsd:string
             'tokenName' : tokenName,  #xsd:string
             'appKey' : appKey,  #xsd:string
@@ -10424,7 +10672,7 @@ class QuantastorClient(object):
     def user_app_token_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('userAppTokenEnum', payload)
@@ -10434,7 +10682,7 @@ class QuantastorClient(object):
             self,
             appToken='',
             flags='0'):
-        payload = { 
+        payload = {
             'appToken' : appToken,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10448,7 +10696,7 @@ class QuantastorClient(object):
             isReadOnly=False,
             appAccessMode='0',
             flags='0'):
-        payload = { 
+        payload = {
             'appToken' : appToken,  #xsd:string
             'tokenExpires' : tokenExpires,  #xsd:dateTime
             'isReadOnly' : isReadOnly,  #xsd:boolean
@@ -10462,7 +10710,7 @@ class QuantastorClient(object):
             self,
             appToken='',
             flags='0'):
-        payload = { 
+        payload = {
             'appToken' : appToken,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10473,7 +10721,7 @@ class QuantastorClient(object):
             self,
             jwtToken='',
             flags='0'):
-        payload = { 
+        payload = {
             'jwtToken' : jwtToken,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10486,7 +10734,7 @@ class QuantastorClient(object):
             objectType='',
             operation='',
             flags='0'):
-        payload = { 
+        payload = {
             'jwtToken' : jwtToken,  #xsd:string
             'objectType' : objectType,  #xsd:string
             'operation' : operation,  #xsd:string
@@ -10498,7 +10746,7 @@ class QuantastorClient(object):
     def user_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('userEnum', payload)
@@ -10508,7 +10756,7 @@ class QuantastorClient(object):
             self,
             user='',
             flags='0'):
-        payload = { 
+        payload = {
             'user' : user,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10519,7 +10767,7 @@ class QuantastorClient(object):
             self,
             user='',
             flags='0'):
-        payload = { 
+        payload = {
             'user' : user,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10530,7 +10778,7 @@ class QuantastorClient(object):
             self,
             userGroupId='',
             userId=''):
-        payload = { 
+        payload = {
             'userGroupId' : userGroupId,  #xsd:string
             'userId' : userId,  #xsd:string
             }
@@ -10544,7 +10792,7 @@ class QuantastorClient(object):
             userList='',
             posixGid='0',
             flags='0'):
-        payload = { 
+        payload = {
             'name' : name,  #xsd:string
             'description' : description,  #xsd:string
             'userList' : userList,  #xsd:string
@@ -10558,7 +10806,7 @@ class QuantastorClient(object):
             self,
             userGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'userGroup' : userGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10568,7 +10816,7 @@ class QuantastorClient(object):
     def user_group_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('userGroupEnum', payload)
@@ -10578,7 +10826,7 @@ class QuantastorClient(object):
             self,
             userGroup='',
             flags='0'):
-        payload = { 
+        payload = {
             'userGroup' : userGroup,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10592,7 +10840,7 @@ class QuantastorClient(object):
             newDescription='',
             posixGid='0',
             flags='0'):
-        payload = { 
+        payload = {
             'userGroup' : userGroup,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
@@ -10608,7 +10856,7 @@ class QuantastorClient(object):
             modType='0',
             userList='',
             flags='0'):
-        payload = { 
+        payload = {
             'userGroup' : userGroup,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'userList' : userList,  #xsd:string
@@ -10638,7 +10886,7 @@ class QuantastorClient(object):
             enableMultiFactorAuth=False,
             multiFactorAuthConfig='',
             flags='0'):
-        payload = { 
+        payload = {
             'user' : user,  #xsd:string
             'newName' : newName,  #xsd:string
             'newRole' : newRole,  #xsd:string
@@ -10668,7 +10916,7 @@ class QuantastorClient(object):
             oldPassword='',
             newPassword='',
             flags='0'):
-        payload = { 
+        payload = {
             'user' : user,  #xsd:string
             'oldPassword' : oldPassword,  #xsd:string
             'newPassword' : newPassword,  #xsd:string
@@ -10681,7 +10929,7 @@ class QuantastorClient(object):
             self,
             user='',
             flags='0'):
-        payload = { 
+        payload = {
             'user' : user,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -10691,7 +10939,7 @@ class QuantastorClient(object):
     def virtual_interface_assoc_enum(
             self,
             flags='0'):
-        payload = { 
+        payload = {
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('virtualInterfaceAssocEnum', payload)
@@ -10702,7 +10950,7 @@ class QuantastorClient(object):
             virtualInterfaceId='',
             targetPortId='',
             flags='0'):
-        payload = { 
+        payload = {
             'virtualInterfaceId' : virtualInterfaceId,  #xsd:string
             'targetPortId' : targetPortId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
@@ -10932,6 +11180,7 @@ class Replicatable(Object):
     _vvolType='0'
     _vvolParentId=''
     _snapshotReferenceId=''
+    _numHolds='0'
     _replicaAssocList=''
 
     def __init__(self,jsonObj):
@@ -11047,6 +11296,10 @@ class Replicatable(Object):
             self._snapshotReferenceId = jsonObj['snapshotReferenceId']
         else:
             self._snapshotReferenceId = ''
+        if 'numHolds' in jsonObj:
+            self._numHolds = jsonObj['numHolds']
+        else:
+            self._numHolds = '0'
         if 'replicaAssocList' in jsonObj:
             self._replicaAssocList = jsonObj['replicaAssocList']
         else:
@@ -11083,6 +11336,7 @@ class Replicatable(Object):
             'vvolType' : self._vvolType,
             'vvolParentId' : self._vvolParentId,
             'snapshotReferenceId' : self._snapshotReferenceId,
+            'numHolds' : self._numHolds,
             'replicaAssocList' : self._replicaAssocList
         }
         thisJsonObj.update(superJsonObj)
@@ -12890,7 +13144,9 @@ class CephCluster(Object):
     _cephVersion=''
     _isMaintenanceMode=False
     _osdWeightPolicy='0'
+    _encryptionType=''
     _encryptedOSD=False
+    _keyServerProfileId=''
     _compressedOSD=False
     _clientadminkeyringAlg='0'
     _defaultmonitorkeyringAlg='0'
@@ -12957,10 +13213,18 @@ class CephCluster(Object):
             self._osdWeightPolicy = jsonObj['osdWeightPolicy']
         else:
             self._osdWeightPolicy = '0'
+        if 'encryptionType' in jsonObj:
+            self._encryptionType = jsonObj['encryptionType']
+        else:
+            self._encryptionType = ''
         if 'encryptedOSD' in jsonObj:
             self._encryptedOSD = jsonObj['encryptedOSD']
         else:
             self._encryptedOSD = False
+        if 'keyServerProfileId' in jsonObj:
+            self._keyServerProfileId = jsonObj['keyServerProfileId']
+        else:
+            self._keyServerProfileId = ''
         if 'compressedOSD' in jsonObj:
             self._compressedOSD = jsonObj['compressedOSD']
         else:
@@ -13056,7 +13320,9 @@ class CephCluster(Object):
             'cephVersion' : self._cephVersion,
             'isMaintenanceMode' : self._isMaintenanceMode,
             'osdWeightPolicy' : self._osdWeightPolicy,
+            'encryptionType' : self._encryptionType,
             'encryptedOSD' : self._encryptedOSD,
+            'keyServerProfileId' : self._keyServerProfileId,
             'compressedOSD' : self._compressedOSD,
             'clientadminkeyringAlg' : self._clientadminkeyringAlg,
             'defaultmonitorkeyringAlg' : self._defaultmonitorkeyringAlg,
@@ -13488,6 +13754,8 @@ class CephFilesystem(Object):
     _description=''
     _size='0'
     _utilizedSpace='0'
+    _activeMdsCount='0'
+    _standbyMdsCount='0'
     _poolAssocList=''
 
     def __init__(self,jsonObj):
@@ -13511,6 +13779,14 @@ class CephFilesystem(Object):
             self._utilizedSpace = jsonObj['utilizedSpace']
         else:
             self._utilizedSpace = '0'
+        if 'activeMdsCount' in jsonObj:
+            self._activeMdsCount = jsonObj['activeMdsCount']
+        else:
+            self._activeMdsCount = '0'
+        if 'standbyMdsCount' in jsonObj:
+            self._standbyMdsCount = jsonObj['standbyMdsCount']
+        else:
+            self._standbyMdsCount = '0'
         if 'poolAssocList' in jsonObj:
             self._poolAssocList = jsonObj['poolAssocList']
         else:
@@ -13524,6 +13800,8 @@ class CephFilesystem(Object):
             'description' : self._description,
             'size' : self._size,
             'utilizedSpace' : self._utilizedSpace,
+            'activeMdsCount' : self._activeMdsCount,
+            'standbyMdsCount' : self._standbyMdsCount,
             'poolAssocList' : self._poolAssocList
         }
         thisJsonObj.update(superJsonObj)
@@ -13963,6 +14241,7 @@ class CephMds(Object):
     _port='0'
     _rank='0'
     _nodeSystemId=''
+    _cacheLimit='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -14001,6 +14280,10 @@ class CephMds(Object):
             self._nodeSystemId = jsonObj['nodeSystemId']
         else:
             self._nodeSystemId = ''
+        if 'cacheLimit' in jsonObj:
+            self._cacheLimit = jsonObj['cacheLimit']
+        else:
+            self._cacheLimit = '0'
         return self
 
     def exportJson(self):
@@ -14013,27 +14296,31 @@ class CephMds(Object):
             'ipAddress' : self._ipAddress,
             'port' : self._port,
             'rank' : self._rank,
-            'nodeSystemId' : self._nodeSystemId
+            'nodeSystemId' : self._nodeSystemId,
+            'cacheLimit' : self._cacheLimit
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
 
 class CephMdsAddResponse(object):
     _task=''
-    _obj=''
+    _list=''
 
     def __init__(
         self,
         task='',
-        obj=''):
+        objList=''):
         self._task = task
-        self._obj = obj
+        self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
         task = Task(jsonObj['task'])
-        obj = CephMds(jsonObj['obj'])
-        return task, obj
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(CephMds(var))
+        return task, objList
 
 class CephMdsEnumResponse(object):
     _list=''
@@ -15222,20 +15509,23 @@ class CephRadosGateway(Object):
 
 class CephRadosGatewayAddResponse(object):
     _task=''
-    _obj=''
+    _list=''
 
     def __init__(
         self,
         task='',
-        obj=''):
+        objList=''):
         self._task = task
-        self._obj = obj
+        self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
         task = Task(jsonObj['task'])
-        obj = CephRadosGateway(jsonObj['obj'])
-        return task, obj
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(CephRadosGateway(var))
+        return task, objList
 
 class CephRadosGatewayEnumResponse(object):
     _list=''
@@ -20237,6 +20527,316 @@ class InitiatorPort(Object):
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
 
+class KeyServerProfile(Object):
+    _host=''
+    _kmipConnectionPort=''
+    _description=''
+    _clientCertPath=''
+    _clientCertData=''
+    _caCertPath=''
+    _caCertData=''
+    _clientKeyPath=''
+    _clientKeyData=''
+    _username=''
+    _password=''
+    _serverType='0'
+    _keyIdList=''
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(KeyServerProfile, self).jsonParse(jsonObj)
+        if 'host' in jsonObj:
+            self._host = jsonObj['host']
+        else:
+            self._host = ''
+        if 'kmipConnectionPort' in jsonObj:
+            self._kmipConnectionPort = jsonObj['kmipConnectionPort']
+        else:
+            self._kmipConnectionPort = ''
+        if 'description' in jsonObj:
+            self._description = jsonObj['description']
+        else:
+            self._description = ''
+        if 'clientCertPath' in jsonObj:
+            self._clientCertPath = jsonObj['clientCertPath']
+        else:
+            self._clientCertPath = ''
+        if 'clientCertData' in jsonObj:
+            self._clientCertData = jsonObj['clientCertData']
+        else:
+            self._clientCertData = ''
+        if 'caCertPath' in jsonObj:
+            self._caCertPath = jsonObj['caCertPath']
+        else:
+            self._caCertPath = ''
+        if 'caCertData' in jsonObj:
+            self._caCertData = jsonObj['caCertData']
+        else:
+            self._caCertData = ''
+        if 'clientKeyPath' in jsonObj:
+            self._clientKeyPath = jsonObj['clientKeyPath']
+        else:
+            self._clientKeyPath = ''
+        if 'clientKeyData' in jsonObj:
+            self._clientKeyData = jsonObj['clientKeyData']
+        else:
+            self._clientKeyData = ''
+        if 'username' in jsonObj:
+            self._username = jsonObj['username']
+        else:
+            self._username = ''
+        if 'password' in jsonObj:
+            self._password = jsonObj['password']
+        else:
+            self._password = ''
+        if 'serverType' in jsonObj:
+            self._serverType = jsonObj['serverType']
+        else:
+            self._serverType = '0'
+        if 'keyIdList' in jsonObj:
+            self._keyIdList = jsonObj['keyIdList']
+        else:
+            self._keyIdList = ''
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(KeyServerProfile,self).exportJson()
+        thisJsonObj = {
+            'host' : self._host,
+            'kmipConnectionPort' : self._kmipConnectionPort,
+            'description' : self._description,
+            'clientCertPath' : self._clientCertPath,
+            'clientCertData' : self._clientCertData,
+            'caCertPath' : self._caCertPath,
+            'caCertData' : self._caCertData,
+            'clientKeyPath' : self._clientKeyPath,
+            'clientKeyData' : self._clientKeyData,
+            'username' : self._username,
+            'password' : self._password,
+            'serverType' : self._serverType,
+            'keyIdList' : self._keyIdList
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class KeyServerProfileCreateResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = KeyServerProfile(jsonObj['obj'])
+        return task, obj
+
+class KeyServerProfileDeleteResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = KeyServerProfile(jsonObj['obj'])
+        return task, obj
+
+class KeyServerProfileEnumResponse(object):
+    _list=''
+
+    def __init__(
+        self,
+        objList=''):
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        objList = []
+        for var in jsonObj:
+            objList.append(KeyServerProfile(var))
+        return objList
+
+class KeyServerProfileGetResponse(object):
+    _obj=''
+
+    def __init__(
+        self,
+        obj=''):
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        obj = KeyServerProfile(jsonObj)
+        return obj
+
+class KeyServerProfileKey(Object):
+    _keyServerProfileId=''
+    _description=''
+    _keyId=''
+    _keyType=''
+    _resourceId=''
+    _resourceType='0'
+    _encoding='0'
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(KeyServerProfileKey, self).jsonParse(jsonObj)
+        if 'keyServerProfileId' in jsonObj:
+            self._keyServerProfileId = jsonObj['keyServerProfileId']
+        else:
+            self._keyServerProfileId = ''
+        if 'description' in jsonObj:
+            self._description = jsonObj['description']
+        else:
+            self._description = ''
+        if 'keyId' in jsonObj:
+            self._keyId = jsonObj['keyId']
+        else:
+            self._keyId = ''
+        if 'keyType' in jsonObj:
+            self._keyType = jsonObj['keyType']
+        else:
+            self._keyType = ''
+        if 'resourceId' in jsonObj:
+            self._resourceId = jsonObj['resourceId']
+        else:
+            self._resourceId = ''
+        if 'resourceType' in jsonObj:
+            self._resourceType = jsonObj['resourceType']
+        else:
+            self._resourceType = '0'
+        if 'encoding' in jsonObj:
+            self._encoding = jsonObj['encoding']
+        else:
+            self._encoding = '0'
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(KeyServerProfileKey,self).exportJson()
+        thisJsonObj = {
+            'keyServerProfileId' : self._keyServerProfileId,
+            'description' : self._description,
+            'keyId' : self._keyId,
+            'keyType' : self._keyType,
+            'resourceId' : self._resourceId,
+            'resourceType' : self._resourceType,
+            'encoding' : self._encoding
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class KeyServerProfileKeyAddResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = KeyServerProfileKey(jsonObj['obj'])
+        return task, obj
+
+class KeyServerProfileKeyEnumResponse(object):
+    _list=''
+
+    def __init__(
+        self,
+        objList=''):
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        objList = []
+        for var in jsonObj:
+            objList.append(KeyServerProfileKey(var))
+        return objList
+
+class KeyServerProfileKeyGetResponse(object):
+    _obj=''
+
+    def __init__(
+        self,
+        obj=''):
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        obj = KeyServerProfileKey(jsonObj)
+        return obj
+
+class KeyServerProfileKeyModifyResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = KeyServerProfileKey(jsonObj['obj'])
+        return task, obj
+
+class KeyServerProfileKeyRemoveResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = KeyServerProfileKey(jsonObj['obj'])
+        return task, obj
+
+class KeyServerProfileModifyResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = KeyServerProfile(jsonObj['obj'])
+        return task, obj
+
 class KeyValuePair(object):
     _key=''
     _value=''
@@ -21431,14 +22031,11 @@ class NetworkShare(Replicatable):
     _description=''
     _isActive=False
     _shareType='0'
-    _snapshotIdList=''
     _enableCifs=False
     _isCloudBackup=False
     _spaceQuota='0'
     _cloudContainerId=''
     _disableSnapBrowsing=False
-    _disableSmbSnapsDir=False
-    _disableNfsSnapsDir=False
     _ownerUid='0'
     _ownerGid='0'
     _permissions=''
@@ -21451,6 +22048,10 @@ class NetworkShare(Replicatable):
     _exportId='0'
     _nfsSecurityPolicy='0'
     _isNested=False
+    _disableSmbSnapsDir=False
+    _disableNfsSnapsDir=False
+    _enableNfsSnapBrowsing=False
+    _snapshotIdList=''
     _subshareIdList=''
     _nfsClients=''
     _cifsUserAccessList=''
@@ -21478,10 +22079,6 @@ class NetworkShare(Replicatable):
             self._shareType = jsonObj['shareType']
         else:
             self._shareType = '0'
-        if 'snapshotIdList' in jsonObj:
-            self._snapshotIdList = jsonObj['snapshotIdList']
-        else:
-            self._snapshotIdList = ''
         if 'enableCifs' in jsonObj:
             self._enableCifs = jsonObj['enableCifs']
         else:
@@ -21502,14 +22099,6 @@ class NetworkShare(Replicatable):
             self._disableSnapBrowsing = jsonObj['disableSnapBrowsing']
         else:
             self._disableSnapBrowsing = False
-        if 'disableSmbSnapsDir' in jsonObj:
-            self._disableSmbSnapsDir = jsonObj['disableSmbSnapsDir']
-        else:
-            self._disableSmbSnapsDir = False
-        if 'disableNfsSnapsDir' in jsonObj:
-            self._disableNfsSnapsDir = jsonObj['disableNfsSnapsDir']
-        else:
-            self._disableNfsSnapsDir = False
         if 'ownerUid' in jsonObj:
             self._ownerUid = jsonObj['ownerUid']
         else:
@@ -21558,6 +22147,22 @@ class NetworkShare(Replicatable):
             self._isNested = jsonObj['isNested']
         else:
             self._isNested = False
+        if 'disableSmbSnapsDir' in jsonObj:
+            self._disableSmbSnapsDir = jsonObj['disableSmbSnapsDir']
+        else:
+            self._disableSmbSnapsDir = False
+        if 'disableNfsSnapsDir' in jsonObj:
+            self._disableNfsSnapsDir = jsonObj['disableNfsSnapsDir']
+        else:
+            self._disableNfsSnapsDir = False
+        if 'enableNfsSnapBrowsing' in jsonObj:
+            self._enableNfsSnapBrowsing = jsonObj['enableNfsSnapBrowsing']
+        else:
+            self._enableNfsSnapBrowsing = False
+        if 'snapshotIdList' in jsonObj:
+            self._snapshotIdList = jsonObj['snapshotIdList']
+        else:
+            self._snapshotIdList = ''
         if 'subshareIdList' in jsonObj:
             self._subshareIdList = jsonObj['subshareIdList']
         else:
@@ -21587,14 +22192,11 @@ class NetworkShare(Replicatable):
             'description' : self._description,
             'isActive' : self._isActive,
             'shareType' : self._shareType,
-            'snapshotIdList' : self._snapshotIdList,
             'enableCifs' : self._enableCifs,
             'isCloudBackup' : self._isCloudBackup,
             'spaceQuota' : self._spaceQuota,
             'cloudContainerId' : self._cloudContainerId,
             'disableSnapBrowsing' : self._disableSnapBrowsing,
-            'disableSmbSnapsDir' : self._disableSmbSnapsDir,
-            'disableNfsSnapsDir' : self._disableNfsSnapsDir,
             'ownerUid' : self._ownerUid,
             'ownerGid' : self._ownerGid,
             'permissions' : self._permissions,
@@ -21607,6 +22209,10 @@ class NetworkShare(Replicatable):
             'exportId' : self._exportId,
             'nfsSecurityPolicy' : self._nfsSecurityPolicy,
             'isNested' : self._isNested,
+            'disableSmbSnapsDir' : self._disableSmbSnapsDir,
+            'disableNfsSnapsDir' : self._disableNfsSnapsDir,
+            'enableNfsSnapBrowsing' : self._enableNfsSnapBrowsing,
+            'snapshotIdList' : self._snapshotIdList,
             'subshareIdList' : self._subshareIdList,
             'nfsClients' : self._nfsClients,
             'cifsUserAccessList' : self._cifsUserAccessList,
@@ -22254,6 +22860,40 @@ class NetworkShareHealthCheckResponse(object):
     def responseParse(cls,jsonObj):
         obj = ResourceHealthCheck(jsonObj)
         return obj
+
+class NetworkShareHoldAddResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
+
+class NetworkShareHoldRemoveResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
 
 class NetworkShareJoinDomainResponse(object):
     _task=''
@@ -23382,6 +24022,9 @@ class PhysicalDisk(Object):
     _lastShredMode='0'
     _perfTestReadBps='0'
     _perfTestTimestamp=''
+    _sedCapabilities='0'
+    _sedStatus='0'
+    _encryptionType=''
     _pathList=''
 
     def __init__(self,jsonObj):
@@ -23569,6 +24212,18 @@ class PhysicalDisk(Object):
             self._perfTestTimestamp = jsonObj['perfTestTimestamp']
         else:
             self._perfTestTimestamp = ''
+        if 'sedCapabilities' in jsonObj:
+            self._sedCapabilities = jsonObj['sedCapabilities']
+        else:
+            self._sedCapabilities = '0'
+        if 'sedStatus' in jsonObj:
+            self._sedStatus = jsonObj['sedStatus']
+        else:
+            self._sedStatus = '0'
+        if 'encryptionType' in jsonObj:
+            self._encryptionType = jsonObj['encryptionType']
+        else:
+            self._encryptionType = ''
         if 'pathList' in jsonObj:
             self._pathList = jsonObj['pathList']
         else:
@@ -23623,6 +24278,9 @@ class PhysicalDisk(Object):
             'lastShredMode' : self._lastShredMode,
             'perfTestReadBps' : self._perfTestReadBps,
             'perfTestTimestamp' : self._perfTestTimestamp,
+            'sedCapabilities' : self._sedCapabilities,
+            'sedStatus' : self._sedStatus,
+            'encryptionType' : self._encryptionType,
             'pathList' : self._pathList
         }
         thisJsonObj.update(superJsonObj)
@@ -23652,23 +24310,6 @@ class PhysicalDiskCopyResponse(object):
         networkShareObj = NetworkShare(jsonObj['networkShareObj'])
         physicalDiskObj = PhysicalDisk(jsonObj['physicalDiskObj'])
         return task, storageVolumeObj, networkShareObj, physicalDiskObj
-
-class PhysicalDiskDataMigrationResponse(object):
-    _task=''
-    _obj=''
-
-    def __init__(
-        self,
-        task='',
-        obj=''):
-        self._task = task
-        self._obj = obj
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = StorageVolume(jsonObj['obj'])
-        return task, obj
 
 class PhysicalDiskEnumResponse(object):
     _list=''
@@ -24054,6 +24695,26 @@ class PhysicalDiskScanResponse(object):
                 objList.append(PhysicalDisk(var))
         return task, objList
 
+class PhysicalDiskSecureEraseHardResetResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(PhysicalDisk(var))
+        return task, objList
+
 class PingCheckResponse(object):
     _list=''
 
@@ -24379,6 +25040,7 @@ class ReplicaAssoc(Object):
     _estTotalTransfer='0'
     _amountTransfered='0'
     _pseudoParentTaskId=''
+    _taskId=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -24505,6 +25167,10 @@ class ReplicaAssoc(Object):
             self._pseudoParentTaskId = jsonObj['pseudoParentTaskId']
         else:
             self._pseudoParentTaskId = ''
+        if 'taskId' in jsonObj:
+            self._taskId = jsonObj['taskId']
+        else:
+            self._taskId = ''
         return self
 
     def exportJson(self):
@@ -24539,7 +25205,8 @@ class ReplicaAssoc(Object):
             'currentFileProgress' : self._currentFileProgress,
             'estTotalTransfer' : self._estTotalTransfer,
             'amountTransfered' : self._amountTransfered,
-            'pseudoParentTaskId' : self._pseudoParentTaskId
+            'pseudoParentTaskId' : self._pseudoParentTaskId,
+            'taskId' : self._taskId
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -28352,7 +29019,9 @@ class StoragePool(Provisionable):
     _isEncrypted=False
     _requiresKeyPassphrase=False
     _encryptionType=''
+    _keyServerType='0'
     _enclosureRedundancy='0'
+    _keyServerProfileId=''
     _errCountReads='0'
     _errCountWrites='0'
     _errCountChecksums='0'
@@ -28590,10 +29259,18 @@ class StoragePool(Provisionable):
             self._encryptionType = jsonObj['encryptionType']
         else:
             self._encryptionType = ''
+        if 'keyServerType' in jsonObj:
+            self._keyServerType = jsonObj['keyServerType']
+        else:
+            self._keyServerType = '0'
         if 'enclosureRedundancy' in jsonObj:
             self._enclosureRedundancy = jsonObj['enclosureRedundancy']
         else:
             self._enclosureRedundancy = '0'
+        if 'keyServerProfileId' in jsonObj:
+            self._keyServerProfileId = jsonObj['keyServerProfileId']
+        else:
+            self._keyServerProfileId = ''
         if 'errCountReads' in jsonObj:
             self._errCountReads = jsonObj['errCountReads']
         else:
@@ -28683,7 +29360,9 @@ class StoragePool(Provisionable):
             'isEncrypted' : self._isEncrypted,
             'requiresKeyPassphrase' : self._requiresKeyPassphrase,
             'encryptionType' : self._encryptionType,
+            'keyServerType' : self._keyServerType,
             'enclosureRedundancy' : self._enclosureRedundancy,
+            'keyServerProfileId' : self._keyServerProfileId,
             'errCountReads' : self._errCountReads,
             'errCountWrites' : self._errCountWrites,
             'errCountChecksums' : self._errCountChecksums,
@@ -29217,6 +29896,8 @@ class StoragePoolHaFailoverGroup(Object):
     _exportTimeout='0'
     _encryptionKeySaltData=''
     _encryptionKeySaltPath=''
+    _keyServerProfileId=''
+    _keyServerType='0'
     _interfaceList=''
 
     def __init__(self,jsonObj):
@@ -29304,6 +29985,14 @@ class StoragePoolHaFailoverGroup(Object):
             self._encryptionKeySaltPath = jsonObj['encryptionKeySaltPath']
         else:
             self._encryptionKeySaltPath = ''
+        if 'keyServerProfileId' in jsonObj:
+            self._keyServerProfileId = jsonObj['keyServerProfileId']
+        else:
+            self._keyServerProfileId = ''
+        if 'keyServerType' in jsonObj:
+            self._keyServerType = jsonObj['keyServerType']
+        else:
+            self._keyServerType = '0'
         if 'interfaceList' in jsonObj:
             self._interfaceList = jsonObj['interfaceList']
         else:
@@ -29333,6 +30022,8 @@ class StoragePoolHaFailoverGroup(Object):
             'exportTimeout' : self._exportTimeout,
             'encryptionKeySaltData' : self._encryptionKeySaltData,
             'encryptionKeySaltPath' : self._encryptionKeySaltPath,
+            'keyServerProfileId' : self._keyServerProfileId,
+            'keyServerType' : self._keyServerType,
             'interfaceList' : self._interfaceList
         }
         thisJsonObj.update(superJsonObj)
@@ -33203,6 +33894,40 @@ class StorageVolumeHealthCheckResponse(object):
         obj = ResourceHealthCheck(jsonObj)
         return obj
 
+class StorageVolumeHoldAddResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = StorageVolume(jsonObj['obj'])
+        return task, obj
+
+class StorageVolumeHoldRemoveResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = StorageVolume(jsonObj['obj'])
+        return task, obj
+
 class StorageVolumeImportResponse(object):
     _task=''
     _obj=''
@@ -34299,12 +35024,9 @@ class SystemConfiguration(Object):
     _listTargetPortStaticRoute=''
     _listFcTargetPort=''
     _listIbTargetPort=''
-    _listStorageVolume=''
-    _listStorageVolumeAcl=''
     _listStorageVolumeGroup=''
     _listStorageVolumeUtilization=''
     _listPhysicalDisk=''
-    _listNetworkShare=''
     _listNetworkShareNamespace=''
     _listHost=''
     _listHostGroup=''
@@ -34370,8 +35092,16 @@ class SystemConfiguration(Object):
     _listStoragePoolHaFailoverInterface=''
     _listAlertType=''
     _listAlertConfigSettings=''
+    _listStorageVolume=''
+    _listStorageVolumeAcl=''
+    _listStorageVolumeNA=''
+    _listStorageVolumeAclNA=''
+    _listNetworkShare=''
     _listNetworkShareClient=''
     _listNetworkShareUserAccess=''
+    _listNetworkShareNA=''
+    _listNetworkShareClientNA=''
+    _listNetworkShareUserAccessNA=''
     _listHwEnclosureLayout=''
     _listHwEnclosureLayoutVendorGroup=''
     _listBackupPolicy=''
@@ -34388,6 +35118,8 @@ class SystemConfiguration(Object):
     _listUserAppToken=''
     _listProviderApp=''
     _listServiceFirewallDef=''
+    _listKeyServerProfile=''
+    _listKeyServerProfileKey=''
     _gridObj=''
     _listNetworkShareSession=''
     _passwordPolicyObj=''
@@ -34429,14 +35161,6 @@ class SystemConfiguration(Object):
             self._listIbTargetPort = jsonObj['listIbTargetPort']
         else:
             self._listIbTargetPort = ''
-        if 'listStorageVolume' in jsonObj:
-            self._listStorageVolume = jsonObj['listStorageVolume']
-        else:
-            self._listStorageVolume = ''
-        if 'listStorageVolumeAcl' in jsonObj:
-            self._listStorageVolumeAcl = jsonObj['listStorageVolumeAcl']
-        else:
-            self._listStorageVolumeAcl = ''
         if 'listStorageVolumeGroup' in jsonObj:
             self._listStorageVolumeGroup = jsonObj['listStorageVolumeGroup']
         else:
@@ -34449,10 +35173,6 @@ class SystemConfiguration(Object):
             self._listPhysicalDisk = jsonObj['listPhysicalDisk']
         else:
             self._listPhysicalDisk = ''
-        if 'listNetworkShare' in jsonObj:
-            self._listNetworkShare = jsonObj['listNetworkShare']
-        else:
-            self._listNetworkShare = ''
         if 'listNetworkShareNamespace' in jsonObj:
             self._listNetworkShareNamespace = jsonObj['listNetworkShareNamespace']
         else:
@@ -34713,6 +35433,26 @@ class SystemConfiguration(Object):
             self._listAlertConfigSettings = jsonObj['listAlertConfigSettings']
         else:
             self._listAlertConfigSettings = ''
+        if 'listStorageVolume' in jsonObj:
+            self._listStorageVolume = jsonObj['listStorageVolume']
+        else:
+            self._listStorageVolume = ''
+        if 'listStorageVolumeAcl' in jsonObj:
+            self._listStorageVolumeAcl = jsonObj['listStorageVolumeAcl']
+        else:
+            self._listStorageVolumeAcl = ''
+        if 'listStorageVolumeNA' in jsonObj:
+            self._listStorageVolumeNA = jsonObj['listStorageVolumeNA']
+        else:
+            self._listStorageVolumeNA = ''
+        if 'listStorageVolumeAclNA' in jsonObj:
+            self._listStorageVolumeAclNA = jsonObj['listStorageVolumeAclNA']
+        else:
+            self._listStorageVolumeAclNA = ''
+        if 'listNetworkShare' in jsonObj:
+            self._listNetworkShare = jsonObj['listNetworkShare']
+        else:
+            self._listNetworkShare = ''
         if 'listNetworkShareClient' in jsonObj:
             self._listNetworkShareClient = jsonObj['listNetworkShareClient']
         else:
@@ -34721,6 +35461,18 @@ class SystemConfiguration(Object):
             self._listNetworkShareUserAccess = jsonObj['listNetworkShareUserAccess']
         else:
             self._listNetworkShareUserAccess = ''
+        if 'listNetworkShareNA' in jsonObj:
+            self._listNetworkShareNA = jsonObj['listNetworkShareNA']
+        else:
+            self._listNetworkShareNA = ''
+        if 'listNetworkShareClientNA' in jsonObj:
+            self._listNetworkShareClientNA = jsonObj['listNetworkShareClientNA']
+        else:
+            self._listNetworkShareClientNA = ''
+        if 'listNetworkShareUserAccessNA' in jsonObj:
+            self._listNetworkShareUserAccessNA = jsonObj['listNetworkShareUserAccessNA']
+        else:
+            self._listNetworkShareUserAccessNA = ''
         if 'listHwEnclosureLayout' in jsonObj:
             self._listHwEnclosureLayout = jsonObj['listHwEnclosureLayout']
         else:
@@ -34785,6 +35537,14 @@ class SystemConfiguration(Object):
             self._listServiceFirewallDef = jsonObj['listServiceFirewallDef']
         else:
             self._listServiceFirewallDef = ''
+        if 'listKeyServerProfile' in jsonObj:
+            self._listKeyServerProfile = jsonObj['listKeyServerProfile']
+        else:
+            self._listKeyServerProfile = ''
+        if 'listKeyServerProfileKey' in jsonObj:
+            self._listKeyServerProfileKey = jsonObj['listKeyServerProfileKey']
+        else:
+            self._listKeyServerProfileKey = ''
         if 'gridObj' in jsonObj:
             self._gridObj = jsonObj['gridObj']
         else:
@@ -34840,12 +35600,9 @@ class SystemConfiguration(Object):
             'listTargetPortStaticRoute' : self._listTargetPortStaticRoute,
             'listFcTargetPort' : self._listFcTargetPort,
             'listIbTargetPort' : self._listIbTargetPort,
-            'listStorageVolume' : self._listStorageVolume,
-            'listStorageVolumeAcl' : self._listStorageVolumeAcl,
             'listStorageVolumeGroup' : self._listStorageVolumeGroup,
             'listStorageVolumeUtilization' : self._listStorageVolumeUtilization,
             'listPhysicalDisk' : self._listPhysicalDisk,
-            'listNetworkShare' : self._listNetworkShare,
             'listNetworkShareNamespace' : self._listNetworkShareNamespace,
             'listHost' : self._listHost,
             'listHostGroup' : self._listHostGroup,
@@ -34911,8 +35668,16 @@ class SystemConfiguration(Object):
             'listStoragePoolHaFailoverInterface' : self._listStoragePoolHaFailoverInterface,
             'listAlertType' : self._listAlertType,
             'listAlertConfigSettings' : self._listAlertConfigSettings,
+            'listStorageVolume' : self._listStorageVolume,
+            'listStorageVolumeAcl' : self._listStorageVolumeAcl,
+            'listStorageVolumeNA' : self._listStorageVolumeNA,
+            'listStorageVolumeAclNA' : self._listStorageVolumeAclNA,
+            'listNetworkShare' : self._listNetworkShare,
             'listNetworkShareClient' : self._listNetworkShareClient,
             'listNetworkShareUserAccess' : self._listNetworkShareUserAccess,
+            'listNetworkShareNA' : self._listNetworkShareNA,
+            'listNetworkShareClientNA' : self._listNetworkShareClientNA,
+            'listNetworkShareUserAccessNA' : self._listNetworkShareUserAccessNA,
             'listHwEnclosureLayout' : self._listHwEnclosureLayout,
             'listHwEnclosureLayoutVendorGroup' : self._listHwEnclosureLayoutVendorGroup,
             'listBackupPolicy' : self._listBackupPolicy,
@@ -34929,6 +35694,8 @@ class SystemConfiguration(Object):
             'listUserAppToken' : self._listUserAppToken,
             'listProviderApp' : self._listProviderApp,
             'listServiceFirewallDef' : self._listServiceFirewallDef,
+            'listKeyServerProfile' : self._listKeyServerProfile,
+            'listKeyServerProfileKey' : self._listKeyServerProfileKey,
             'gridObj' : self._gridObj,
             'listNetworkShareSession' : self._listNetworkShareSession,
             'passwordPolicyObj' : self._passwordPolicyObj,
@@ -34986,7 +35753,7 @@ class TargetPort(Object):
     _autoTuningEnabled=False
     _bufferRx='0'
     _bufferTx='0'
-    _childPortList=''
+    _childPortIdList=''
     _virtualInterfaceAssocList=''
     _staticRouteList=''
 
@@ -35159,10 +35926,10 @@ class TargetPort(Object):
             self._bufferTx = jsonObj['bufferTx']
         else:
             self._bufferTx = '0'
-        if 'childPortList' in jsonObj:
-            self._childPortList = jsonObj['childPortList']
+        if 'childPortIdList' in jsonObj:
+            self._childPortIdList = jsonObj['childPortIdList']
         else:
-            self._childPortList = ''
+            self._childPortIdList = ''
         if 'virtualInterfaceAssocList' in jsonObj:
             self._virtualInterfaceAssocList = jsonObj['virtualInterfaceAssocList']
         else:
@@ -35217,7 +35984,7 @@ class TargetPort(Object):
             'autoTuningEnabled' : self._autoTuningEnabled,
             'bufferRx' : self._bufferRx,
             'bufferTx' : self._bufferTx,
-            'childPortList' : self._childPortList,
+            'childPortIdList' : self._childPortIdList,
             'virtualInterfaceAssocList' : self._virtualInterfaceAssocList,
             'staticRouteList' : self._staticRouteList
         }

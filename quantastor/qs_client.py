@@ -264,6 +264,10 @@ class QuantastorClient(object):
             poolFreeSpaceWarningThreshold='0',
             poolFreeSpaceAlertThreshold='0',
             poolFreeSpaceCriticalAlertThreshold='0',
+            shareQuotaFreeSpaceWarningThreshold='0',
+            shareQuotaFreeSpaceAlertThreshold='0',
+            shareQuotaFreeSpaceCriticalThreshold='0',
+            enableSyslogAlerts=False,
             alertEndpoints='',
             enableAlertTypes='',
             disableAlertTypes='',
@@ -280,6 +284,10 @@ class QuantastorClient(object):
             'poolFreeSpaceWarningThreshold' : poolFreeSpaceWarningThreshold,  #xsd:unsignedInt
             'poolFreeSpaceAlertThreshold' : poolFreeSpaceAlertThreshold,  #xsd:unsignedInt
             'poolFreeSpaceCriticalAlertThreshold' : poolFreeSpaceCriticalAlertThreshold,  #xsd:unsignedInt
+            'shareQuotaFreeSpaceWarningThreshold' : shareQuotaFreeSpaceWarningThreshold,  #xsd:unsignedInt
+            'shareQuotaFreeSpaceAlertThreshold' : shareQuotaFreeSpaceAlertThreshold,  #xsd:unsignedInt
+            'shareQuotaFreeSpaceCriticalThreshold' : shareQuotaFreeSpaceCriticalThreshold,  #xsd:unsignedInt
+            'enableSyslogAlerts' : enableSyslogAlerts,  #xsd:boolean
             'alertEndpoints' : alertEndpoints,  #xsd:string
             'enableAlertTypes' : enableAlertTypes,  #xsd:string
             'disableAlertTypes' : disableAlertTypes,  #xsd:string
@@ -663,12 +671,10 @@ class QuantastorClient(object):
             self,
             cephClusterId='',
             bucketList='',
-            cleanupOrphans=False,
             flags='0'):
         payload = {
             'cephClusterId' : cephClusterId,  #xsd:string
             'bucketList' : bucketList,  #xsd:string
-            'cleanupOrphans' : cleanupOrphans,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('bucketDelete', payload)
@@ -919,6 +925,19 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('cephClusterHealthEventGet', payload)
         return CephClusterHealthEventGetResponse.responseParse(jsonOutput)
 
+    def ceph_cluster_import(
+            self,
+            name='',
+            description='',
+            flags='0'):
+        payload = {
+            'name' : name,  #xsd:string
+            'description' : description,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephClusterImport', payload)
+        return CephClusterImportResponse.responseParse(jsonOutput)
+
     def ceph_cluster_member_enum(
             self,
             cephClusterId='',
@@ -952,6 +971,7 @@ class QuantastorClient(object):
             backFillFullPercent='0',
             fullPercent='0',
             keyServerProfileId='',
+            confOptions='',
             flags='0'):
         payload = {
             'cephCluster' : cephCluster,  #xsd:string
@@ -963,6 +983,7 @@ class QuantastorClient(object):
             'backFillFullPercent' : backFillFullPercent,  #xsd:unsignedInt
             'fullPercent' : fullPercent,  #xsd:unsignedInt
             'keyServerProfileId' : keyServerProfileId,  #xsd:string
+            'confOptions' : confOptions,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephClusterModify', payload)
@@ -1389,6 +1410,7 @@ class QuantastorClient(object):
             quickFormat=False,
             allowedMixedSizeJournalMedia=False,
             forceExternalJDev=False,
+            enableDynamicWeighting=False,
             sizeWAL='0',
             sizeDB='0',
             osdType='0',
@@ -1402,6 +1424,7 @@ class QuantastorClient(object):
             'quickFormat' : quickFormat,  #xsd:boolean
             'allowedMixedSizeJournalMedia' : allowedMixedSizeJournalMedia,  #xsd:boolean
             'forceExternalJDev' : forceExternalJDev,  #xsd:boolean
+            'enableDynamicWeighting' : enableDynamicWeighting,  #xsd:boolean
             'sizeWAL' : self.size_in_bytes(sizeWAL),  #xsd:unsignedLong
             'sizeDB' : self.size_in_bytes(sizeDB),  #xsd:unsignedLong
             'osdType' : osdType,  #xsd:unsignedInt
@@ -1494,7 +1517,6 @@ class QuantastorClient(object):
             walSize='0',
             dbSize='0',
             osdType='0',
-            weight='0',
             flags='0'):
         payload = {
             'description' : description,  #xsd:string
@@ -1506,7 +1528,6 @@ class QuantastorClient(object):
             'walSize' : self.size_in_bytes(walSize),  #xsd:unsignedLong
             'dbSize' : self.size_in_bytes(dbSize),  #xsd:unsignedLong
             'osdType' : osdType,  #xsd:unsignedInt
-            'weight' : weight,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephOsdCreate', payload)
@@ -1565,6 +1586,19 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('cephOsdModify', payload)
         return CephOsdModifyResponse.responseParse(jsonOutput)
+
+    def ceph_osd_reweight(
+            self,
+            cephClusterId='',
+            osdIdToCapacityList='',
+            flags='0'):
+        payload = {
+            'cephClusterId' : cephClusterId,  #xsd:string
+            'osdIdToCapacityList' : osdIdToCapacityList,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephOsdReweight', payload)
+        return CephOsdReweightResponse.responseParse(jsonOutput)
 
     def ceph_osd_service_update(
             self,
@@ -2892,9 +2926,11 @@ class QuantastorClient(object):
     def fc_target_port_disable(
             self,
             port='',
+            storageSystem='',
             flags='0'):
         payload = {
             'port' : port,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('fcTargetPortDisable', payload)
@@ -2903,9 +2939,11 @@ class QuantastorClient(object):
     def fc_target_port_enable(
             self,
             port='',
+            storageSystem='',
             flags='0'):
         payload = {
             'port' : port,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('fcTargetPortEnable', payload)
@@ -2913,8 +2951,10 @@ class QuantastorClient(object):
 
     def fc_target_port_enum(
             self,
+            storageSystem='',
             flags='0'):
         payload = {
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('fcTargetPortEnum', payload)
@@ -3384,6 +3424,17 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('hwControllerRescanAll', payload)
         return HwControllerRescanAllResponse.responseParse(jsonOutput)
 
+    def hw_controller_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('hwControllerSearch', payload)
+        return HwControllerSearchResponse.responseParse(jsonOutput)
+
     def hw_controller_silence_alarms(
             self,
             controllerId='',
@@ -3493,6 +3544,17 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('hwDiskRemove', payload)
         return HwDiskRemoveResponse.responseParse(jsonOutput)
 
+    def hw_disk_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('hwDiskSearch', payload)
+        return HwDiskSearchResponse.responseParse(jsonOutput)
+
     def hw_disk_unmark_hot_spare(
             self,
             diskIdList='',
@@ -3584,6 +3646,17 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('hwEnclosureModify', payload)
         return HwEnclosureModifyResponse.responseParse(jsonOutput)
+
+    def hw_enclosure_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('hwEnclosureSearch', payload)
+        return HwEnclosureSearchResponse.responseParse(jsonOutput)
 
     def hw_enclosure_slot_identify(
             self,
@@ -3789,6 +3862,17 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('hwUnitModify', payload)
         return HwUnitModifyResponse.responseParse(jsonOutput)
 
+    def hw_unit_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('hwUnitSearch', payload)
+        return HwUnitSearchResponse.responseParse(jsonOutput)
+
     def hw_unit_ssd_cache_create(
             self,
             controllerId='',
@@ -3830,8 +3914,10 @@ class QuantastorClient(object):
 
     def ib_target_port_enum(
             self,
+            storageSystem='',
             flags='0'):
         payload = {
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('ibTargetPortEnum', payload)
@@ -4601,6 +4687,8 @@ class QuantastorClient(object):
             spaceQuota='0',
             spaceQuotaExcludeSnapshots=False,
             syncPolicy='0',
+            cachePolicyPrimary='0',
+            cachePolicySecondary='0',
             compressionType='',
             copies='0',
             shareOwner='',
@@ -4613,6 +4701,8 @@ class QuantastorClient(object):
             isCloudContainerCache=False,
             nfsSecurityPolicy='0',
             parentShareId='',
+            enableEncryption=False,
+            encryptionKeyPassphrase='',
             count='0',
             disableSmbSnapsDir=False,
             disableNfsSnapsDir=False,
@@ -4631,6 +4721,8 @@ class QuantastorClient(object):
             'spaceQuota' : self.size_in_bytes(spaceQuota),  #xsd:unsignedLong
             'spaceQuotaExcludeSnapshots' : spaceQuotaExcludeSnapshots,  #xsd:boolean
             'syncPolicy' : syncPolicy,  #xsd:unsignedInt
+            'cachePolicyPrimary' : cachePolicyPrimary,  #xsd:unsignedInt
+            'cachePolicySecondary' : cachePolicySecondary,  #xsd:unsignedInt
             'compressionType' : compressionType,  #xsd:string
             'copies' : copies,  #xsd:unsignedInt
             'shareOwner' : shareOwner,  #xsd:string
@@ -4643,6 +4735,8 @@ class QuantastorClient(object):
             'isCloudContainerCache' : isCloudContainerCache,  #xsd:boolean
             'nfsSecurityPolicy' : nfsSecurityPolicy,  #xsd:unsignedInt
             'parentShareId' : parentShareId,  #xsd:string
+            'enableEncryption' : enableEncryption,  #xsd:boolean
+            'encryptionKeyPassphrase' : encryptionKeyPassphrase,  #xsd:string
             'count' : count,  #xsd:unsignedInt
             'disableSmbSnapsDir' : disableSmbSnapsDir,  #xsd:boolean
             'disableNfsSnapsDir' : disableNfsSnapsDir,  #xsd:boolean
@@ -4695,6 +4789,43 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('networkShareEnable', payload)
         return NetworkShareEnableResponse.responseParse(jsonOutput)
+
+    def network_share_encrypted_start(
+            self,
+            networkShare='',
+            encryptionKeyPassphrase='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'encryptionKeyPassphrase' : encryptionKeyPassphrase,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareEncryptedStart', payload)
+        return NetworkShareEncryptedStartResponse.responseParse(jsonOutput)
+
+    def network_share_encryption_key_export(
+            self,
+            networkShare='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareEncryptionKeyExport', payload)
+        return NetworkShareEncryptionKeyExportResponse.responseParse(jsonOutput)
+
+    def network_share_encryption_key_import(
+            self,
+            networkShare='',
+            keyBlock='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'keyBlock' : keyBlock,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareEncryptionKeyImport', payload)
+        return NetworkShareEncryptionKeyImportResponse.responseParse(jsonOutput)
 
     def network_share_enum(
             self,
@@ -4762,23 +4893,6 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('networkShareFileDelete', payload)
         return NetworkShareFileDeleteResponse.responseParse(jsonOutput)
-
-    def network_share_file_expand(
-            self,
-            networkShare='',
-            filePath='',
-            newSize='0',
-            thickProvisioned=False,
-            flags='0'):
-        payload = {
-            'networkShare' : networkShare,  #xsd:string
-            'filePath' : filePath,  #xsd:string
-            'newSize' : self.size_in_bytes(newSize),  #xsd:unsignedLong
-            'thickProvisioned' : thickProvisioned,  #xsd:boolean
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('networkShareFileExpand', payload)
-        return NetworkShareFileExpandResponse.responseParse(jsonOutput)
 
     def network_share_file_lock_enum(
             self,
@@ -4893,6 +5007,19 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('networkShareLeaveDomain', payload)
         return NetworkShareLeaveDomainResponse.responseParse(jsonOutput)
 
+    def network_share_load_encryption_key(
+            self,
+            networkShare='',
+            encryptionKeyPassphrase='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'encryptionKeyPassphrase' : encryptionKeyPassphrase,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareLoadEncryptionKey', payload)
+        return NetworkShareLoadEncryptionKeyResponse.responseParse(jsonOutput)
+
     def network_share_modify(
             self,
             networkShare='',
@@ -4906,6 +5033,8 @@ class QuantastorClient(object):
             spaceQuota='0',
             spaceQuotaExcludeSnapshots=False,
             syncPolicy='0',
+            cachePolicyPrimary='0',
+            cachePolicySecondary='0',
             compressionType='',
             copies='0',
             shareOwner='',
@@ -4932,6 +5061,8 @@ class QuantastorClient(object):
             'spaceQuota' : self.size_in_bytes(spaceQuota),  #xsd:unsignedLong
             'spaceQuotaExcludeSnapshots' : spaceQuotaExcludeSnapshots,  #xsd:boolean
             'syncPolicy' : syncPolicy,  #xsd:unsignedInt
+            'cachePolicyPrimary' : cachePolicyPrimary,  #xsd:unsignedInt
+            'cachePolicySecondary' : cachePolicySecondary,  #xsd:unsignedInt
             'compressionType' : compressionType,  #xsd:string
             'copies' : copies,  #xsd:unsignedInt
             'shareOwner' : shareOwner,  #xsd:string
@@ -4949,6 +5080,21 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('networkShareModify', payload)
         return NetworkShareModifyResponse.responseParse(jsonOutput)
+
+    def network_share_move(
+            self,
+            networkShare='',
+            newParent='',
+            newShareName='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'newParent' : newParent,  #xsd:string
+            'newShareName' : newShareName,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareMove', payload)
+        return NetworkShareMoveResponse.responseParse(jsonOutput)
 
     def network_share_namespace_add_remove(
             self,
@@ -5167,6 +5313,17 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('networkShareRollback', payload)
         return NetworkShareRollbackResponse.responseParse(jsonOutput)
 
+    def network_share_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareSearch', payload)
+        return NetworkShareSearchResponse.responseParse(jsonOutput)
+
     def network_share_services_restart(
             self,
             storageSystem='',
@@ -5204,6 +5361,21 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('networkShareSessionGet', payload)
         return NetworkShareSessionGetResponse.responseParse(jsonOutput)
 
+    def network_share_set_passphrase(
+            self,
+            networkShare='',
+            oldEncryptionKeyPassphrase='',
+            newEncryptionKeyPassphrase='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'oldEncryptionKeyPassphrase' : oldEncryptionKeyPassphrase,  #xsd:string
+            'newEncryptionKeyPassphrase' : newEncryptionKeyPassphrase,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareSetPassphrase', payload)
+        return NetworkShareSetPassphraseResponse.responseParse(jsonOutput)
+
     def network_share_set_quotas(
             self,
             networkShare='',
@@ -5239,6 +5411,17 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('networkShareSnapshot', payload)
         return NetworkShareSnapshotResponse.responseParse(jsonOutput)
+
+    def network_share_unload_encryption_key(
+            self,
+            networkShare='',
+            flags='0'):
+        payload = {
+            'networkShare' : networkShare,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('networkShareUnloadEncryptionKey', payload)
+        return NetworkShareUnloadEncryptionKeyResponse.responseParse(jsonOutput)
 
     def network_share_user_access_enum(
             self,
@@ -5577,30 +5760,6 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('physicalDiskMultipathConfigScan', payload)
         return PhysicalDiskMultipathConfigScanResponse.responseParse(jsonOutput)
 
-    def physical_disk_path_assoc_enum(
-            self,
-            multipathDiskId='',
-            flags='0'):
-        payload = {
-            'multipathDiskId' : multipathDiskId,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('physicalDiskPathAssocEnum', payload)
-        return PhysicalDiskPathAssocEnumResponse.responseParse(jsonOutput)
-
-    def physical_disk_path_assoc_get(
-            self,
-            multipathDiskId='',
-            physicalDiskId='',
-            flags='0'):
-        payload = {
-            'multipathDiskId' : multipathDiskId,  #xsd:string
-            'physicalDiskId' : physicalDiskId,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('physicalDiskPathAssocGet', payload)
-        return PhysicalDiskPathAssocGetResponse.responseParse(jsonOutput)
-
     def physical_disk_perf_test(
             self,
             physicalDriveIdList='',
@@ -5628,6 +5787,17 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('physicalDiskScan', payload)
         return PhysicalDiskScanResponse.responseParse(jsonOutput)
+
+    def physical_disk_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('physicalDiskSearch', payload)
+        return PhysicalDiskSearchResponse.responseParse(jsonOutput)
 
     def physical_disk_secure_erase_hard_reset(
             self,
@@ -6075,6 +6245,7 @@ class QuantastorClient(object):
             reuseTargetChkpnt=False,
             scheduleActivationVifId='',
             lazyCloneSnaps=False,
+            retentionCountSumReports='0',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -6108,6 +6279,7 @@ class QuantastorClient(object):
             'reuseTargetChkpnt' : reuseTargetChkpnt,  #xsd:boolean
             'scheduleActivationVifId' : scheduleActivationVifId,  #xsd:string
             'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
+            'retentionCountSumReports' : retentionCountSumReports,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('replicationScheduleCreate', payload)
@@ -6211,6 +6383,7 @@ class QuantastorClient(object):
             reuseTargetChkpnt=False,
             scheduleActivationVifId='',
             lazyCloneSnaps=False,
+            retentionCountSumReports='0',
             flags='0'):
         payload = {
             'schedule' : schedule,  #xsd:string
@@ -6239,6 +6412,7 @@ class QuantastorClient(object):
             'reuseTargetChkpnt' : reuseTargetChkpnt,  #xsd:boolean
             'scheduleActivationVifId' : scheduleActivationVifId,  #xsd:string
             'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
+            'retentionCountSumReports' : retentionCountSumReports,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('replicationScheduleModify', payload)
@@ -6799,6 +6973,8 @@ class QuantastorClient(object):
             permissionList='',
             inheritsFrom='',
             ldapGroup='',
+            wuiTabDisable='0',
+            wuiSectionDisable='0',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -6806,6 +6982,8 @@ class QuantastorClient(object):
             'permissionList' : permissionList,  #osn:permissionAssignment
             'inheritsFrom' : inheritsFrom,  #xsd:string
             'ldapGroup' : ldapGroup,  #xsd:string
+            'wuiTabDisable' : wuiTabDisable,  #xsd:unsignedInt
+            'wuiSectionDisable' : wuiSectionDisable,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('roleCreate', payload)
@@ -6848,12 +7026,16 @@ class QuantastorClient(object):
             newName='',
             newDescription='',
             ldapGroup='',
+            wuiTabDisable='0',
+            wuiSectionDisable='0',
             flags='0'):
         payload = {
             'role' : role,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
             'ldapGroup' : ldapGroup,  #xsd:string
+            'wuiTabDisable' : wuiTabDisable,  #xsd:unsignedInt
+            'wuiSectionDisable' : wuiSectionDisable,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('roleModify', payload)
@@ -7576,6 +7758,7 @@ class QuantastorClient(object):
             nvmeEnabled=False,
             mtu='0',
             fqdn='',
+            convertVif=False,
             flags='0'):
         payload = {
             'siteClusterId' : siteClusterId,  #xsd:string
@@ -7592,6 +7775,7 @@ class QuantastorClient(object):
             'nvmeEnabled' : nvmeEnabled,  #xsd:boolean
             'mtu' : mtu,  #xsd:unsignedInt
             'fqdn' : fqdn,  #xsd:string
+            'convertVif' : convertVif,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('siteVifResourceCreate', payload)
@@ -7600,9 +7784,11 @@ class QuantastorClient(object):
     def site_vif_resource_delete(
             self,
             siteVifResource='',
+            convertToVif=False,
             flags='0'):
         payload = {
             'siteVifResource' : siteVifResource,  #xsd:string
+            'convertToVif' : convertToVif,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('siteVifResourceDelete', payload)
@@ -7991,6 +8177,28 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('storagePoolDeviceGroupIdentify', payload)
         return StoragePoolDeviceGroupIdentifyResponse.responseParse(jsonOutput)
 
+    def storage_pool_device_group_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storagePoolDeviceGroupSearch', payload)
+        return StoragePoolDeviceGroupSearchResponse.responseParse(jsonOutput)
+
+    def storage_pool_device_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storagePoolDeviceSearch', payload)
+        return StoragePoolDeviceSearchResponse.responseParse(jsonOutput)
+
     def storage_pool_encryption_key_export(
             self,
             storagePool='',
@@ -8215,12 +8423,13 @@ class QuantastorClient(object):
             parentInterfaceName='',
             description='',
             ipAddress='',
-            gateway='',
             subnetMask='',
             macAddress='',
+            locationConfigList='',
             iscsiEnabled=False,
             nvmeofEnabled=False,
             fqdn='',
+            convertVif=False,
             flags='0'):
         payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
@@ -8228,12 +8437,13 @@ class QuantastorClient(object):
             'parentInterfaceName' : parentInterfaceName,  #xsd:string
             'description' : description,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
-            'gateway' : gateway,  #xsd:string
             'subnetMask' : subnetMask,  #xsd:string
             'macAddress' : macAddress,  #xsd:string
+            'locationConfigList' : locationConfigList,  #xsd:string
             'iscsiEnabled' : iscsiEnabled,  #xsd:boolean
             'nvmeofEnabled' : nvmeofEnabled,  #xsd:boolean
             'fqdn' : fqdn,  #xsd:string
+            'convertVif' : convertVif,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverInterfaceCreate', payload)
@@ -8243,10 +8453,12 @@ class QuantastorClient(object):
             self,
             failoverGroup='',
             failoverInterface='',
+            convertToVif=False,
             flags='0'):
         payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'failoverInterface' : failoverInterface,  #xsd:string
+            'convertToVif' : convertToVif,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverInterfaceDelete', payload)
@@ -8340,6 +8552,8 @@ class QuantastorClient(object):
             noBarriers=False,
             profile='',
             syncPolicy='0',
+            cachePolicyPrimary='0',
+            cachePolicySecondary='0',
             compressionType='',
             hotspareRepairPolicy='0',
             copies='0',
@@ -8357,6 +8571,8 @@ class QuantastorClient(object):
             'noBarriers' : noBarriers,  #xsd:boolean
             'profile' : profile,  #xsd:string
             'syncPolicy' : syncPolicy,  #xsd:unsignedInt
+            'cachePolicyPrimary' : cachePolicyPrimary,  #xsd:unsignedInt
+            'cachePolicySecondary' : cachePolicySecondary,  #xsd:unsignedInt
             'compressionType' : compressionType,  #xsd:string
             'hotspareRepairPolicy' : hotspareRepairPolicy,  #xsd:unsignedInt
             'copies' : copies,  #xsd:unsignedInt
@@ -8411,6 +8627,17 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('storagePoolPropertiesUpdate', payload)
         return StoragePoolPropertiesUpdateResponse.responseParse(jsonOutput)
 
+    def storage_pool_rekey(
+            self,
+            storagePool='',
+            flags='0'):
+        payload = {
+            'storagePool' : storagePool,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storagePoolRekey', payload)
+        return StoragePoolRekeyResponse.responseParse(jsonOutput)
+
     def storage_pool_rescan(
             self,
             storageSystem='',
@@ -8445,6 +8672,17 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('storagePoolScrubStop', payload)
         return StoragePoolScrubStopResponse.responseParse(jsonOutput)
+
+    def storage_pool_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storagePoolSearch', payload)
+        return StoragePoolSearchResponse.responseParse(jsonOutput)
 
     def storage_pool_set_passphrase(
             self,
@@ -8680,6 +8918,19 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('storageQuotaVolumeAssocGet', payload)
         return StorageQuotaVolumeAssocGetResponse.responseParse(jsonOutput)
+
+    def storage_system_beep(
+            self,
+            storageSystem='',
+            duration='0',
+            flags='0'):
+        payload = {
+            'storageSystem' : storageSystem,  #xsd:string
+            'duration' : duration,  #xsd:unsignedInt
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storageSystemBeep', payload)
+        return StorageSystemBeepResponse.responseParse(jsonOutput)
 
     def storage_system_cluster_assoc_enum(
             self,
@@ -9474,6 +9725,8 @@ class QuantastorClient(object):
             distroUpgrade=False,
             allowReboot=False,
             coreOnly=False,
+            cephUpgrade=False,
+            workerTask=False,
             flags='0'):
         payload = {
             'storageSystemIdList' : storageSystemIdList,  #xsd:string
@@ -9481,6 +9734,8 @@ class QuantastorClient(object):
             'distroUpgrade' : distroUpgrade,  #xsd:boolean
             'allowReboot' : allowReboot,  #xsd:boolean
             'coreOnly' : coreOnly,  #xsd:boolean
+            'cephUpgrade' : cephUpgrade,  #xsd:boolean
+            'workerTask' : workerTask,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemUpgrade', payload)
@@ -9736,6 +9991,7 @@ class QuantastorClient(object):
             count='0',
             qosPolicy='',
             profile='',
+            disableMapping=False,
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -9750,6 +10006,7 @@ class QuantastorClient(object):
             'count' : count,  #xsd:unsignedInt
             'qosPolicy' : qosPolicy,  #xsd:string
             'profile' : profile,  #xsd:string
+            'disableMapping' : disableMapping,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeCreate', payload)
@@ -9771,11 +10028,14 @@ class QuantastorClient(object):
             stripeSizeKb='0',
             stripeCount='0',
             syncPolicy='0',
+            cachePolicyPrimary='0',
+            cachePolicySecondary='0',
             compressionType='',
             copies='0',
             qosPolicy='',
             profile='',
             spaceReserved='0',
+            disableMapping=False,
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -9792,11 +10052,14 @@ class QuantastorClient(object):
             'stripeSizeKb' : stripeSizeKb,  #xsd:unsignedInt
             'stripeCount' : stripeCount,  #xsd:unsignedInt
             'syncPolicy' : syncPolicy,  #xsd:unsignedInt
+            'cachePolicyPrimary' : cachePolicyPrimary,  #xsd:unsignedInt
+            'cachePolicySecondary' : cachePolicySecondary,  #xsd:unsignedInt
             'compressionType' : compressionType,  #xsd:string
             'copies' : copies,  #xsd:unsignedInt
             'qosPolicy' : qosPolicy,  #xsd:string
             'profile' : profile,  #xsd:string
             'spaceReserved' : self.size_in_bytes(spaceReserved),  #xsd:unsignedLong
+            'disableMapping' : disableMapping,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeCreateEx', payload)
@@ -10086,6 +10349,8 @@ class QuantastorClient(object):
             enableCaching=False,
             isActiveCheckpoint=False,
             syncPolicy='0',
+            cachePolicyPrimary='0',
+            cachePolicySecondary='0',
             compressionType='',
             copies='0',
             qosPolicy='',
@@ -10104,6 +10369,8 @@ class QuantastorClient(object):
             'enableCaching' : enableCaching,  #xsd:boolean
             'isActiveCheckpoint' : isActiveCheckpoint,  #xsd:boolean
             'syncPolicy' : syncPolicy,  #xsd:unsignedInt
+            'cachePolicyPrimary' : cachePolicyPrimary,  #xsd:unsignedInt
+            'cachePolicySecondary' : cachePolicySecondary,  #xsd:unsignedInt
             'compressionType' : compressionType,  #xsd:string
             'copies' : copies,  #xsd:unsignedInt
             'qosPolicy' : qosPolicy,  #xsd:string
@@ -10189,6 +10456,17 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('storageVolumeRollback', payload)
         return StorageVolumeRollbackResponse.responseParse(jsonOutput)
+
+    def storage_volume_search(
+            self,
+            searchParams='',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storageVolumeSearch', payload)
+        return StorageVolumeSearchResponse.responseParse(jsonOutput)
 
     def storage_volume_set_qos_controls(
             self,
@@ -10475,9 +10753,11 @@ class QuantastorClient(object):
     def target_port_disable(
             self,
             port='',
+            storageSystem='',
             flags='0'):
         payload = {
             'port' : port,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortDisable', payload)
@@ -10486,9 +10766,11 @@ class QuantastorClient(object):
     def target_port_enable(
             self,
             port='',
+            storageSystem='',
             flags='0'):
         payload = {
             'port' : port,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortEnable', payload)
@@ -10496,8 +10778,10 @@ class QuantastorClient(object):
 
     def target_port_enum(
             self,
+            storageSystem='',
             flags='0'):
         payload = {
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortEnum', payload)
@@ -10506,9 +10790,11 @@ class QuantastorClient(object):
     def target_port_get(
             self,
             port='',
+            storageSystem='',
             flags='0'):
         payload = {
             'port' : port,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortGet', payload)
@@ -10518,6 +10804,7 @@ class QuantastorClient(object):
             self,
             port='',
             configType='',
+            storageSystem='',
             ipAddress='',
             netmask='',
             gateway='',
@@ -10534,6 +10821,7 @@ class QuantastorClient(object):
         payload = {
             'port' : port,  #xsd:string
             'configType' : configType,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
             'ipAddress' : ipAddress,  #xsd:string
             'netmask' : netmask,  #xsd:string
             'gateway' : gateway,  #xsd:string
@@ -10565,9 +10853,11 @@ class QuantastorClient(object):
     def target_port_restart(
             self,
             port='',
+            storageSystemId='',
             flags='0'):
         payload = {
             'port' : port,  #xsd:string
+            'storageSystemId' : storageSystemId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortRestart', payload)
@@ -10605,8 +10895,10 @@ class QuantastorClient(object):
 
     def target_port_static_route_enum(
             self,
+            storageSystem='',
             flags='0'):
         payload = {
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetPortStaticRouteEnum', payload)
@@ -10678,9 +10970,11 @@ class QuantastorClient(object):
     def target_virtual_port_delete(
             self,
             port='',
+            storageSystem='',
             flags='0'):
         payload = {
             'port' : port,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('targetVirtualPortDelete', payload)
@@ -11187,8 +11481,10 @@ class QuantastorClient(object):
 
     def virtual_interface_assoc_enum(
             self,
+            storageSystem='',
             flags='0'):
         payload = {
+            'storageSystem' : storageSystem,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('virtualInterfaceAssocEnum', payload)
@@ -11403,17 +11699,11 @@ class Provisionable(Object):
 
 class Replicatable(Object):
     _storagePoolId=''
-    _remoteReplicaFlags='0'
     _size='0'
     _isSnapshot=False
     _lazyCloneSnapshotPath=''
-    _snapshotGroupId=''
     _snapshotParent=''
     _mountPath=''
-    _originationPoolId=''
-    _originationId=''
-    _originationName=''
-    _originationSnapshotParent=''
     _isActiveCheckpoint=False
     _createdBySchedule=''
     _compressionRatio=''
@@ -11430,6 +11720,8 @@ class Replicatable(Object):
     _vvolParentId=''
     _snapshotReferenceId=''
     _numHolds='0'
+    _cachePolicyPrimary='0'
+    _cachePolicySecondary='0'
     _replicaAssocList=''
 
     def __init__(self,jsonObj):
@@ -11441,10 +11733,6 @@ class Replicatable(Object):
             self._storagePoolId = jsonObj['storagePoolId']
         else:
             self._storagePoolId = ''
-        if 'remoteReplicaFlags' in jsonObj:
-            self._remoteReplicaFlags = jsonObj['remoteReplicaFlags']
-        else:
-            self._remoteReplicaFlags = '0'
         if 'size' in jsonObj:
             self._size = jsonObj['size']
         else:
@@ -11457,10 +11745,6 @@ class Replicatable(Object):
             self._lazyCloneSnapshotPath = jsonObj['lazyCloneSnapshotPath']
         else:
             self._lazyCloneSnapshotPath = ''
-        if 'snapshotGroupId' in jsonObj:
-            self._snapshotGroupId = jsonObj['snapshotGroupId']
-        else:
-            self._snapshotGroupId = ''
         if 'snapshotParent' in jsonObj:
             self._snapshotParent = jsonObj['snapshotParent']
         else:
@@ -11469,22 +11753,6 @@ class Replicatable(Object):
             self._mountPath = jsonObj['mountPath']
         else:
             self._mountPath = ''
-        if 'originationPoolId' in jsonObj:
-            self._originationPoolId = jsonObj['originationPoolId']
-        else:
-            self._originationPoolId = ''
-        if 'originationId' in jsonObj:
-            self._originationId = jsonObj['originationId']
-        else:
-            self._originationId = ''
-        if 'originationName' in jsonObj:
-            self._originationName = jsonObj['originationName']
-        else:
-            self._originationName = ''
-        if 'originationSnapshotParent' in jsonObj:
-            self._originationSnapshotParent = jsonObj['originationSnapshotParent']
-        else:
-            self._originationSnapshotParent = ''
         if 'isActiveCheckpoint' in jsonObj:
             self._isActiveCheckpoint = jsonObj['isActiveCheckpoint']
         else:
@@ -11549,6 +11817,14 @@ class Replicatable(Object):
             self._numHolds = jsonObj['numHolds']
         else:
             self._numHolds = '0'
+        if 'cachePolicyPrimary' in jsonObj:
+            self._cachePolicyPrimary = jsonObj['cachePolicyPrimary']
+        else:
+            self._cachePolicyPrimary = '0'
+        if 'cachePolicySecondary' in jsonObj:
+            self._cachePolicySecondary = jsonObj['cachePolicySecondary']
+        else:
+            self._cachePolicySecondary = '0'
         if 'replicaAssocList' in jsonObj:
             self._replicaAssocList = jsonObj['replicaAssocList']
         else:
@@ -11559,17 +11835,11 @@ class Replicatable(Object):
         superJsonObj = super(Replicatable,self).exportJson()
         thisJsonObj = {
             'storagePoolId' : self._storagePoolId,
-            'remoteReplicaFlags' : self._remoteReplicaFlags,
             'size' : self._size,
             'isSnapshot' : self._isSnapshot,
             'lazyCloneSnapshotPath' : self._lazyCloneSnapshotPath,
-            'snapshotGroupId' : self._snapshotGroupId,
             'snapshotParent' : self._snapshotParent,
             'mountPath' : self._mountPath,
-            'originationPoolId' : self._originationPoolId,
-            'originationId' : self._originationId,
-            'originationName' : self._originationName,
-            'originationSnapshotParent' : self._originationSnapshotParent,
             'isActiveCheckpoint' : self._isActiveCheckpoint,
             'createdBySchedule' : self._createdBySchedule,
             'compressionRatio' : self._compressionRatio,
@@ -11586,6 +11856,8 @@ class Replicatable(Object):
             'vvolParentId' : self._vvolParentId,
             'snapshotReferenceId' : self._snapshotReferenceId,
             'numHolds' : self._numHolds,
+            'cachePolicyPrimary' : self._cachePolicyPrimary,
+            'cachePolicySecondary' : self._cachePolicySecondary,
             'replicaAssocList' : self._replicaAssocList
         }
         thisJsonObj.update(superJsonObj)
@@ -11721,6 +11993,7 @@ class SiteVifResource(Object):
     _startedOn=''
     _useCase='0'
     _useCaseObjId=''
+    _isUnmanaged=False
     _locationConstraintList=''
 
     def __init__(self,jsonObj):
@@ -11796,6 +12069,10 @@ class SiteVifResource(Object):
             self._useCaseObjId = jsonObj['useCaseObjId']
         else:
             self._useCaseObjId = ''
+        if 'isUnmanaged' in jsonObj:
+            self._isUnmanaged = jsonObj['isUnmanaged']
+        else:
+            self._isUnmanaged = False
         if 'locationConstraintList' in jsonObj:
             self._locationConstraintList = jsonObj['locationConstraintList']
         else:
@@ -11822,6 +12099,7 @@ class SiteVifResource(Object):
             'startedOn' : self._startedOn,
             'useCase' : self._useCase,
             'useCaseObjId' : self._useCaseObjId,
+            'isUnmanaged' : self._isUnmanaged,
             'locationConstraintList' : self._locationConstraintList
         }
         thisJsonObj.update(superJsonObj)
@@ -12341,6 +12619,10 @@ class AlertConfigSettings(Object):
     _poolFreeSpaceWarningThreshold='0'
     _poolFreeSpaceAlertThreshold='0'
     _poolFreeSpaceCriticalAlertThreshold='0'
+    _shareQuotaFreeSpaceWarningThreshold='0'
+    _shareQuotaFreeSpaceAlertThreshold='0'
+    _shareQuotaFreeSpaceCriticalThreshold='0'
+    _enableSyslogAlerts=False
     _endpointList=''
 
     def __init__(self,jsonObj):
@@ -12388,6 +12670,22 @@ class AlertConfigSettings(Object):
             self._poolFreeSpaceCriticalAlertThreshold = jsonObj['poolFreeSpaceCriticalAlertThreshold']
         else:
             self._poolFreeSpaceCriticalAlertThreshold = '0'
+        if 'shareQuotaFreeSpaceWarningThreshold' in jsonObj:
+            self._shareQuotaFreeSpaceWarningThreshold = jsonObj['shareQuotaFreeSpaceWarningThreshold']
+        else:
+            self._shareQuotaFreeSpaceWarningThreshold = '0'
+        if 'shareQuotaFreeSpaceAlertThreshold' in jsonObj:
+            self._shareQuotaFreeSpaceAlertThreshold = jsonObj['shareQuotaFreeSpaceAlertThreshold']
+        else:
+            self._shareQuotaFreeSpaceAlertThreshold = '0'
+        if 'shareQuotaFreeSpaceCriticalThreshold' in jsonObj:
+            self._shareQuotaFreeSpaceCriticalThreshold = jsonObj['shareQuotaFreeSpaceCriticalThreshold']
+        else:
+            self._shareQuotaFreeSpaceCriticalThreshold = '0'
+        if 'enableSyslogAlerts' in jsonObj:
+            self._enableSyslogAlerts = jsonObj['enableSyslogAlerts']
+        else:
+            self._enableSyslogAlerts = False
         if 'endpointList' in jsonObj:
             self._endpointList = jsonObj['endpointList']
         else:
@@ -12407,6 +12705,10 @@ class AlertConfigSettings(Object):
             'poolFreeSpaceWarningThreshold' : self._poolFreeSpaceWarningThreshold,
             'poolFreeSpaceAlertThreshold' : self._poolFreeSpaceAlertThreshold,
             'poolFreeSpaceCriticalAlertThreshold' : self._poolFreeSpaceCriticalAlertThreshold,
+            'shareQuotaFreeSpaceWarningThreshold' : self._shareQuotaFreeSpaceWarningThreshold,
+            'shareQuotaFreeSpaceAlertThreshold' : self._shareQuotaFreeSpaceAlertThreshold,
+            'shareQuotaFreeSpaceCriticalThreshold' : self._shareQuotaFreeSpaceCriticalThreshold,
+            'enableSyslogAlerts' : self._enableSyslogAlerts,
             'endpointList' : self._endpointList
         }
         thisJsonObj.update(superJsonObj)
@@ -12539,7 +12841,6 @@ class AssocConfiguration(Object):
     _listMaintenanceScheduleAssoc=''
     _listNetworkShareNamespaceShareAssoc=''
     _listNetworkShareNamespaceSystemAssoc=''
-    _listPhysicalDiskPathAssoc=''
     _listReplicationScheduleAssoc=''
     _listReportScheduleAssoc=''
     _listSiteVifLocationConstraint=''
@@ -12585,10 +12886,6 @@ class AssocConfiguration(Object):
             self._listNetworkShareNamespaceSystemAssoc = jsonObj['listNetworkShareNamespaceSystemAssoc']
         else:
             self._listNetworkShareNamespaceSystemAssoc = ''
-        if 'listPhysicalDiskPathAssoc' in jsonObj:
-            self._listPhysicalDiskPathAssoc = jsonObj['listPhysicalDiskPathAssoc']
-        else:
-            self._listPhysicalDiskPathAssoc = ''
         if 'listReplicationScheduleAssoc' in jsonObj:
             self._listReplicationScheduleAssoc = jsonObj['listReplicationScheduleAssoc']
         else:
@@ -12645,7 +12942,6 @@ class AssocConfiguration(Object):
             'listMaintenanceScheduleAssoc' : self._listMaintenanceScheduleAssoc,
             'listNetworkShareNamespaceShareAssoc' : self._listNetworkShareNamespaceShareAssoc,
             'listNetworkShareNamespaceSystemAssoc' : self._listNetworkShareNamespaceSystemAssoc,
-            'listPhysicalDiskPathAssoc' : self._listPhysicalDiskPathAssoc,
             'listReplicationScheduleAssoc' : self._listReplicationScheduleAssoc,
             'listReportScheduleAssoc' : self._listReportScheduleAssoc,
             'listSiteVifLocationConstraint' : self._listSiteVifLocationConstraint,
@@ -13871,6 +14167,23 @@ class CephClusterHealthEventGetResponse(object):
         obj = CephClusterHealthEvent(jsonObj)
         return obj
 
+class CephClusterImportResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = CephCluster(jsonObj['obj'])
+        return task, obj
+
 class CephClusterMember(Object):
     _cephClusterId=''
     _nodeSystemId=''
@@ -14071,6 +14384,7 @@ class CephCrushRule(Object):
     _maxSize='0'
     _listSteps=''
     _cephClusterId=''
+    _failureDomain=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -14105,6 +14419,10 @@ class CephCrushRule(Object):
             self._cephClusterId = jsonObj['cephClusterId']
         else:
             self._cephClusterId = ''
+        if 'failureDomain' in jsonObj:
+            self._failureDomain = jsonObj['failureDomain']
+        else:
+            self._failureDomain = ''
         return self
 
     def exportJson(self):
@@ -14116,7 +14434,8 @@ class CephCrushRule(Object):
             'minSize' : self._minSize,
             'maxSize' : self._maxSize,
             'listSteps' : self._listSteps,
-            'cephClusterId' : self._cephClusterId
+            'cephClusterId' : self._cephClusterId,
+            'failureDomain' : self._failureDomain
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -15424,6 +15743,26 @@ class CephOsdModifyResponse(object):
         task = Task(jsonObj['task'])
         obj = CephOsd(jsonObj['obj'])
         return task, obj
+
+class CephOsdReweightResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(CephOsd(var))
+        return task, objList
 
 class CephOsdServiceUpdateResponse(object):
     _task=''
@@ -19847,6 +20186,26 @@ class HwControllerRescanResponse(object):
         obj = HwController(jsonObj['obj'])
         return task, obj
 
+class HwControllerSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(HwController(var))
+        return task, objList
+
 class HwControllerSilenceAlarmsResponse(object):
     _task=''
     _obj=''
@@ -20186,6 +20545,26 @@ class HwDiskModifyResponse(object):
         return task, obj
 
 class HwDiskRemoveResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(HwDisk(var))
+        return task, objList
+
+class HwDiskSearchResponse(object):
     _task=''
     _list=''
 
@@ -20662,6 +21041,26 @@ class HwEnclosureModifyResponse(object):
         task = Task(jsonObj['task'])
         obj = HwEnclosure(jsonObj['obj'])
         return task, obj
+
+class HwEnclosureSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(HwEnclosure(var))
+        return task, objList
 
 class HwEnclosureSlotIdentifyResponse(object):
     _task=''
@@ -21146,6 +21545,26 @@ class HwUnitModifyResponse(object):
         task = Task(jsonObj['task'])
         obj = HwUnit(jsonObj['obj'])
         return task, obj
+
+class HwUnitSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(HwUnit(var))
+        return task, objList
 
 class HwUnitSsdCacheCreateResponse(object):
     _task=''
@@ -22911,6 +23330,13 @@ class NetworkShare(Replicatable):
     _disableSmbSnapsDir=False
     _disableNfsSnapsDir=False
     _enableNfsSnapBrowsing=False
+    _isEncrypted=False
+    _requiresKeyPassphrase=False
+    _cryptAlgorithm=''
+    _cryptKeyFormat=''
+    _cryptKeyLocation=''
+    _cryptKeyStatus=''
+    _cryptRoot=''
     _snapshotIdList=''
     _subshareIdList=''
     _nfsClients=''
@@ -23019,6 +23445,34 @@ class NetworkShare(Replicatable):
             self._enableNfsSnapBrowsing = jsonObj['enableNfsSnapBrowsing']
         else:
             self._enableNfsSnapBrowsing = False
+        if 'isEncrypted' in jsonObj:
+            self._isEncrypted = jsonObj['isEncrypted']
+        else:
+            self._isEncrypted = False
+        if 'requiresKeyPassphrase' in jsonObj:
+            self._requiresKeyPassphrase = jsonObj['requiresKeyPassphrase']
+        else:
+            self._requiresKeyPassphrase = False
+        if 'cryptAlgorithm' in jsonObj:
+            self._cryptAlgorithm = jsonObj['cryptAlgorithm']
+        else:
+            self._cryptAlgorithm = ''
+        if 'cryptKeyFormat' in jsonObj:
+            self._cryptKeyFormat = jsonObj['cryptKeyFormat']
+        else:
+            self._cryptKeyFormat = ''
+        if 'cryptKeyLocation' in jsonObj:
+            self._cryptKeyLocation = jsonObj['cryptKeyLocation']
+        else:
+            self._cryptKeyLocation = ''
+        if 'cryptKeyStatus' in jsonObj:
+            self._cryptKeyStatus = jsonObj['cryptKeyStatus']
+        else:
+            self._cryptKeyStatus = ''
+        if 'cryptRoot' in jsonObj:
+            self._cryptRoot = jsonObj['cryptRoot']
+        else:
+            self._cryptRoot = ''
         if 'snapshotIdList' in jsonObj:
             self._snapshotIdList = jsonObj['snapshotIdList']
         else:
@@ -23072,6 +23526,13 @@ class NetworkShare(Replicatable):
             'disableSmbSnapsDir' : self._disableSmbSnapsDir,
             'disableNfsSnapsDir' : self._disableNfsSnapsDir,
             'enableNfsSnapBrowsing' : self._enableNfsSnapBrowsing,
+            'isEncrypted' : self._isEncrypted,
+            'requiresKeyPassphrase' : self._requiresKeyPassphrase,
+            'cryptAlgorithm' : self._cryptAlgorithm,
+            'cryptKeyFormat' : self._cryptKeyFormat,
+            'cryptKeyLocation' : self._cryptKeyLocation,
+            'cryptKeyStatus' : self._cryptKeyStatus,
+            'cryptRoot' : self._cryptRoot,
             'snapshotIdList' : self._snapshotIdList,
             'subshareIdList' : self._subshareIdList,
             'nfsClients' : self._nfsClients,
@@ -23464,6 +23925,61 @@ class NetworkShareEnableResponse(object):
         obj = NetworkShare(jsonObj['obj'])
         return task, obj
 
+class NetworkShareEncryptedStartResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
+
+class NetworkShareEncryptionKeyExportResponse(object):
+    _task=''
+    _obj=''
+    _keyBlock=''
+
+    def __init__(
+        self,
+        task='',
+        obj='',
+        keyBlock=''):
+        self._task = task
+        self._obj = obj
+        self._keyBlock = keyBlock
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        keyBlock = jsonObj['keyBlock']
+        return task, obj, keyBlock
+
+class NetworkShareEncryptionKeyImportResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
+
 class NetworkShareEnumQuotasResponse(object):
     _userSpaceList=''
     _groupSpaceList=''
@@ -23579,23 +24095,6 @@ class NetworkShareFileCreateResponse(object):
         return task, obj
 
 class NetworkShareFileDeleteResponse(object):
-    _task=''
-    _obj=''
-
-    def __init__(
-        self,
-        task='',
-        obj=''):
-        self._task = task
-        self._obj = obj
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = NetworkShareFile(jsonObj['obj'])
-        return task, obj
-
-class NetworkShareFileExpandResponse(object):
     _task=''
     _obj=''
 
@@ -23789,7 +24288,41 @@ class NetworkShareLeaveDomainResponse(object):
         obj = NetworkShareServiceConfig(jsonObj['obj'])
         return task, obj
 
+class NetworkShareLoadEncryptionKeyResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
+
 class NetworkShareModifyResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
+
+class NetworkShareMoveResponse(object):
     _task=''
     _obj=''
 
@@ -24200,6 +24733,26 @@ class NetworkShareRollbackResponse(object):
         obj = NetworkShare(jsonObj['obj'])
         return task, obj
 
+class NetworkShareSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(NetworkShare(var))
+        return task, objList
+
 class NetworkShareServiceConfig(Object):
     _nfsMode='0'
     _nfs4KerberosEnabled=False
@@ -24405,6 +24958,23 @@ class NetworkShareSessionGetResponse(object):
         obj = NetworkShareSession(jsonObj)
         return obj
 
+class NetworkShareSetPassphraseResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
+
 class NetworkShareSetQuotasResponse(object):
     _task=''
     _obj=''
@@ -24423,6 +24993,23 @@ class NetworkShareSetQuotasResponse(object):
         return task, obj
 
 class NetworkShareSnapshotResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = NetworkShare(jsonObj['obj'])
+        return task, obj
+
+class NetworkShareUnloadEncryptionKeyResponse(object):
     _task=''
     _obj=''
 
@@ -24885,7 +25472,7 @@ class PhysicalDisk(Object):
     _sedCapabilities='0'
     _sedStatus='0'
     _encryptionType=''
-    _pathList=''
+    _pathIdList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -25084,10 +25671,10 @@ class PhysicalDisk(Object):
             self._encryptionType = jsonObj['encryptionType']
         else:
             self._encryptionType = ''
-        if 'pathList' in jsonObj:
-            self._pathList = jsonObj['pathList']
+        if 'pathIdList' in jsonObj:
+            self._pathIdList = jsonObj['pathIdList']
         else:
-            self._pathList = ''
+            self._pathIdList = ''
         return self
 
     def exportJson(self):
@@ -25141,7 +25728,7 @@ class PhysicalDisk(Object):
             'sedCapabilities' : self._sedCapabilities,
             'sedStatus' : self._sedStatus,
             'encryptionType' : self._encryptionType,
-            'pathList' : self._pathList
+            'pathIdList' : self._pathIdList
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -25438,83 +26025,6 @@ class PhysicalDiskMultipathConfigScanResponse(object):
             objList.append(MultipathConfig(var))
         return objList
 
-class PhysicalDiskPathAssoc(object):
-    _storageSystemId=''
-    _isRemote=False
-    _multipathDeviceId=''
-    _standardDeviceId=''
-    _policyType=''
-    _pathStatus=''
-
-    def __init__(self,jsonObj):
-        self.jsonParse(jsonObj)
-
-    def jsonParse(self,jsonObj):
-        if 'storageSystemId' in jsonObj:
-            self._storageSystemId = jsonObj['storageSystemId']
-        else:
-            self._storageSystemId = ''
-        if 'isRemote' in jsonObj:
-            self._isRemote = jsonObj['isRemote']
-        else:
-            self._isRemote = False
-        if 'multipathDeviceId' in jsonObj:
-            self._multipathDeviceId = jsonObj['multipathDeviceId']
-        else:
-            self._multipathDeviceId = ''
-        if 'standardDeviceId' in jsonObj:
-            self._standardDeviceId = jsonObj['standardDeviceId']
-        else:
-            self._standardDeviceId = ''
-        if 'policyType' in jsonObj:
-            self._policyType = jsonObj['policyType']
-        else:
-            self._policyType = ''
-        if 'pathStatus' in jsonObj:
-            self._pathStatus = jsonObj['pathStatus']
-        else:
-            self._pathStatus = ''
-        return self
-
-    def exportJson(self):
-        thisJsonObj = {
-            'storageSystemId' : self._storageSystemId,
-            'isRemote' : self._isRemote,
-            'multipathDeviceId' : self._multipathDeviceId,
-            'standardDeviceId' : self._standardDeviceId,
-            'policyType' : self._policyType,
-            'pathStatus' : self._pathStatus
-        }
-        return thisJsonObj
-
-class PhysicalDiskPathAssocEnumResponse(object):
-    _list=''
-
-    def __init__(
-        self,
-        objList=''):
-        self._list = objList
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        objList = []
-        for var in jsonObj:
-            objList.append(PhysicalDiskPathAssoc(var))
-        return objList
-
-class PhysicalDiskPathAssocGetResponse(object):
-    _obj=''
-
-    def __init__(
-        self,
-        obj=''):
-        self._obj = obj
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        obj = PhysicalDiskPathAssoc(jsonObj)
-        return obj
-
 class PhysicalDiskPerfTestResponse(object):
     _task=''
     _list=''
@@ -25536,6 +26046,26 @@ class PhysicalDiskPerfTestResponse(object):
         return task, objList
 
 class PhysicalDiskScanResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(PhysicalDisk(var))
+        return task, objList
+
+class PhysicalDiskSearchResponse(object):
     _task=''
     _list=''
 
@@ -26167,6 +26697,7 @@ class ReplicaReportEntry(Object):
     _estTotalTransfer='0'
     _amountTransfered='0'
     _averageTransfer='0'
+    _objectEntryType='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -26237,6 +26768,10 @@ class ReplicaReportEntry(Object):
             self._averageTransfer = jsonObj['averageTransfer']
         else:
             self._averageTransfer = '0'
+        if 'objectEntryType' in jsonObj:
+            self._objectEntryType = jsonObj['objectEntryType']
+        else:
+            self._objectEntryType = '0'
         return self
 
     def exportJson(self):
@@ -26257,7 +26792,8 @@ class ReplicaReportEntry(Object):
             'transferSpeed' : self._transferSpeed,
             'estTotalTransfer' : self._estTotalTransfer,
             'amountTransfered' : self._amountTransfered,
-            'averageTransfer' : self._averageTransfer
+            'averageTransfer' : self._averageTransfer,
+            'objectEntryType' : self._objectEntryType
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -26503,6 +27039,7 @@ class ReplicationSchedule(Schedule):
     _retentionCountMonthliesSrc='0'
     _retentionCountQuarterliesSrc='0'
     _scheduleActivationVifId=''
+    _retentionCountSumReports='0'
     _storageVolumeList=''
     _networkShareList=''
 
@@ -26575,6 +27112,10 @@ class ReplicationSchedule(Schedule):
             self._scheduleActivationVifId = jsonObj['scheduleActivationVifId']
         else:
             self._scheduleActivationVifId = ''
+        if 'retentionCountSumReports' in jsonObj:
+            self._retentionCountSumReports = jsonObj['retentionCountSumReports']
+        else:
+            self._retentionCountSumReports = '0'
         if 'storageVolumeList' in jsonObj:
             self._storageVolumeList = jsonObj['storageVolumeList']
         else:
@@ -26604,6 +27145,7 @@ class ReplicationSchedule(Schedule):
             'retentionCountMonthliesSrc' : self._retentionCountMonthliesSrc,
             'retentionCountQuarterliesSrc' : self._retentionCountQuarterliesSrc,
             'scheduleActivationVifId' : self._scheduleActivationVifId,
+            'retentionCountSumReports' : self._retentionCountSumReports,
             'storageVolumeList' : self._storageVolumeList,
             'networkShareList' : self._networkShareList
         }
@@ -30280,6 +30822,8 @@ class StoragePool(Provisionable):
     _errCountWrites='0'
     _errCountChecksums='0'
     _trimSupported=False
+    _cachePolicyPrimary='0'
+    _cachePolicySecondary='0'
     _storagePoolDeviceList=''
     _storagePoolHaGroupList=''
     _storagePoolDeviceGroupList=''
@@ -30541,6 +31085,14 @@ class StoragePool(Provisionable):
             self._trimSupported = jsonObj['trimSupported']
         else:
             self._trimSupported = False
+        if 'cachePolicyPrimary' in jsonObj:
+            self._cachePolicyPrimary = jsonObj['cachePolicyPrimary']
+        else:
+            self._cachePolicyPrimary = '0'
+        if 'cachePolicySecondary' in jsonObj:
+            self._cachePolicySecondary = jsonObj['cachePolicySecondary']
+        else:
+            self._cachePolicySecondary = '0'
         if 'storagePoolDeviceList' in jsonObj:
             self._storagePoolDeviceList = jsonObj['storagePoolDeviceList']
         else:
@@ -30621,6 +31173,8 @@ class StoragePool(Provisionable):
             'errCountWrites' : self._errCountWrites,
             'errCountChecksums' : self._errCountChecksums,
             'trimSupported' : self._trimSupported,
+            'cachePolicyPrimary' : self._cachePolicyPrimary,
+            'cachePolicySecondary' : self._cachePolicySecondary,
             'storagePoolDeviceList' : self._storagePoolDeviceList,
             'storagePoolHaGroupList' : self._storagePoolHaGroupList,
             'storagePoolDeviceGroupList' : self._storagePoolDeviceGroupList
@@ -30697,6 +31251,7 @@ class StoragePoolDevice(Object):
     _isFaulty=False
     _isSpare=False
     _isCache=False
+    _isVirtual=False
     _cacheType='0'
     _raidGroupId=''
     _size='0'
@@ -30784,6 +31339,10 @@ class StoragePoolDevice(Object):
             self._isCache = jsonObj['isCache']
         else:
             self._isCache = False
+        if 'isVirtual' in jsonObj:
+            self._isVirtual = jsonObj['isVirtual']
+        else:
+            self._isVirtual = False
         if 'cacheType' in jsonObj:
             self._cacheType = jsonObj['cacheType']
         else:
@@ -30858,6 +31417,7 @@ class StoragePoolDevice(Object):
             'isFaulty' : self._isFaulty,
             'isSpare' : self._isSpare,
             'isCache' : self._isCache,
+            'isVirtual' : self._isVirtual,
             'cacheType' : self._cacheType,
             'raidGroupId' : self._raidGroupId,
             'size' : self._size,
@@ -31011,6 +31571,46 @@ class StoragePoolDeviceGroupIdentifyResponse(object):
         task = Task(jsonObj['task'])
         obj = StoragePoolDeviceGroup(jsonObj['obj'])
         return task, obj
+
+class StoragePoolDeviceGroupSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(StoragePoolDeviceGroup(var))
+        return task, objList
+
+class StoragePoolDeviceSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(StoragePoolDevice(var))
+        return task, objList
 
 class StoragePoolEncryptionKeyExportResponse(object):
     _task=''
@@ -31798,6 +32398,23 @@ class StoragePoolPropertiesUpdateResponse(object):
         obj = StoragePool(jsonObj['obj'])
         return task, obj
 
+class StoragePoolRekeyResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = StoragePool(jsonObj['obj'])
+        return task, obj
+
 class StoragePoolRescanResponse(object):
     _task=''
     _list=''
@@ -31851,6 +32468,26 @@ class StoragePoolScrubStopResponse(object):
         task = Task(jsonObj['task'])
         obj = StoragePool(jsonObj['obj'])
         return task, obj
+
+class StoragePoolSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(StoragePool(var))
+        return task, objList
 
 class StoragePoolSetPassphraseResponse(object):
     _task=''
@@ -32289,7 +32926,6 @@ class StorageSystem(Object):
     _clusterTargetPortId=''
     _isMaster=False
     _requiresReboot=False
-    _siteClusterId=''
     _storageLinkId=''
     _packageVerService=''
     _packageVerManager=''
@@ -32300,6 +32936,7 @@ class StorageSystem(Object):
     _ntpServers=''
     _timeZone=''
     _distroVersion=''
+    _cephVersion=''
     _multipathConfigMode='0'
     _logCollectionMode='0'
     _hwAutoMaintenanceMode='0'
@@ -32440,10 +33077,6 @@ class StorageSystem(Object):
             self._requiresReboot = jsonObj['requiresReboot']
         else:
             self._requiresReboot = False
-        if 'siteClusterId' in jsonObj:
-            self._siteClusterId = jsonObj['siteClusterId']
-        else:
-            self._siteClusterId = ''
         if 'storageLinkId' in jsonObj:
             self._storageLinkId = jsonObj['storageLinkId']
         else:
@@ -32484,6 +33117,10 @@ class StorageSystem(Object):
             self._distroVersion = jsonObj['distroVersion']
         else:
             self._distroVersion = ''
+        if 'cephVersion' in jsonObj:
+            self._cephVersion = jsonObj['cephVersion']
+        else:
+            self._cephVersion = ''
         if 'multipathConfigMode' in jsonObj:
             self._multipathConfigMode = jsonObj['multipathConfigMode']
         else:
@@ -32575,7 +33212,6 @@ class StorageSystem(Object):
             'clusterTargetPortId' : self._clusterTargetPortId,
             'isMaster' : self._isMaster,
             'requiresReboot' : self._requiresReboot,
-            'siteClusterId' : self._siteClusterId,
             'storageLinkId' : self._storageLinkId,
             'packageVerService' : self._packageVerService,
             'packageVerManager' : self._packageVerManager,
@@ -32586,6 +33222,7 @@ class StorageSystem(Object):
             'ntpServers' : self._ntpServers,
             'timeZone' : self._timeZone,
             'distroVersion' : self._distroVersion,
+            'cephVersion' : self._cephVersion,
             'multipathConfigMode' : self._multipathConfigMode,
             'logCollectionMode' : self._logCollectionMode,
             'hwAutoMaintenanceMode' : self._hwAutoMaintenanceMode,
@@ -32603,6 +33240,23 @@ class StorageSystem(Object):
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
+
+class StorageSystemBeepResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = StorageSystem(jsonObj['obj'])
+        return task, obj
 
 class StorageSystemCluster(Object):
     _description=''
@@ -34152,6 +34806,8 @@ class StorageSystemUpdateCheckResponse(object):
     _kernelVersionCurrent=''
     _kernelVersionAvailable=''
     _distroVersionAvailable=''
+    _cephVersionCurrent=''
+    _cephVersionAvailable=''
 
     def __init__(
         self,
@@ -34168,7 +34824,9 @@ class StorageSystemUpdateCheckResponse(object):
         qstorRestVersionAvailable='',
         kernelVersionCurrent='',
         kernelVersionAvailable='',
-        distroVersionAvailable=''):
+        distroVersionAvailable='',
+        cephVersionCurrent='',
+        cephVersionAvailable=''):
         self._task = task
         self._qstorManagerVersionCurrent = qstorManagerVersionCurrent
         self._qstorManagerVersionAvailable = qstorManagerVersionAvailable
@@ -34183,6 +34841,8 @@ class StorageSystemUpdateCheckResponse(object):
         self._kernelVersionCurrent = kernelVersionCurrent
         self._kernelVersionAvailable = kernelVersionAvailable
         self._distroVersionAvailable = distroVersionAvailable
+        self._cephVersionCurrent = cephVersionCurrent
+        self._cephVersionAvailable = cephVersionAvailable
 
     @classmethod
     def responseParse(cls,jsonObj):
@@ -34200,7 +34860,9 @@ class StorageSystemUpdateCheckResponse(object):
         kernelVersionCurrent = jsonObj['kernelVersionCurrent']
         kernelVersionAvailable = jsonObj['kernelVersionAvailable']
         distroVersionAvailable = jsonObj['distroVersionAvailable']
-        return task, qstorManagerVersionCurrent, qstorManagerVersionAvailable, qstorServiceVersionCurrent, qstorServiceVersionAvailable, qstorTargetVersionCurrent, qstorTargetVersionAvailable, qstorWebServerVersionCurrent, qstorWebServerVersionAvailable, qstorRestVersionCurrent, qstorRestVersionAvailable, kernelVersionCurrent, kernelVersionAvailable, distroVersionAvailable
+        cephVersionCurrent = jsonObj['cephVersionCurrent']
+        cephVersionAvailable = jsonObj['cephVersionAvailable']
+        return task, qstorManagerVersionCurrent, qstorManagerVersionAvailable, qstorServiceVersionCurrent, qstorServiceVersionAvailable, qstorTargetVersionCurrent, qstorTargetVersionAvailable, qstorWebServerVersionCurrent, qstorWebServerVersionAvailable, qstorRestVersionCurrent, qstorRestVersionAvailable, kernelVersionCurrent, kernelVersionAvailable, distroVersionAvailable, cephVersionCurrent, cephVersionAvailable
 
 class StorageSystemUpgradeResponse(object):
     _task=''
@@ -34448,7 +35110,6 @@ class StorageVolume(Replicatable):
     _devicePath=''
     _iqn=''
     _isCloudBackup=False
-    _isThin=False
     _useGuidIqn=False
     _lun='0'
     _cloudContainerId=''
@@ -34474,6 +35135,7 @@ class StorageVolume(Replicatable):
     _profileId=''
     _stripeSizeKb='0'
     _stripeCount='0'
+    _mappingDisabled=False
     _snapshotIdList=''
 
     def __init__(self,jsonObj):
@@ -34501,10 +35163,6 @@ class StorageVolume(Replicatable):
             self._isCloudBackup = jsonObj['isCloudBackup']
         else:
             self._isCloudBackup = False
-        if 'isThin' in jsonObj:
-            self._isThin = jsonObj['isThin']
-        else:
-            self._isThin = False
         if 'useGuidIqn' in jsonObj:
             self._useGuidIqn = jsonObj['useGuidIqn']
         else:
@@ -34605,6 +35263,10 @@ class StorageVolume(Replicatable):
             self._stripeCount = jsonObj['stripeCount']
         else:
             self._stripeCount = '0'
+        if 'mappingDisabled' in jsonObj:
+            self._mappingDisabled = jsonObj['mappingDisabled']
+        else:
+            self._mappingDisabled = False
         if 'snapshotIdList' in jsonObj:
             self._snapshotIdList = jsonObj['snapshotIdList']
         else:
@@ -34619,7 +35281,6 @@ class StorageVolume(Replicatable):
             'devicePath' : self._devicePath,
             'iqn' : self._iqn,
             'isCloudBackup' : self._isCloudBackup,
-            'isThin' : self._isThin,
             'useGuidIqn' : self._useGuidIqn,
             'lun' : self._lun,
             'cloudContainerId' : self._cloudContainerId,
@@ -34645,6 +35306,7 @@ class StorageVolume(Replicatable):
             'profileId' : self._profileId,
             'stripeSizeKb' : self._stripeSizeKb,
             'stripeCount' : self._stripeCount,
+            'mappingDisabled' : self._mappingDisabled,
             'snapshotIdList' : self._snapshotIdList
         }
         thisJsonObj.update(superJsonObj)
@@ -35400,6 +36062,26 @@ class StorageVolumeRollbackResponse(object):
         task = Task(jsonObj['task'])
         obj = StorageVolume(jsonObj['obj'])
         return task, obj
+
+class StorageVolumeSearchResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(StorageVolume(var))
+        return task, objList
 
 class StorageVolumeSetQosControlsResponse(object):
     _task=''

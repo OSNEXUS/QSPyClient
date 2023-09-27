@@ -444,7 +444,6 @@ class QuantastorClient(object):
             minFileAgeDays='0',
             maxFileAgeDays='0',
             createLinks=False,
-            lazyCloneSnaps=False,
             remoteExportSubPath='',
             flags='0'):
         payload = {
@@ -479,7 +478,6 @@ class QuantastorClient(object):
             'minFileAgeDays' : minFileAgeDays,  #xsd:unsignedInt
             'maxFileAgeDays' : maxFileAgeDays,  #xsd:unsignedInt
             'createLinks' : createLinks,  #xsd:boolean
-            'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
             'remoteExportSubPath' : remoteExportSubPath,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -573,7 +571,6 @@ class QuantastorClient(object):
             minFileAgeDays='0',
             maxFileAgeDays='0',
             createLinks=False,
-            lazyCloneSnaps=False,
             remoteExportSubPath='',
             flags='0'):
         payload = {
@@ -609,7 +606,6 @@ class QuantastorClient(object):
             'minFileAgeDays' : minFileAgeDays,  #xsd:unsignedInt
             'maxFileAgeDays' : maxFileAgeDays,  #xsd:unsignedInt
             'createLinks' : createLinks,  #xsd:boolean
-            'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
             'remoteExportSubPath' : remoteExportSubPath,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
@@ -660,6 +656,7 @@ class QuantastorClient(object):
             enableNetworkShareAccess=False,
             estNumObjects='0',
             count='0',
+            integrationOptions='0',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -674,6 +671,7 @@ class QuantastorClient(object):
             'enableNetworkShareAccess' : enableNetworkShareAccess,  #xsd:boolean
             'estNumObjects' : estNumObjects,  #xsd:unsignedInt
             'count' : count,  #xsd:unsignedInt
+            'integrationOptions' : integrationOptions,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('bucketCreate', payload)
@@ -739,6 +737,7 @@ class QuantastorClient(object):
             enableLifecyclePolicy=False,
             lifecyclePolicyDays='0',
             enableNetworkShareAccess=False,
+            integrationOptions='0',
             flags='0'):
         payload = {
             'bucketId' : bucketId,  #xsd:string
@@ -747,6 +746,7 @@ class QuantastorClient(object):
             'enableLifecyclePolicy' : enableLifecyclePolicy,  #xsd:boolean
             'lifecyclePolicyDays' : lifecyclePolicyDays,  #xsd:unsignedInt
             'enableNetworkShareAccess' : enableNetworkShareAccess,  #xsd:boolean
+            'integrationOptions' : integrationOptions,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('bucketModify', payload)
@@ -1935,6 +1935,7 @@ class QuantastorClient(object):
             certificatePemData='',
             redirect=False,
             loadbalance=False,
+            loadBalancerMappingMode='0',
             flags='0'):
         payload = {
             'clusterId' : clusterId,  #xsd:string
@@ -1946,6 +1947,7 @@ class QuantastorClient(object):
             'certificatePemData' : certificatePemData,  #xsd:string
             'redirect' : redirect,  #xsd:boolean
             'loadbalance' : loadbalance,  #xsd:boolean
+            'loadBalancerMappingMode' : loadBalancerMappingMode,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephRadosGatewayAdd', payload)
@@ -2797,6 +2799,28 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('externalSystemGet', payload)
         return ExternalSystemGetResponse.responseParse(jsonOutput)
 
+    def external_system_host_enum(
+            self,
+            externalSystem='',
+            flags='0'):
+        payload = {
+            'externalSystem' : externalSystem,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('externalSystemHostEnum', payload)
+        return ExternalSystemHostEnumResponse.responseParse(jsonOutput)
+
+    def external_system_host_get(
+            self,
+            externalSystemHost='',
+            flags='0'):
+        payload = {
+            'externalSystemHost' : externalSystemHost,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('externalSystemHostGet', payload)
+        return ExternalSystemHostGetResponse.responseParse(jsonOutput)
+
     def external_system_media_enum(
             self,
             externalSystem='',
@@ -2930,6 +2954,39 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('externalSystemPortModify', payload)
         return ExternalSystemPortModifyResponse.responseParse(jsonOutput)
+
+    def external_system_profile_apply(
+            self,
+            externalSystemId='',
+            externalSystemProfileId='',
+            flags='0'):
+        payload = {
+            'externalSystemId' : externalSystemId,  #xsd:string
+            'externalSystemProfileId' : externalSystemProfileId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('externalSystemProfileApply', payload)
+        return ExternalSystemProfileApplyResponse.responseParse(jsonOutput)
+
+    def external_system_profile_enum(
+            self,
+            flags='0'):
+        payload = {
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('externalSystemProfileEnum', payload)
+        return ExternalSystemProfileEnumResponse.responseParse(jsonOutput)
+
+    def external_system_profile_get(
+            self,
+            externalSystemProfileId='',
+            flags='0'):
+        payload = {
+            'externalSystemProfileId' : externalSystemProfileId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('externalSystemProfileGet', payload)
+        return ExternalSystemProfileGetResponse.responseParse(jsonOutput)
 
     def external_system_scan(
             self,
@@ -4269,6 +4326,28 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('licenseRemove', payload)
         return LicenseRemoveResponse.responseParse(jsonOutput)
 
+    def load_balancer_enum(
+            self,
+            cephClusterId='',
+            flags='0'):
+        payload = {
+            'cephClusterId' : cephClusterId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('loadBalancerEnum', payload)
+        return LoadBalancerEnumResponse.responseParse(jsonOutput)
+
+    def load_balancer_get(
+            self,
+            loadBalancerId='',
+            flags='0'):
+        payload = {
+            'loadBalancerId' : loadBalancerId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('loadBalancerGet', payload)
+        return LoadBalancerGetResponse.responseParse(jsonOutput)
+
     def login(
             self,
             reserved='',
@@ -4778,6 +4857,8 @@ class QuantastorClient(object):
             disableNfsSnapsDir=False,
             enableNfsSnapBrowsing=False,
             immutabilityMode='0',
+            daysOfImmutability='0',
+            smallBlockThreshold='0',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -4813,6 +4894,8 @@ class QuantastorClient(object):
             'disableNfsSnapsDir' : disableNfsSnapsDir,  #xsd:boolean
             'enableNfsSnapBrowsing' : enableNfsSnapBrowsing,  #xsd:boolean
             'immutabilityMode' : immutabilityMode,  #xsd:unsignedInt
+            'daysOfImmutability' : daysOfImmutability,  #xsd:unsignedInt
+            'smallBlockThreshold' : smallBlockThreshold,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareCreateEx', payload)
@@ -5111,6 +5194,7 @@ class QuantastorClient(object):
             disableSmbSnapsDir=False,
             disableNfsSnapsDir=False,
             enableNfsSnapBrowsing=False,
+            smallBlockThreshold='0',
             flags='0'):
         payload = {
             'networkShare' : networkShare,  #xsd:string
@@ -5139,6 +5223,7 @@ class QuantastorClient(object):
             'disableSmbSnapsDir' : disableSmbSnapsDir,  #xsd:boolean
             'disableNfsSnapsDir' : disableNfsSnapsDir,  #xsd:boolean
             'enableNfsSnapBrowsing' : enableNfsSnapBrowsing,  #xsd:boolean
+            'smallBlockThreshold' : smallBlockThreshold,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareModify', payload)
@@ -6113,7 +6198,6 @@ class QuantastorClient(object):
             replicaName='',
             replicaDescription='',
             targetStoragePoolId='',
-            replicationPriority='0',
             smartSync=False,
             forcePrimary=False,
             reserved='',
@@ -6124,7 +6208,6 @@ class QuantastorClient(object):
             'replicaName' : replicaName,  #xsd:string
             'replicaDescription' : replicaDescription,  #xsd:string
             'targetStoragePoolId' : targetStoragePoolId,  #xsd:string
-            'replicationPriority' : replicationPriority,  #xsd:unsignedInt
             'smartSync' : smartSync,  #xsd:boolean
             'forcePrimary' : forcePrimary,  #xsd:boolean
             'reserved' : reserved,  #xsd:string
@@ -6309,10 +6392,8 @@ class QuantastorClient(object):
             reuseSourceSnapshot=False,
             reuseTargetChkpnt=False,
             scheduleActivationVifId='',
-            lazyCloneSnaps=False,
             retentionCountSumReports='0',
             enableRecursiveNestedShares=False,
-            enableConsistencyGroup=False,
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -6345,10 +6426,8 @@ class QuantastorClient(object):
             'reuseSourceSnapshot' : reuseSourceSnapshot,  #xsd:boolean
             'reuseTargetChkpnt' : reuseTargetChkpnt,  #xsd:boolean
             'scheduleActivationVifId' : scheduleActivationVifId,  #xsd:string
-            'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
             'retentionCountSumReports' : retentionCountSumReports,  #xsd:unsignedInt
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
-            'enableConsistencyGroup' : enableConsistencyGroup,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('replicationScheduleCreate', payload)
@@ -6451,10 +6530,8 @@ class QuantastorClient(object):
             reuseSourceSnapshot=False,
             reuseTargetChkpnt=False,
             scheduleActivationVifId='',
-            lazyCloneSnaps=False,
             retentionCountSumReports='0',
             enableRecursiveNestedShares=False,
-            enableConsistencyGroup=False,
             flags='0'):
         payload = {
             'schedule' : schedule,  #xsd:string
@@ -6482,10 +6559,8 @@ class QuantastorClient(object):
             'reuseSourceSnapshot' : reuseSourceSnapshot,  #xsd:boolean
             'reuseTargetChkpnt' : reuseTargetChkpnt,  #xsd:boolean
             'scheduleActivationVifId' : scheduleActivationVifId,  #xsd:string
-            'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
             'retentionCountSumReports' : retentionCountSumReports,  #xsd:unsignedInt
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
-            'enableConsistencyGroup' : enableConsistencyGroup,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('replicationScheduleModify', payload)
@@ -7334,11 +7409,13 @@ class QuantastorClient(object):
 
     def s3_tenant_create(
             self,
+            cephClusterId='',
             name='',
             displayName='',
             description='',
             flags='0'):
         payload = {
+            'cephClusterId' : cephClusterId,  #xsd:string
             'name' : name,  #xsd:string
             'displayName' : displayName,  #xsd:string
             'description' : description,  #xsd:string
@@ -7974,9 +8051,7 @@ class QuantastorClient(object):
             retentionCountWeeklies='0',
             retentionCountMonthlies='0',
             retentionCountQuarterlies='0',
-            lazyCloneSnaps=False,
             enableRecursiveNestedShares=False,
-            enableConsistencyGroup=False,
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -7997,9 +8072,7 @@ class QuantastorClient(object):
             'retentionCountWeeklies' : retentionCountWeeklies,  #xsd:unsignedInt
             'retentionCountMonthlies' : retentionCountMonthlies,  #xsd:unsignedInt
             'retentionCountQuarterlies' : retentionCountQuarterlies,  #xsd:unsignedInt
-            'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
-            'enableConsistencyGroup' : enableConsistencyGroup,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('snapshotScheduleCreate', payload)
@@ -8077,9 +8150,7 @@ class QuantastorClient(object):
             retentionCountWeeklies='0',
             retentionCountMonthlies='0',
             retentionCountQuarterlies='0',
-            lazyCloneSnaps=False,
             enableRecursiveNestedShares=False,
-            enableConsistencyGroup=False,
             flags='0'):
         payload = {
             'schedule' : schedule,  #xsd:string
@@ -8099,9 +8170,7 @@ class QuantastorClient(object):
             'retentionCountWeeklies' : retentionCountWeeklies,  #xsd:unsignedInt
             'retentionCountMonthlies' : retentionCountMonthlies,  #xsd:unsignedInt
             'retentionCountQuarterlies' : retentionCountQuarterlies,  #xsd:unsignedInt
-            'lazyCloneSnaps' : lazyCloneSnaps,  #xsd:boolean
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
-            'enableConsistencyGroup' : enableConsistencyGroup,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('snapshotScheduleModify', payload)
@@ -8143,6 +8212,7 @@ class QuantastorClient(object):
             writeLogDeviceList='',
             specialOffloadDeviceList='',
             dedupOffloadDeviceList='',
+            smallBlockThreshold='0',
             flags='0'):
         payload = {
             'storagePool' : storagePool,  #xsd:string
@@ -8151,6 +8221,7 @@ class QuantastorClient(object):
             'writeLogDeviceList' : writeLogDeviceList,  #xsd:string
             'specialOffloadDeviceList' : specialOffloadDeviceList,  #xsd:string
             'dedupOffloadDeviceList' : dedupOffloadDeviceList,  #xsd:string
+            'smallBlockThreshold' : smallBlockThreshold,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolCacheAddRemove', payload)
@@ -8164,10 +8235,8 @@ class QuantastorClient(object):
             raidType='0',
             poolType='0',
             isDefault=False,
-            enableSsd=False,
             enableCompression=False,
             enableAutoTrim=False,
-            noBarriers=False,
             profile='',
             raidSetSize='0',
             enableEncryption=False,
@@ -8184,10 +8253,8 @@ class QuantastorClient(object):
             'raidType' : raidType,  #xsd:unsignedInt
             'poolType' : poolType,  #xsd:unsignedInt
             'isDefault' : isDefault,  #xsd:boolean
-            'enableSsd' : enableSsd,  #xsd:boolean
             'enableCompression' : enableCompression,  #xsd:boolean
             'enableAutoTrim' : enableAutoTrim,  #xsd:boolean
-            'noBarriers' : noBarriers,  #xsd:boolean
             'profile' : profile,  #xsd:string
             'raidSetSize' : raidSetSize,  #xsd:unsignedInt
             'enableEncryption' : enableEncryption,  #xsd:boolean
@@ -8405,6 +8472,8 @@ class QuantastorClient(object):
             haLinkStateFailoverPolicy='0',
             haFcLinkStateFailoverPolicy='0',
             exportTimeout='0',
+            enforceSmbHostsAllow=False,
+            enforceNfsHostsAllow=False,
             flags='0'):
         payload = {
             'storagePoolId' : storagePoolId,  #xsd:string
@@ -8419,6 +8488,8 @@ class QuantastorClient(object):
             'haLinkStateFailoverPolicy' : haLinkStateFailoverPolicy,  #xsd:unsignedInt
             'haFcLinkStateFailoverPolicy' : haFcLinkStateFailoverPolicy,  #xsd:unsignedInt
             'exportTimeout' : exportTimeout,  #xsd:unsignedInt
+            'enforceSmbHostsAllow' : enforceSmbHostsAllow,  #xsd:boolean
+            'enforceNfsHostsAllow' : enforceNfsHostsAllow,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverGroupCreate', payload)
@@ -8495,6 +8566,8 @@ class QuantastorClient(object):
             haLinkStateFailoverPolicy='0',
             haFcLinkStateFailoverPolicy='0',
             exportTimeout='0',
+            enforceSmbHostsAllow=False,
+            enforceNfsHostsAllow=False,
             flags='0'):
         payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
@@ -8509,6 +8582,8 @@ class QuantastorClient(object):
             'haLinkStateFailoverPolicy' : haLinkStateFailoverPolicy,  #xsd:unsignedInt
             'haFcLinkStateFailoverPolicy' : haFcLinkStateFailoverPolicy,  #xsd:unsignedInt
             'exportTimeout' : exportTimeout,  #xsd:unsignedInt
+            'enforceSmbHostsAllow' : enforceSmbHostsAllow,  #xsd:boolean
+            'enforceNfsHostsAllow' : enforceNfsHostsAllow,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverGroupModify', payload)
@@ -8644,10 +8719,8 @@ class QuantastorClient(object):
             newName='',
             newDescription='',
             isDefault=False,
-            enableSsd=False,
             enableCompression=False,
             enableAutoTrim=False,
-            noBarriers=False,
             profile='',
             syncPolicy='0',
             cachePolicyPrimary='0',
@@ -8657,16 +8730,15 @@ class QuantastorClient(object):
             copies='0',
             keyServerProfileId='',
             keyServerType='0',
+            smallBlockThreshold='0',
             flags='0'):
         payload = {
             'storagePool' : storagePool,  #xsd:string
             'newName' : newName,  #xsd:string
             'newDescription' : newDescription,  #xsd:string
             'isDefault' : isDefault,  #xsd:boolean
-            'enableSsd' : enableSsd,  #xsd:boolean
             'enableCompression' : enableCompression,  #xsd:boolean
             'enableAutoTrim' : enableAutoTrim,  #xsd:boolean
-            'noBarriers' : noBarriers,  #xsd:boolean
             'profile' : profile,  #xsd:string
             'syncPolicy' : syncPolicy,  #xsd:unsignedInt
             'cachePolicyPrimary' : cachePolicyPrimary,  #xsd:unsignedInt
@@ -8676,6 +8748,7 @@ class QuantastorClient(object):
             'copies' : copies,  #xsd:unsignedInt
             'keyServerProfileId' : keyServerProfileId,  #xsd:string
             'keyServerType' : keyServerType,  #xsd:unsignedInt
+            'smallBlockThreshold' : smallBlockThreshold,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolModify', payload)
@@ -9201,9 +9274,13 @@ class QuantastorClient(object):
     def storage_system_cluster_send_support_logs(
             self,
             memberIds='',
+            disableLogScrub=False,
+            disableLogUpload=False,
             flags='0'):
         payload = {
             'memberIds' : memberIds,  #xsd:string
+            'disableLogScrub' : disableLogScrub,  #xsd:boolean
+            'disableLogUpload' : disableLogUpload,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemClusterSendSupportLogs', payload)
@@ -9621,9 +9698,13 @@ class QuantastorClient(object):
     def storage_system_send_logs(
             self,
             storageSystemId='',
+            disableLogScrub=False,
+            disableLogUpload=False,
             flags='0'):
         payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
+            'disableLogScrub' : disableLogScrub,  #xsd:boolean
+            'disableLogUpload' : disableLogUpload,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemSendLogs', payload)
@@ -10897,6 +10978,21 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('targetPortModify', payload)
         return TargetPortModifyResponse.responseParse(jsonOutput)
 
+    def target_port_rename(
+            self,
+            port='',
+            name='',
+            storageSystem='',
+            flags='0'):
+        payload = {
+            'port' : port,  #xsd:string
+            'name' : name,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('targetPortRename', payload)
+        return TargetPortRenameResponse.responseParse(jsonOutput)
+
     def target_port_rescan(
             self,
             storageSystem='',
@@ -11327,6 +11423,17 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('userEnum', payload)
         return UserEnumResponse.responseParse(jsonOutput)
 
+    def user_generate_otp_auth_secret(
+            self,
+            user='',
+            flags='0'):
+        payload = {
+            'user' : user,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('userGenerateOtpAuthSecret', payload)
+        return UserGenerateOtpAuthSecretResponse.responseParse(jsonOutput)
+
     def user_get(
             self,
             user='',
@@ -11451,6 +11558,7 @@ class QuantastorClient(object):
             newDescription='',
             newDefaultChapUsername='',
             newDefaultChapPassword='',
+            newOtpSecretKey='',
             alertSubscriptions='0',
             posixUid='0',
             posixGid='0',
@@ -11471,6 +11579,7 @@ class QuantastorClient(object):
             'newDescription' : newDescription,  #xsd:string
             'newDefaultChapUsername' : newDefaultChapUsername,  #xsd:string
             'newDefaultChapPassword' : newDefaultChapPassword,  #xsd:string
+            'newOtpSecretKey' : newOtpSecretKey,  #xsd:string
             'alertSubscriptions' : alertSubscriptions,  #xsd:unsignedInt
             'posixUid' : posixUid,  #xsd:unsignedInt
             'posixGid' : posixGid,  #xsd:unsignedInt
@@ -11911,7 +12020,6 @@ class Schedule(Object):
     _retentionCountWeeklies='0'
     _retentionCountMonthlies='0'
     _retentionCountQuarterlies='0'
-    _lazyCloneSnaps=False
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -11978,10 +12086,6 @@ class Schedule(Object):
             self._retentionCountQuarterlies = jsonObj['retentionCountQuarterlies']
         else:
             self._retentionCountQuarterlies = '0'
-        if 'lazyCloneSnaps' in jsonObj:
-            self._lazyCloneSnaps = jsonObj['lazyCloneSnaps']
-        else:
-            self._lazyCloneSnaps = False
         return self
 
     def exportJson(self):
@@ -12001,8 +12105,7 @@ class Schedule(Object):
             'retentionCountDailies' : self._retentionCountDailies,
             'retentionCountWeeklies' : self._retentionCountWeeklies,
             'retentionCountMonthlies' : self._retentionCountMonthlies,
-            'retentionCountQuarterlies' : self._retentionCountQuarterlies,
-            'lazyCloneSnaps' : self._lazyCloneSnaps
+            'retentionCountQuarterlies' : self._retentionCountQuarterlies
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -13500,6 +13603,7 @@ class Bucket(Object):
     _lifecyclePolicyDays='0'
     _enableNetworkShareAccess=False
     _tenantId=''
+    _integrationOptions='0'
     _quotaList=''
     _userAssocList=''
 
@@ -13548,6 +13652,10 @@ class Bucket(Object):
             self._tenantId = jsonObj['tenantId']
         else:
             self._tenantId = ''
+        if 'integrationOptions' in jsonObj:
+            self._integrationOptions = jsonObj['integrationOptions']
+        else:
+            self._integrationOptions = '0'
         if 'quotaList' in jsonObj:
             self._quotaList = jsonObj['quotaList']
         else:
@@ -13571,6 +13679,7 @@ class Bucket(Object):
             'lifecyclePolicyDays' : self._lifecyclePolicyDays,
             'enableNetworkShareAccess' : self._enableNetworkShareAccess,
             'tenantId' : self._tenantId,
+            'integrationOptions' : self._integrationOptions,
             'quotaList' : self._quotaList,
             'userAssocList' : self._userAssocList
         }
@@ -16516,6 +16625,7 @@ class CephRadosGateway(Object):
     _certificatePemFilePath=''
     _enableHttpsRedirect=False
     _enableLoadBalancer=False
+    _loadBalancerMappingMode='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -16570,6 +16680,10 @@ class CephRadosGateway(Object):
             self._enableLoadBalancer = jsonObj['enableLoadBalancer']
         else:
             self._enableLoadBalancer = False
+        if 'loadBalancerMappingMode' in jsonObj:
+            self._loadBalancerMappingMode = jsonObj['loadBalancerMappingMode']
+        else:
+            self._loadBalancerMappingMode = '0'
         return self
 
     def exportJson(self):
@@ -16586,7 +16700,8 @@ class CephRadosGateway(Object):
             'options' : self._options,
             'certificatePemFilePath' : self._certificatePemFilePath,
             'enableHttpsRedirect' : self._enableHttpsRedirect,
-            'enableLoadBalancer' : self._enableLoadBalancer
+            'enableLoadBalancer' : self._enableLoadBalancer,
+            'loadBalancerMappingMode' : self._loadBalancerMappingMode
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -17921,6 +18036,8 @@ class ContainerServiceDef(Object):
     _containerImage=''
     _containerImageLogin=''
     _imageStatus='0'
+    _secureKey=''
+    _user=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -17947,6 +18064,14 @@ class ContainerServiceDef(Object):
             self._imageStatus = jsonObj['imageStatus']
         else:
             self._imageStatus = '0'
+        if 'secureKey' in jsonObj:
+            self._secureKey = jsonObj['secureKey']
+        else:
+            self._secureKey = ''
+        if 'user' in jsonObj:
+            self._user = jsonObj['user']
+        else:
+            self._user = ''
         return self
 
     def exportJson(self):
@@ -17956,7 +18081,9 @@ class ContainerServiceDef(Object):
             'containerServiceDefType' : self._containerServiceDefType,
             'containerImage' : self._containerImage,
             'containerImageLogin' : self._containerImageLogin,
-            'imageStatus' : self._imageStatus
+            'imageStatus' : self._imageStatus,
+            'secureKey' : self._secureKey,
+            'user' : self._user
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -18698,10 +18825,106 @@ class ExternalSystemGetResponse(object):
         obj = ExternalSystem(jsonObj)
         return obj
 
+class ExternalSystemHost(Object):
+    _altName=''
+    _description=''
+    _serialNumber=''
+    _externalSystemId=''
+    _initiatorA=''
+    _initiatorB=''
+    _mappedVolumeIds=''
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(ExternalSystemHost, self).jsonParse(jsonObj)
+        if 'altName' in jsonObj:
+            self._altName = jsonObj['altName']
+        else:
+            self._altName = ''
+        if 'description' in jsonObj:
+            self._description = jsonObj['description']
+        else:
+            self._description = ''
+        if 'serialNumber' in jsonObj:
+            self._serialNumber = jsonObj['serialNumber']
+        else:
+            self._serialNumber = ''
+        if 'externalSystemId' in jsonObj:
+            self._externalSystemId = jsonObj['externalSystemId']
+        else:
+            self._externalSystemId = ''
+        if 'initiatorA' in jsonObj:
+            self._initiatorA = jsonObj['initiatorA']
+        else:
+            self._initiatorA = ''
+        if 'initiatorB' in jsonObj:
+            self._initiatorB = jsonObj['initiatorB']
+        else:
+            self._initiatorB = ''
+        if 'mappedVolumeIds' in jsonObj:
+            self._mappedVolumeIds = jsonObj['mappedVolumeIds']
+        else:
+            self._mappedVolumeIds = ''
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(ExternalSystemHost,self).exportJson()
+        thisJsonObj = {
+            'altName' : self._altName,
+            'description' : self._description,
+            'serialNumber' : self._serialNumber,
+            'externalSystemId' : self._externalSystemId,
+            'initiatorA' : self._initiatorA,
+            'initiatorB' : self._initiatorB,
+            'mappedVolumeIds' : self._mappedVolumeIds
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class ExternalSystemHostEnumResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(ExternalSystemHost(var))
+        return task, objList
+
+class ExternalSystemHostGetResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = ExternalSystemHost(jsonObj['obj'])
+        return task, obj
+
 class ExternalSystemMedia(Object):
     _altName=''
     _externalSystemId=''
     _externalSystemPortGroupId=''
+    _externalSystemPoolId=''
     _powerOn=False
     _manufacturer=''
     _protocol='0'
@@ -18729,6 +18952,10 @@ class ExternalSystemMedia(Object):
             self._externalSystemPortGroupId = jsonObj['externalSystemPortGroupId']
         else:
             self._externalSystemPortGroupId = ''
+        if 'externalSystemPoolId' in jsonObj:
+            self._externalSystemPoolId = jsonObj['externalSystemPoolId']
+        else:
+            self._externalSystemPoolId = ''
         if 'powerOn' in jsonObj:
             self._powerOn = jsonObj['powerOn']
         else:
@@ -18773,6 +19000,7 @@ class ExternalSystemMedia(Object):
             'altName' : self._altName,
             'externalSystemId' : self._externalSystemId,
             'externalSystemPortGroupId' : self._externalSystemPortGroupId,
+            'externalSystemPoolId' : self._externalSystemPoolId,
             'powerOn' : self._powerOn,
             'manufacturer' : self._manufacturer,
             'protocol' : self._protocol,
@@ -18835,6 +19063,7 @@ class ExternalSystemPool(Object):
     _altName=''
     _externalSystemId=''
     _capacity='0'
+    _availableCapacity='0'
     _externalSystemControllerId=''
     _serialNumber=''
     _raidtype='0'
@@ -18857,6 +19086,10 @@ class ExternalSystemPool(Object):
             self._capacity = jsonObj['capacity']
         else:
             self._capacity = '0'
+        if 'availableCapacity' in jsonObj:
+            self._availableCapacity = jsonObj['availableCapacity']
+        else:
+            self._availableCapacity = '0'
         if 'externalSystemControllerId' in jsonObj:
             self._externalSystemControllerId = jsonObj['externalSystemControllerId']
         else:
@@ -18881,6 +19114,7 @@ class ExternalSystemPool(Object):
             'altName' : self._altName,
             'externalSystemId' : self._externalSystemId,
             'capacity' : self._capacity,
+            'availableCapacity' : self._availableCapacity,
             'externalSystemControllerId' : self._externalSystemControllerId,
             'serialNumber' : self._serialNumber,
             'raidtype' : self._raidtype,
@@ -19106,6 +19340,130 @@ class ExternalSystemPortModifyResponse(object):
         obj = ExternalSystemPort(jsonObj['obj'])
         return task, obj
 
+class ExternalSystemProfile(Object):
+    _tag=''
+    _poolPrefix=''
+    _volPrefix=''
+    _dgDevices=''
+    _raidType='0'
+    _stripeWidth=''
+    _volumesPerPool='0'
+    _hostAssign=False
+    _externalSystemType='0'
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(ExternalSystemProfile, self).jsonParse(jsonObj)
+        if 'tag' in jsonObj:
+            self._tag = jsonObj['tag']
+        else:
+            self._tag = ''
+        if 'poolPrefix' in jsonObj:
+            self._poolPrefix = jsonObj['poolPrefix']
+        else:
+            self._poolPrefix = ''
+        if 'volPrefix' in jsonObj:
+            self._volPrefix = jsonObj['volPrefix']
+        else:
+            self._volPrefix = ''
+        if 'dgDevices' in jsonObj:
+            self._dgDevices = jsonObj['dgDevices']
+        else:
+            self._dgDevices = ''
+        if 'raidType' in jsonObj:
+            self._raidType = jsonObj['raidType']
+        else:
+            self._raidType = '0'
+        if 'stripeWidth' in jsonObj:
+            self._stripeWidth = jsonObj['stripeWidth']
+        else:
+            self._stripeWidth = ''
+        if 'volumesPerPool' in jsonObj:
+            self._volumesPerPool = jsonObj['volumesPerPool']
+        else:
+            self._volumesPerPool = '0'
+        if 'hostAssign' in jsonObj:
+            self._hostAssign = jsonObj['hostAssign']
+        else:
+            self._hostAssign = False
+        if 'externalSystemType' in jsonObj:
+            self._externalSystemType = jsonObj['externalSystemType']
+        else:
+            self._externalSystemType = '0'
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(ExternalSystemProfile,self).exportJson()
+        thisJsonObj = {
+            'tag' : self._tag,
+            'poolPrefix' : self._poolPrefix,
+            'volPrefix' : self._volPrefix,
+            'dgDevices' : self._dgDevices,
+            'raidType' : self._raidType,
+            'stripeWidth' : self._stripeWidth,
+            'volumesPerPool' : self._volumesPerPool,
+            'hostAssign' : self._hostAssign,
+            'externalSystemType' : self._externalSystemType
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class ExternalSystemProfileApplyResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = ExternalSystemProfile(jsonObj['obj'])
+        return task, obj
+
+class ExternalSystemProfileEnumResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(ExternalSystemProfile(var))
+        return task, objList
+
+class ExternalSystemProfileGetResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = ExternalSystemProfile(jsonObj['obj'])
+        return task, obj
+
 class ExternalSystemScanResponse(object):
     _task=''
     _list=''
@@ -19151,9 +19509,11 @@ class ExternalSystemVolume(Object):
     _externalSystemId=''
     _externalSystemControllerId=''
     _externalSystemPoolId=''
+    _externalSystemHostId=''
     _capacity='0'
     _serialNumber=''
     _wwn=''
+    _lun=''
     _raidtype='0'
     _usedById=''
     _usedByType='0'
@@ -19179,6 +19539,10 @@ class ExternalSystemVolume(Object):
             self._externalSystemPoolId = jsonObj['externalSystemPoolId']
         else:
             self._externalSystemPoolId = ''
+        if 'externalSystemHostId' in jsonObj:
+            self._externalSystemHostId = jsonObj['externalSystemHostId']
+        else:
+            self._externalSystemHostId = ''
         if 'capacity' in jsonObj:
             self._capacity = jsonObj['capacity']
         else:
@@ -19191,6 +19555,10 @@ class ExternalSystemVolume(Object):
             self._wwn = jsonObj['wwn']
         else:
             self._wwn = ''
+        if 'lun' in jsonObj:
+            self._lun = jsonObj['lun']
+        else:
+            self._lun = ''
         if 'raidtype' in jsonObj:
             self._raidtype = jsonObj['raidtype']
         else:
@@ -19212,9 +19580,11 @@ class ExternalSystemVolume(Object):
             'externalSystemId' : self._externalSystemId,
             'externalSystemControllerId' : self._externalSystemControllerId,
             'externalSystemPoolId' : self._externalSystemPoolId,
+            'externalSystemHostId' : self._externalSystemHostId,
             'capacity' : self._capacity,
             'serialNumber' : self._serialNumber,
             'wwn' : self._wwn,
+            'lun' : self._lun,
             'raidtype' : self._raidtype,
             'usedById' : self._usedById,
             'usedByType' : self._usedByType
@@ -19546,6 +19916,8 @@ class HardwareConfiguration(Object):
     _listExternalSystemPortGroup=''
     _listExternalSystemPool=''
     _listExternalSystemVolume=''
+    _listExternalSystemProfile=''
+    _listExternalSystemHost=''
     _listHwAlarm=''
     _listHwBbu=''
     _listHwController=''
@@ -19599,6 +19971,14 @@ class HardwareConfiguration(Object):
             self._listExternalSystemVolume = jsonObj['listExternalSystemVolume']
         else:
             self._listExternalSystemVolume = ''
+        if 'listExternalSystemProfile' in jsonObj:
+            self._listExternalSystemProfile = jsonObj['listExternalSystemProfile']
+        else:
+            self._listExternalSystemProfile = ''
+        if 'listExternalSystemHost' in jsonObj:
+            self._listExternalSystemHost = jsonObj['listExternalSystemHost']
+        else:
+            self._listExternalSystemHost = ''
         if 'listHwAlarm' in jsonObj:
             self._listHwAlarm = jsonObj['listHwAlarm']
         else:
@@ -19672,6 +20052,8 @@ class HardwareConfiguration(Object):
             'listExternalSystemPortGroup' : self._listExternalSystemPortGroup,
             'listExternalSystemPool' : self._listExternalSystemPool,
             'listExternalSystemVolume' : self._listExternalSystemVolume,
+            'listExternalSystemProfile' : self._listExternalSystemProfile,
+            'listExternalSystemHost' : self._listExternalSystemHost,
             'listHwAlarm' : self._listHwAlarm,
             'listHwBbu' : self._listHwBbu,
             'listHwController' : self._listHwController,
@@ -22631,7 +23013,6 @@ class License(Object):
     _volumeLimit='0'
     _remoteReplicationEnabled=False
     _ssdEnabled=False
-    _cloudBackupEnabled=False
     _isNFR=False
     _activationRequestCode=''
     _activationStamp=''
@@ -22742,10 +23123,6 @@ class License(Object):
             self._ssdEnabled = jsonObj['ssdEnabled']
         else:
             self._ssdEnabled = False
-        if 'cloudBackupEnabled' in jsonObj:
-            self._cloudBackupEnabled = jsonObj['cloudBackupEnabled']
-        else:
-            self._cloudBackupEnabled = False
         if 'isNFR' in jsonObj:
             self._isNFR = jsonObj['isNFR']
         else:
@@ -22852,7 +23229,6 @@ class License(Object):
             'volumeLimit' : self._volumeLimit,
             'remoteReplicationEnabled' : self._remoteReplicationEnabled,
             'ssdEnabled' : self._ssdEnabled,
-            'cloudBackupEnabled' : self._cloudBackupEnabled,
             'isNFR' : self._isNFR,
             'activationRequestCode' : self._activationRequestCode,
             'activationStamp' : self._activationStamp,
@@ -23063,6 +23439,74 @@ class LicenseRemoveResponse(object):
         task = Task(jsonObj['task'])
         obj = License(jsonObj['obj'])
         return task, obj
+
+class LoadBalancer(Object):
+    _cephClusterId=''
+    _portNumber='0'
+    _balancerType='0'
+    _configPath=''
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(LoadBalancer, self).jsonParse(jsonObj)
+        if 'cephClusterId' in jsonObj:
+            self._cephClusterId = jsonObj['cephClusterId']
+        else:
+            self._cephClusterId = ''
+        if 'portNumber' in jsonObj:
+            self._portNumber = jsonObj['portNumber']
+        else:
+            self._portNumber = '0'
+        if 'balancerType' in jsonObj:
+            self._balancerType = jsonObj['balancerType']
+        else:
+            self._balancerType = '0'
+        if 'configPath' in jsonObj:
+            self._configPath = jsonObj['configPath']
+        else:
+            self._configPath = ''
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(LoadBalancer,self).exportJson()
+        thisJsonObj = {
+            'cephClusterId' : self._cephClusterId,
+            'portNumber' : self._portNumber,
+            'balancerType' : self._balancerType,
+            'configPath' : self._configPath
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class LoadBalancerEnumResponse(object):
+    _list=''
+
+    def __init__(
+        self,
+        objList=''):
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        objList = []
+        for var in jsonObj:
+            objList.append(LoadBalancer(var))
+        return objList
+
+class LoadBalancerGetResponse(object):
+    _obj=''
+
+    def __init__(
+        self,
+        obj=''):
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        obj = LoadBalancer(jsonObj)
+        return obj
 
 class Lock(Object):
     _objectId=''
@@ -23746,6 +24190,11 @@ class NetworkShare(Replicatable):
     _cryptKeyStatus=''
     _cryptRoot=''
     _immutabilityMode='0'
+    _daysOfImmutability='0'
+    _fullAuditEnabled=False
+    _fullAuditDefaults=False
+    _fullAuditSuccess=''
+    _smallBlockThreshold='0'
     _snapshotIdList=''
     _subshareIdList=''
     _nfsClients=''
@@ -23886,6 +24335,26 @@ class NetworkShare(Replicatable):
             self._immutabilityMode = jsonObj['immutabilityMode']
         else:
             self._immutabilityMode = '0'
+        if 'daysOfImmutability' in jsonObj:
+            self._daysOfImmutability = jsonObj['daysOfImmutability']
+        else:
+            self._daysOfImmutability = '0'
+        if 'fullAuditEnabled' in jsonObj:
+            self._fullAuditEnabled = jsonObj['fullAuditEnabled']
+        else:
+            self._fullAuditEnabled = False
+        if 'fullAuditDefaults' in jsonObj:
+            self._fullAuditDefaults = jsonObj['fullAuditDefaults']
+        else:
+            self._fullAuditDefaults = False
+        if 'fullAuditSuccess' in jsonObj:
+            self._fullAuditSuccess = jsonObj['fullAuditSuccess']
+        else:
+            self._fullAuditSuccess = ''
+        if 'smallBlockThreshold' in jsonObj:
+            self._smallBlockThreshold = jsonObj['smallBlockThreshold']
+        else:
+            self._smallBlockThreshold = '0'
         if 'snapshotIdList' in jsonObj:
             self._snapshotIdList = jsonObj['snapshotIdList']
         else:
@@ -23947,6 +24416,11 @@ class NetworkShare(Replicatable):
             'cryptKeyStatus' : self._cryptKeyStatus,
             'cryptRoot' : self._cryptRoot,
             'immutabilityMode' : self._immutabilityMode,
+            'daysOfImmutability' : self._daysOfImmutability,
+            'fullAuditEnabled' : self._fullAuditEnabled,
+            'fullAuditDefaults' : self._fullAuditDefaults,
+            'fullAuditSuccess' : self._fullAuditSuccess,
+            'smallBlockThreshold' : self._smallBlockThreshold,
             'snapshotIdList' : self._snapshotIdList,
             'subshareIdList' : self._subshareIdList,
             'nfsClients' : self._nfsClients,
@@ -25835,6 +26309,7 @@ class PhysicalDisk(Object):
     _sasAddressPort1=''
     _diskType='0'
     _zoningType='0'
+    _partitionCount='0'
     _supportsMultipath=False
     _freeSpace='0'
     _productId=''
@@ -25915,6 +26390,10 @@ class PhysicalDisk(Object):
             self._zoningType = jsonObj['zoningType']
         else:
             self._zoningType = '0'
+        if 'partitionCount' in jsonObj:
+            self._partitionCount = jsonObj['partitionCount']
+        else:
+            self._partitionCount = '0'
         if 'supportsMultipath' in jsonObj:
             self._supportsMultipath = jsonObj['supportsMultipath']
         else:
@@ -26096,6 +26575,7 @@ class PhysicalDisk(Object):
             'sasAddressPort1' : self._sasAddressPort1,
             'diskType' : self._diskType,
             'zoningType' : self._zoningType,
+            'partitionCount' : self._partitionCount,
             'supportsMultipath' : self._supportsMultipath,
             'freeSpace' : self._freeSpace,
             'productId' : self._productId,
@@ -26826,7 +27306,6 @@ class ReplicaAssoc(Object):
     _associationType='0'
     _replicationState='0'
     _progress='0'
-    _priority='0'
     _parentReplicaAssoc=''
     _syncStartedTimeStamp=''
     _syncCompletedTimeStamp=''
@@ -26914,10 +27393,6 @@ class ReplicaAssoc(Object):
             self._progress = jsonObj['progress']
         else:
             self._progress = '0'
-        if 'priority' in jsonObj:
-            self._priority = jsonObj['priority']
-        else:
-            self._priority = '0'
         if 'parentReplicaAssoc' in jsonObj:
             self._parentReplicaAssoc = jsonObj['parentReplicaAssoc']
         else:
@@ -26992,7 +27467,6 @@ class ReplicaAssoc(Object):
             'associationType' : self._associationType,
             'replicationState' : self._replicationState,
             'progress' : self._progress,
-            'priority' : self._priority,
             'parentReplicaAssoc' : self._parentReplicaAssoc,
             'syncStartedTimeStamp' : self._syncStartedTimeStamp,
             'syncCompletedTimeStamp' : self._syncCompletedTimeStamp,
@@ -27250,6 +27724,7 @@ class ReplicaReportSummary(Object):
     _errorStatus=''
     _averageTransfer='0'
     _linkType='0'
+    _skipCount='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -27312,6 +27787,10 @@ class ReplicaReportSummary(Object):
             self._linkType = jsonObj['linkType']
         else:
             self._linkType = '0'
+        if 'skipCount' in jsonObj:
+            self._skipCount = jsonObj['skipCount']
+        else:
+            self._skipCount = '0'
         return self
 
     def exportJson(self):
@@ -27330,7 +27809,8 @@ class ReplicaReportSummary(Object):
             'amountTransferred' : self._amountTransferred,
             'errorStatus' : self._errorStatus,
             'averageTransfer' : self._averageTransfer,
-            'linkType' : self._linkType
+            'linkType' : self._linkType,
+            'skipCount' : self._skipCount
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -27439,7 +27919,6 @@ class ReplicationSchedule(Schedule):
     _targetResourceGroupId=''
     _targetProvisionableId=''
     _scheduleStatus=''
-    _priority='0'
     _reuseSourceSnapshot=False
     _reuseTargetChkpnt=False
     _retentionCountHourliesSrc='0'
@@ -27450,7 +27929,6 @@ class ReplicationSchedule(Schedule):
     _scheduleActivationVifId=''
     _retentionCountSumReports='0'
     _enableRecursiveNestedShares=False
-    _enableConsistencyGroup=False
     _storageVolumeList=''
     _networkShareList=''
 
@@ -27487,10 +27965,6 @@ class ReplicationSchedule(Schedule):
             self._scheduleStatus = jsonObj['scheduleStatus']
         else:
             self._scheduleStatus = ''
-        if 'priority' in jsonObj:
-            self._priority = jsonObj['priority']
-        else:
-            self._priority = '0'
         if 'reuseSourceSnapshot' in jsonObj:
             self._reuseSourceSnapshot = jsonObj['reuseSourceSnapshot']
         else:
@@ -27531,10 +28005,6 @@ class ReplicationSchedule(Schedule):
             self._enableRecursiveNestedShares = jsonObj['enableRecursiveNestedShares']
         else:
             self._enableRecursiveNestedShares = False
-        if 'enableConsistencyGroup' in jsonObj:
-            self._enableConsistencyGroup = jsonObj['enableConsistencyGroup']
-        else:
-            self._enableConsistencyGroup = False
         if 'storageVolumeList' in jsonObj:
             self._storageVolumeList = jsonObj['storageVolumeList']
         else:
@@ -27555,7 +28025,6 @@ class ReplicationSchedule(Schedule):
             'targetResourceGroupId' : self._targetResourceGroupId,
             'targetProvisionableId' : self._targetProvisionableId,
             'scheduleStatus' : self._scheduleStatus,
-            'priority' : self._priority,
             'reuseSourceSnapshot' : self._reuseSourceSnapshot,
             'reuseTargetChkpnt' : self._reuseTargetChkpnt,
             'retentionCountHourliesSrc' : self._retentionCountHourliesSrc,
@@ -27566,7 +28035,6 @@ class ReplicationSchedule(Schedule):
             'scheduleActivationVifId' : self._scheduleActivationVifId,
             'retentionCountSumReports' : self._retentionCountSumReports,
             'enableRecursiveNestedShares' : self._enableRecursiveNestedShares,
-            'enableConsistencyGroup' : self._enableConsistencyGroup,
             'storageVolumeList' : self._storageVolumeList,
             'networkShareList' : self._networkShareList
         }
@@ -29629,6 +30097,9 @@ class S3QuotaSetGlobalResponse(object):
 class S3Tenant(Object):
     _description=''
     _displayName=''
+    _utilizedSpace='0'
+    _bucketCount='0'
+    _cephClusterId=''
     _s3UserIdList=''
     _bucketIdList=''
 
@@ -29645,6 +30116,18 @@ class S3Tenant(Object):
             self._displayName = jsonObj['displayName']
         else:
             self._displayName = ''
+        if 'utilizedSpace' in jsonObj:
+            self._utilizedSpace = jsonObj['utilizedSpace']
+        else:
+            self._utilizedSpace = '0'
+        if 'bucketCount' in jsonObj:
+            self._bucketCount = jsonObj['bucketCount']
+        else:
+            self._bucketCount = '0'
+        if 'cephClusterId' in jsonObj:
+            self._cephClusterId = jsonObj['cephClusterId']
+        else:
+            self._cephClusterId = ''
         if 's3UserIdList' in jsonObj:
             self._s3UserIdList = jsonObj['s3UserIdList']
         else:
@@ -29660,6 +30143,9 @@ class S3Tenant(Object):
         thisJsonObj = {
             'description' : self._description,
             'displayName' : self._displayName,
+            'utilizedSpace' : self._utilizedSpace,
+            'bucketCount' : self._bucketCount,
+            'cephClusterId' : self._cephClusterId,
             's3UserIdList' : self._s3UserIdList,
             'bucketIdList' : self._bucketIdList
         }
@@ -29737,6 +30223,8 @@ class S3User(Object):
     _tenant=''
     _tenantId=''
     _maxBuckets='0'
+    _utilizedSpace='0'
+    _bucketCount='0'
     _quotaList=''
     _keyList=''
 
@@ -29777,6 +30265,14 @@ class S3User(Object):
             self._maxBuckets = jsonObj['maxBuckets']
         else:
             self._maxBuckets = '0'
+        if 'utilizedSpace' in jsonObj:
+            self._utilizedSpace = jsonObj['utilizedSpace']
+        else:
+            self._utilizedSpace = '0'
+        if 'bucketCount' in jsonObj:
+            self._bucketCount = jsonObj['bucketCount']
+        else:
+            self._bucketCount = '0'
         if 'quotaList' in jsonObj:
             self._quotaList = jsonObj['quotaList']
         else:
@@ -29798,6 +30294,8 @@ class S3User(Object):
             'tenant' : self._tenant,
             'tenantId' : self._tenantId,
             'maxBuckets' : self._maxBuckets,
+            'utilizedSpace' : self._utilizedSpace,
+            'bucketCount' : self._bucketCount,
             'quotaList' : self._quotaList,
             'keyList' : self._keyList
         }
@@ -30958,7 +31456,6 @@ class SnapshotSchedule(Schedule):
     _provisionableId=''
     _maxSnapshots='0'
     _enableRecursiveNestedShares=False
-    _enableConsistencyGroup=False
     _storageVolumeList=''
     _networkShareList=''
 
@@ -30983,10 +31480,6 @@ class SnapshotSchedule(Schedule):
             self._enableRecursiveNestedShares = jsonObj['enableRecursiveNestedShares']
         else:
             self._enableRecursiveNestedShares = False
-        if 'enableConsistencyGroup' in jsonObj:
-            self._enableConsistencyGroup = jsonObj['enableConsistencyGroup']
-        else:
-            self._enableConsistencyGroup = False
         if 'storageVolumeList' in jsonObj:
             self._storageVolumeList = jsonObj['storageVolumeList']
         else:
@@ -31004,7 +31497,6 @@ class SnapshotSchedule(Schedule):
             'provisionableId' : self._provisionableId,
             'maxSnapshots' : self._maxSnapshots,
             'enableRecursiveNestedShares' : self._enableRecursiveNestedShares,
-            'enableConsistencyGroup' : self._enableConsistencyGroup,
             'storageVolumeList' : self._storageVolumeList,
             'networkShareList' : self._networkShareList
         }
@@ -31240,9 +31732,7 @@ class StoragePool(Provisionable):
     _isDefault=False
     _enableCompression=False
     _enableDeduplication=False
-    _enableSsd=False
     _enableAutoTrim=False
-    _noBarriers=False
     _isActive=False
     _isMounted=False
     _isDegraded=False
@@ -31292,6 +31782,7 @@ class StoragePool(Provisionable):
     _trimSupported=False
     _cachePolicyPrimary='0'
     _cachePolicySecondary='0'
+    _smallBlockThreshold='0'
     _storagePoolDeviceList=''
     _storagePoolHaGroupList=''
     _storagePoolDeviceGroupList=''
@@ -31353,18 +31844,10 @@ class StoragePool(Provisionable):
             self._enableDeduplication = jsonObj['enableDeduplication']
         else:
             self._enableDeduplication = False
-        if 'enableSsd' in jsonObj:
-            self._enableSsd = jsonObj['enableSsd']
-        else:
-            self._enableSsd = False
         if 'enableAutoTrim' in jsonObj:
             self._enableAutoTrim = jsonObj['enableAutoTrim']
         else:
             self._enableAutoTrim = False
-        if 'noBarriers' in jsonObj:
-            self._noBarriers = jsonObj['noBarriers']
-        else:
-            self._noBarriers = False
         if 'isActive' in jsonObj:
             self._isActive = jsonObj['isActive']
         else:
@@ -31561,6 +32044,10 @@ class StoragePool(Provisionable):
             self._cachePolicySecondary = jsonObj['cachePolicySecondary']
         else:
             self._cachePolicySecondary = '0'
+        if 'smallBlockThreshold' in jsonObj:
+            self._smallBlockThreshold = jsonObj['smallBlockThreshold']
+        else:
+            self._smallBlockThreshold = '0'
         if 'storagePoolDeviceList' in jsonObj:
             self._storagePoolDeviceList = jsonObj['storagePoolDeviceList']
         else:
@@ -31591,9 +32078,7 @@ class StoragePool(Provisionable):
             'isDefault' : self._isDefault,
             'enableCompression' : self._enableCompression,
             'enableDeduplication' : self._enableDeduplication,
-            'enableSsd' : self._enableSsd,
             'enableAutoTrim' : self._enableAutoTrim,
-            'noBarriers' : self._noBarriers,
             'isActive' : self._isActive,
             'isMounted' : self._isMounted,
             'isDegraded' : self._isDegraded,
@@ -31643,6 +32128,7 @@ class StoragePool(Provisionable):
             'trimSupported' : self._trimSupported,
             'cachePolicyPrimary' : self._cachePolicyPrimary,
             'cachePolicySecondary' : self._cachePolicySecondary,
+            'smallBlockThreshold' : self._smallBlockThreshold,
             'storagePoolDeviceList' : self._storagePoolDeviceList,
             'storagePoolHaGroupList' : self._storagePoolHaGroupList,
             'storagePoolDeviceGroupList' : self._storagePoolDeviceGroupList
@@ -32220,6 +32706,8 @@ class StoragePoolHaFailoverGroup(Object):
     _encryptionKeySaltPath=''
     _keyServerProfileId=''
     _keyServerType='0'
+    _enforceSmbHostsAllow=False
+    _enforceNfsHostsAllow=False
     _interfaceList=''
 
     def __init__(self,jsonObj):
@@ -32315,6 +32803,14 @@ class StoragePoolHaFailoverGroup(Object):
             self._keyServerType = jsonObj['keyServerType']
         else:
             self._keyServerType = '0'
+        if 'enforceSmbHostsAllow' in jsonObj:
+            self._enforceSmbHostsAllow = jsonObj['enforceSmbHostsAllow']
+        else:
+            self._enforceSmbHostsAllow = False
+        if 'enforceNfsHostsAllow' in jsonObj:
+            self._enforceNfsHostsAllow = jsonObj['enforceNfsHostsAllow']
+        else:
+            self._enforceNfsHostsAllow = False
         if 'interfaceList' in jsonObj:
             self._interfaceList = jsonObj['interfaceList']
         else:
@@ -32346,6 +32842,8 @@ class StoragePoolHaFailoverGroup(Object):
             'encryptionKeySaltPath' : self._encryptionKeySaltPath,
             'keyServerProfileId' : self._keyServerProfileId,
             'keyServerType' : self._keyServerType,
+            'enforceSmbHostsAllow' : self._enforceSmbHostsAllow,
+            'enforceNfsHostsAllow' : self._enforceNfsHostsAllow,
             'interfaceList' : self._interfaceList
         }
         thisJsonObj.update(superJsonObj)
@@ -37429,6 +37927,7 @@ class SystemConfiguration(Object):
     _listCephMonitor=''
     _listCephObjectPoolGroup=''
     _listCephOsd=''
+    _listLoadBalancer=''
     _listCephPgSet=''
     _listCephPool=''
     _listCephPoolProfile=''
@@ -37514,6 +38013,8 @@ class SystemConfiguration(Object):
     _listExternalSystemPortGroup=''
     _listExternalSystemPool=''
     _listExternalSystemVolume=''
+    _listExternalSystemProfile=''
+    _listExternalSystemHost=''
     _listHwAlarm=''
     _listHwBbu=''
     _listHwController=''
@@ -37604,6 +38105,10 @@ class SystemConfiguration(Object):
             self._listCephOsd = jsonObj['listCephOsd']
         else:
             self._listCephOsd = ''
+        if 'listLoadBalancer' in jsonObj:
+            self._listLoadBalancer = jsonObj['listLoadBalancer']
+        else:
+            self._listLoadBalancer = ''
         if 'listCephPgSet' in jsonObj:
             self._listCephPgSet = jsonObj['listCephPgSet']
         else:
@@ -37944,6 +38449,14 @@ class SystemConfiguration(Object):
             self._listExternalSystemVolume = jsonObj['listExternalSystemVolume']
         else:
             self._listExternalSystemVolume = ''
+        if 'listExternalSystemProfile' in jsonObj:
+            self._listExternalSystemProfile = jsonObj['listExternalSystemProfile']
+        else:
+            self._listExternalSystemProfile = ''
+        if 'listExternalSystemHost' in jsonObj:
+            self._listExternalSystemHost = jsonObj['listExternalSystemHost']
+        else:
+            self._listExternalSystemHost = ''
         if 'listHwAlarm' in jsonObj:
             self._listHwAlarm = jsonObj['listHwAlarm']
         else:
@@ -38045,6 +38558,7 @@ class SystemConfiguration(Object):
             'listCephMonitor' : self._listCephMonitor,
             'listCephObjectPoolGroup' : self._listCephObjectPoolGroup,
             'listCephOsd' : self._listCephOsd,
+            'listLoadBalancer' : self._listLoadBalancer,
             'listCephPgSet' : self._listCephPgSet,
             'listCephPool' : self._listCephPool,
             'listCephPoolProfile' : self._listCephPoolProfile,
@@ -38130,6 +38644,8 @@ class SystemConfiguration(Object):
             'listExternalSystemPortGroup' : self._listExternalSystemPortGroup,
             'listExternalSystemPool' : self._listExternalSystemPool,
             'listExternalSystemVolume' : self._listExternalSystemVolume,
+            'listExternalSystemProfile' : self._listExternalSystemProfile,
+            'listExternalSystemHost' : self._listExternalSystemHost,
             'listHwAlarm' : self._listHwAlarm,
             'listHwBbu' : self._listHwBbu,
             'listHwController' : self._listHwController,
@@ -38533,6 +39049,23 @@ class TargetPortModifyResponse(object):
             for var in jsonObj['list']:
                 objList.append(TargetPort(var))
         return task, objList
+
+class TargetPortRenameResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = TargetPort(jsonObj['obj'])
+        return task, obj
 
 class TargetPortRescanResponse(object):
     _task=''
@@ -38996,6 +39529,9 @@ class User(Subject):
     _wuiSectionDisable='0'
     _enableMultiFactorAuth=False
     _multiFactorAuthConfigId=''
+    _otpSecretKeyMode='0'
+    _otpSecretKey=''
+    _otpSecretKeySalt=''
     _passwordTokenAlg='0'
     _isLdapUser=False
     _passwordSalt=''
@@ -39111,6 +39647,18 @@ class User(Subject):
             self._multiFactorAuthConfigId = jsonObj['multiFactorAuthConfigId']
         else:
             self._multiFactorAuthConfigId = ''
+        if 'otpSecretKeyMode' in jsonObj:
+            self._otpSecretKeyMode = jsonObj['otpSecretKeyMode']
+        else:
+            self._otpSecretKeyMode = '0'
+        if 'otpSecretKey' in jsonObj:
+            self._otpSecretKey = jsonObj['otpSecretKey']
+        else:
+            self._otpSecretKey = ''
+        if 'otpSecretKeySalt' in jsonObj:
+            self._otpSecretKeySalt = jsonObj['otpSecretKeySalt']
+        else:
+            self._otpSecretKeySalt = ''
         if 'passwordTokenAlg' in jsonObj:
             self._passwordTokenAlg = jsonObj['passwordTokenAlg']
         else:
@@ -39162,6 +39710,9 @@ class User(Subject):
             'wuiSectionDisable' : self._wuiSectionDisable,
             'enableMultiFactorAuth' : self._enableMultiFactorAuth,
             'multiFactorAuthConfigId' : self._multiFactorAuthConfigId,
+            'otpSecretKeyMode' : self._otpSecretKeyMode,
+            'otpSecretKey' : self._otpSecretKey,
+            'otpSecretKeySalt' : self._otpSecretKeySalt,
             'passwordTokenAlg' : self._passwordTokenAlg,
             'isLdapUser' : self._isLdapUser,
             'passwordSalt' : self._passwordSalt,
@@ -39365,6 +39916,19 @@ class UserEnumResponse(object):
             for var in jsonObj['list']:
                 objList.append(User(var))
         return task, objList
+
+class UserGenerateOtpAuthSecretResponse(object):
+    _responseSecretToken=''
+
+    def __init__(
+        self,
+        responseSecretToken=''):
+        self._responseSecretToken = responseSecretToken
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        responseSecretToken = jsonObj
+        return responseSecretToken
 
 class UserGetResponse(object):
     _task=''

@@ -17,20 +17,26 @@ from requests.auth import HTTPBasicAuth
 
 def main():
     parser = argparse.ArgumentParser()
+    # Required arguements
     parser.add_argument("host", help="IP address of target QuantaStor server.")
     parser.add_argument("username", help="Username credentials.")
     parser.add_argument("password", help="Password credentials.")
+    # Optional arguements
     parser.add_argument("-c","--cert", help="Full path to SSL certificate.")
     args = parser.parse_args()
 
     if not args.cert:
         args.cert = ""
 
+    # verify quantastor sdk
     if not quantastor_sdk_enabled():
         print('QuantaStor python SDK is required for this module.')
 
+    # initiallize client
     client = QuantastorClient(args.host,args.username,args.password,args.cert)
 
+    # Quantastor API calls go here
+    # ----------------------------------------------------------------------------
     #create a storage volume
     try:
         task, obj, objlist = client.storage_volume_create_ex(name='testVol',provisionableId='DefaultPool',size="5G")
@@ -48,5 +54,6 @@ def main():
         task, objlist = client.storage_volume_acl_add_remove_ex(storageVolumeList='testVol',host='testHost',modType=0)
     except Exception as e:
         print ("EXCEPTION CAUGHT: " + str(e))
+    # ---------------------------------------------------------------------------
 
 main()

@@ -48,19 +48,26 @@ The following should print out 'True':
 ---
 ## Examples
 
-See the `./examples/` directory for examples:
+See the `./examples/` directory for examples __NOTE:__ The required arguments for each python script are 'host', then 'username', then 'password':
 
 1. **Basic Example**
 
-The basic example for the QuantaStor Python Client Library (`example.py`) does one operation to get information about the storage system that is specified from the command line and dumps the response data in JSON format. You can use this Python script as a basic template to build off of for QuantaStor automation.
+The basic example for the QuantaStor Python Client Library (`example.py`) does one operation to get information about the storage system that is specified from the command line and dumps the response data in JSON format. You can use this Python script as a basic template to build off of for QuantaStor automation. Usage: 
+
+    $ python3 example.py <host-ip> <username> <password>
 
 2. **StorageVolume**
 
-The file `example_sv.sh` is a bash script that utilizes two python scripts, `vol_setup.py` and `acl_attach.py`, to create an example storage volume and host. It then utilizes the `qs-util` QuantaStor tool-set to add a host initiator and login to an ISCSI session with the example storage volume.
+The file `example_sv.sh` is a bash script that utilizes two python scripts, `vol_setup.py` and `acl_attach.py`, to create an example storage volume and host. It then utilizes the `qs-util` QuantaStor tool-set to add a host initiator and login to an ISCSI session with the example storage volume. __NOTE:__ This script requires that you have created storage pool 'DefaultPool' created on the target host prior to running the script.
+
+    $ ./example_sv.sh <host-ip> <username> <password>
 
 3. **NetworkShare**
 
-The file `example_ns.sh` is a bash script that utilizes the `shr_setup.py` python script to create an example network share. Then using the zfs `mount` command, mounts the network share to the local mount directory `/mnt/testMount`.
+The file `example_ns.sh` is a bash script that utilizes the `shr_setup.py` python script to create an example network share. Then using the zfs `mount` command, mounts the network share to the local mount directory `/mnt/testMount`. __NOTE:__ This script requires that you have already created an iscsi-host on the target quantastor-host.
+
+
+    $ ./example_ns.sh <host-ip> <username> <password>
 
 ---
 ## Python Interpreter Usage

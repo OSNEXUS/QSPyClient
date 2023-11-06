@@ -8,7 +8,7 @@ fi
 
 echo "Begging Quatastor Storage Volume setup example"
 
-python3 vol_setup.py $1 $2 $3
+python3 vol_setup.py host=$1 username=$2 password=$3
 
 echo "Created Storage Volume: 'testVol'"
 
@@ -22,7 +22,7 @@ iqn=$(echo $iqnout | cut -d ' ' -f 4-)
 
 echo "iqn = $iqn"
 
-python3 acl_attach.py $1 $iqn $2 $3
+python3 acl_attach.py host=$1 username=$2 password=$3 iqn=$iqn
 
 echo "logging host into ISCSI Block Storage"
 

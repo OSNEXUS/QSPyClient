@@ -17,25 +17,35 @@ from requests.auth import HTTPBasicAuth
 
 def main():
     parser = argparse.ArgumentParser()
+    # Required arguements
     parser.add_argument("host", help="IP address of target QuantaStor server.")
     parser.add_argument("username", help="Username credentials.")
     parser.add_argument("password", help="Password credentials.")
+    # Optional arguements
     parser.add_argument("-c","--cert", help="Full path to SSL certificate.")
     args = parser.parse_args()
 
     if not args.cert:
         args.cert = ""
 
+    # verify quantastor sdk
     if not quantastor_sdk_enabled():
         print('QuantaStor python SDK is required for this program.')
 
+    # initiallize client
     client = QuantastorClient(args.host,args.username,args.password,args.cert)
 
+    # Quantastor API calls go here
+    # ----------------------------------------------------------------------------
+    # Example:
+    # This chunk of code does the equivilant of 'qs storage-system-get' (CLI)
+    # Prints a response StorageSystemGetResponse in json form
     try:
         system = client.storage_system_get()
         print (json.dumps(system.exportJson(), sort_keys=True,  indent=4, separators=(',', ': ')))
         
     except Exception as e:
         print ("Exception --> " + str(e))
+    # ---------------------------------------------------------------------------
 
 main()

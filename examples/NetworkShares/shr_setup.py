@@ -17,18 +17,22 @@ from requests.auth import HTTPBasicAuth
 
 def main():
     parser = argparse.ArgumentParser()
+    # Required arguements
     parser.add_argument("host", help="IP address of target QuantaStor server.")
     parser.add_argument("username", help="Username credentials.")
     parser.add_argument("password", help="Password credentials.")
+    # Optional arguements
     parser.add_argument("-c","--cert", help="Full path to SSL certificate.")
     args = parser.parse_args()
 
     if not args.cert:
         args.cert = ""
 
+    # verify quantastor sdk
     if not quantastor_sdk_enabled():
-        print('QuantaStor python SDK is required for this module.')
+        print('QuantaStor python SDK is required for this program.')
 
+    # initiallize client
     client = QuantastorClient(args.host,args.username,args.password,args.cert)
 
     #create a network share

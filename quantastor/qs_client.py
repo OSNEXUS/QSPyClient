@@ -445,9 +445,11 @@ class QuantastorClient(object):
             maxFileAgeDays='0',
             createLinks=False,
             remoteExportSubPath='',
-            filterMode='0',
-            filterStr='',
-            sizeThreshold='0',
+            includeFilterStr='',
+            excludeFilterStr='',
+            minSizeThreshold='0',
+            maxSizeThreshold='0',
+            minStubThreshold='0',
             autoCopy=False,
             forceRemoveTiered=False,
             flags='0'):
@@ -484,9 +486,11 @@ class QuantastorClient(object):
             'maxFileAgeDays' : maxFileAgeDays,  #xsd:unsignedInt
             'createLinks' : createLinks,  #xsd:boolean
             'remoteExportSubPath' : remoteExportSubPath,  #xsd:string
-            'filterMode' : filterMode,  #xsd:unsignedInt
-            'filterStr' : filterStr,  #xsd:string
-            'sizeThreshold' : self.size_in_bytes(sizeThreshold),  #xsd:unsignedLong
+            'includeFilterStr' : includeFilterStr,  #xsd:string
+            'excludeFilterStr' : excludeFilterStr,  #xsd:string
+            'minSizeThreshold' : self.size_in_bytes(minSizeThreshold),  #xsd:unsignedLong
+            'maxSizeThreshold' : self.size_in_bytes(maxSizeThreshold),  #xsd:unsignedLong
+            'minStubThreshold' : self.size_in_bytes(minStubThreshold),  #xsd:unsignedLong
             'autoCopy' : autoCopy,  #xsd:boolean
             'forceRemoveTiered' : forceRemoveTiered,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -582,9 +586,11 @@ class QuantastorClient(object):
             maxFileAgeDays='0',
             createLinks=False,
             remoteExportSubPath='',
-            filterMode='0',
-            filterStr='',
-            sizeThreshold='0',
+            includeFilterStr='',
+            excludeFilterStr='',
+            minSizeThreshold='0',
+            maxSizeThreshold='0',
+            minAutoTierThreshold='0',
             autoCopy=False,
             forceRemoveTiered=False,
             flags='0'):
@@ -622,9 +628,11 @@ class QuantastorClient(object):
             'maxFileAgeDays' : maxFileAgeDays,  #xsd:unsignedInt
             'createLinks' : createLinks,  #xsd:boolean
             'remoteExportSubPath' : remoteExportSubPath,  #xsd:string
-            'filterMode' : filterMode,  #xsd:unsignedInt
-            'filterStr' : filterStr,  #xsd:string
-            'sizeThreshold' : self.size_in_bytes(sizeThreshold),  #xsd:unsignedLong
+            'includeFilterStr' : includeFilterStr,  #xsd:string
+            'excludeFilterStr' : excludeFilterStr,  #xsd:string
+            'minSizeThreshold' : self.size_in_bytes(minSizeThreshold),  #xsd:unsignedLong
+            'maxSizeThreshold' : self.size_in_bytes(maxSizeThreshold),  #xsd:unsignedLong
+            'minAutoTierThreshold' : self.size_in_bytes(minAutoTierThreshold),  #xsd:unsignedLong
             'autoCopy' : autoCopy,  #xsd:boolean
             'forceRemoveTiered' : forceRemoveTiered,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
@@ -796,6 +804,21 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('bucketRescan', payload)
         return BucketRescanResponse.responseParse(jsonOutput)
 
+    def bucket_search(
+            self,
+            searchParams='',
+            maxResults='0',
+            offset='0',
+            flags='0'):
+        payload = {
+            'searchParams' : searchParams,  #xsd:string
+            'maxResults' : maxResults,  #xsd:unsignedInt
+            'offset' : offset,  #xsd:unsignedInt
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('bucketSearch', payload)
+        return BucketSearchResponse.responseParse(jsonOutput)
+
     def bucket_unlink(
             self,
             cephClusterId='',
@@ -810,32 +833,6 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('bucketUnlink', payload)
         return BucketUnlinkResponse.responseParse(jsonOutput)
-
-    def bucket_user_assoc_enum(
-            self,
-            cephClusterId='',
-            bucketId='',
-            flags='0'):
-        payload = {
-            'cephClusterId' : cephClusterId,  #xsd:string
-            'bucketId' : bucketId,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('bucketUserAssocEnum', payload)
-        return BucketUserAssocEnumResponse.responseParse(jsonOutput)
-
-    def bucket_user_assoc_get(
-            self,
-            bucketId='',
-            cephUserAccessId='',
-            flags='0'):
-        payload = {
-            'bucketId' : bucketId,  #xsd:string
-            'cephUserAccessId' : cephUserAccessId,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('bucketUserAssocGet', payload)
-        return BucketUserAssocGetResponse.responseParse(jsonOutput)
 
     def ceph_client_conf_export(
             self,
@@ -1123,6 +1120,21 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('cephClusterModify', payload)
         return CephClusterModifyResponse.responseParse(jsonOutput)
 
+    def ceph_cluster_osd_key_replace(
+            self,
+            cephCluster='',
+            cephOsdList='',
+            skipLockboxChange=False,
+            flags='0'):
+        payload = {
+            'cephCluster' : cephCluster,  #xsd:string
+            'cephOsdList' : cephOsdList,  #xsd:string
+            'skipLockboxChange' : skipLockboxChange,  #xsd:boolean
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephClusterOsdKeyReplace', payload)
+        return CephClusterOsdKeyReplaceResponse.responseParse(jsonOutput)
+
     def ceph_cluster_remove_node(
             self,
             clusterId='',
@@ -1163,6 +1175,33 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('cephClusterServiceEventEnum', payload)
         return CephClusterServiceEventEnumResponse.responseParse(jsonOutput)
+
+    def ceph_cluster_set_global_s3_quota(
+            self,
+            cephClusterId='',
+            bucketMaxObjectCountEnable=False,
+            bucketMaxObjectCount='0',
+            bucketMaxSizeEnable=False,
+            bucketMaxSize='0',
+            userMaxObjectCountEnable=False,
+            userMaxObjectCount='0',
+            userMaxSizeEnable=False,
+            userMaxSize='0',
+            flags='0'):
+        payload = {
+            'cephClusterId' : cephClusterId,  #xsd:string
+            'bucketMaxObjectCountEnable' : bucketMaxObjectCountEnable,  #xsd:boolean
+            'bucketMaxObjectCount' : self.size_in_bytes(bucketMaxObjectCount),  #xsd:unsignedLong
+            'bucketMaxSizeEnable' : bucketMaxSizeEnable,  #xsd:boolean
+            'bucketMaxSize' : self.size_in_bytes(bucketMaxSize),  #xsd:unsignedLong
+            'userMaxObjectCountEnable' : userMaxObjectCountEnable,  #xsd:boolean
+            'userMaxObjectCount' : self.size_in_bytes(userMaxObjectCount),  #xsd:unsignedLong
+            'userMaxSizeEnable' : userMaxSizeEnable,  #xsd:boolean
+            'userMaxSize' : self.size_in_bytes(userMaxSize),  #xsd:unsignedLong
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephClusterSetGlobalS3Quota', payload)
+        return CephClusterSetGlobalS3QuotaResponse.responseParse(jsonOutput)
 
     def ceph_crush_rule_create(
             self,
@@ -1302,30 +1341,6 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('cephFilesystemModify', payload)
         return CephFilesystemModifyResponse.responseParse(jsonOutput)
-
-    def ceph_filesystem_pool_assoc_enum(
-            self,
-            cephFilesystemId='',
-            flags='0'):
-        payload = {
-            'cephFilesystemId' : cephFilesystemId,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('cephFilesystemPoolAssocEnum', payload)
-        return CephFilesystemPoolAssocEnumResponse.responseParse(jsonOutput)
-
-    def ceph_filesystem_pool_assoc_get(
-            self,
-            cephFilesystemId='',
-            cephPoolId='',
-            flags='0'):
-        payload = {
-            'cephFilesystemId' : cephFilesystemId,  #xsd:string
-            'cephPoolId' : cephPoolId,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('cephFilesystemPoolAssocGet', payload)
-        return CephFilesystemPoolAssocGetResponse.responseParse(jsonOutput)
 
     def ceph_journal_device_create(
             self,
@@ -1699,6 +1714,7 @@ class QuantastorClient(object):
             cephPoolType='',
             crushProfile='',
             cephCluster='',
+            customStorageClassName=False,
             flags='0'):
         payload = {
             'cephPoolGroup' : cephPoolGroup,  #xsd:string
@@ -1709,6 +1725,7 @@ class QuantastorClient(object):
             'cephPoolType' : cephPoolType,  #xsd:string
             'crushProfile' : crushProfile,  #xsd:string
             'cephCluster' : cephCluster,  #xsd:string
+            'customStorageClassName' : customStorageClassName,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephObjectPoolGroupStorageClassCreate', payload)
@@ -1817,6 +1834,21 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('cephObjectZoneGroupGet', payload)
         return CephObjectZoneGroupGetResponse.responseParse(jsonOutput)
 
+    def ceph_object_zone_group_modify(
+            self,
+            cephClusterId='',
+            cephObjectStorageZoneGroup='',
+            hostnameList='',
+            flags='0'):
+        payload = {
+            'cephClusterId' : cephClusterId,  #xsd:string
+            'cephObjectStorageZoneGroup' : cephObjectStorageZoneGroup,  #xsd:string
+            'hostnameList' : hostnameList,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephObjectZoneGroupModify', payload)
+        return CephObjectZoneGroupModifyResponse.responseParse(jsonOutput)
+
     def ceph_osd_create(
             self,
             description='',
@@ -1882,6 +1914,21 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('cephOsdIdentify', payload)
         return CephOsdIdentifyResponse.responseParse(jsonOutput)
+
+    def ceph_osd_key_replace(
+            self,
+            cephClusterMember='',
+            cephOsdList='',
+            skipLockboxChange=False,
+            flags='0'):
+        payload = {
+            'cephClusterMember' : cephClusterMember,  #xsd:string
+            'cephOsdList' : cephOsdList,  #xsd:string
+            'skipLockboxChange' : skipLockboxChange,  #xsd:boolean
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephOsdKeyReplace', payload)
+        return CephOsdKeyReplaceResponse.responseParse(jsonOutput)
 
     def ceph_osd_modify(
             self,
@@ -2040,6 +2087,30 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('cephPoolGet', payload)
         return CephPoolGetResponse.responseParse(jsonOutput)
 
+    def ceph_pool_group_assoc_enum(
+            self,
+            cephFilesystemId='',
+            flags='0'):
+        payload = {
+            'cephFilesystemId' : cephFilesystemId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephPoolGroupAssocEnum', payload)
+        return CephPoolGroupAssocEnumResponse.responseParse(jsonOutput)
+
+    def ceph_pool_group_assoc_get(
+            self,
+            cephFilesystemId='',
+            cephPoolId='',
+            flags='0'):
+        payload = {
+            'cephFilesystemId' : cephFilesystemId,  #xsd:string
+            'cephPoolId' : cephPoolId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('cephPoolGroupAssocGet', payload)
+        return CephPoolGroupAssocGetResponse.responseParse(jsonOutput)
+
     def ceph_pool_modify(
             self,
             cephClusterId='',
@@ -2060,30 +2131,6 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('cephPoolModify', payload)
         return CephPoolModifyResponse.responseParse(jsonOutput)
-
-    def ceph_pool_osd_assoc_enum(
-            self,
-            cephPool='',
-            flags='0'):
-        payload = {
-            'cephPool' : cephPool,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('cephPoolOsdAssocEnum', payload)
-        return CephPoolOsdAssocEnumResponse.responseParse(jsonOutput)
-
-    def ceph_pool_osd_assoc_get(
-            self,
-            cephPool='',
-            cephOsd='',
-            flags='0'):
-        payload = {
-            'cephPool' : cephPool,  #xsd:string
-            'cephOsd' : cephOsd,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('cephPoolOsdAssocGet', payload)
-        return CephPoolOsdAssocGetResponse.responseParse(jsonOutput)
 
     def ceph_pool_profile_create(
             self,
@@ -2157,6 +2204,7 @@ class QuantastorClient(object):
             redirect=False,
             loadbalance=False,
             loadBalancerMappingMode='0',
+            useTcpChecks=False,
             flags='0'):
         payload = {
             'clusterId' : clusterId,  #xsd:string
@@ -2169,6 +2217,7 @@ class QuantastorClient(object):
             'redirect' : redirect,  #xsd:boolean
             'loadbalance' : loadbalance,  #xsd:boolean
             'loadBalancerMappingMode' : loadBalancerMappingMode,  #xsd:unsignedInt
+            'useTcpChecks' : useTcpChecks,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('cephRadosGatewayAdd', payload)
@@ -3203,6 +3252,7 @@ class QuantastorClient(object):
             externalSystemId='',
             externalSystemProfileId='',
             volCount='0',
+            useMaxVolSize=False,
             volSize='0',
             assignToHosts=False,
             hostList='',
@@ -3211,6 +3261,7 @@ class QuantastorClient(object):
             'externalSystemId' : externalSystemId,  #xsd:string
             'externalSystemProfileId' : externalSystemProfileId,  #xsd:string
             'volCount' : volCount,  #xsd:unsignedInt
+            'useMaxVolSize' : useMaxVolSize,  #xsd:boolean
             'volSize' : self.size_in_bytes(volSize),  #xsd:unsignedLong
             'assignToHosts' : assignToHosts,  #xsd:boolean
             'hostList' : hostList,  #xsd:string
@@ -3270,6 +3321,7 @@ class QuantastorClient(object):
             externalSystemPoolId='',
             volPrefix='',
             volCount='0',
+            useMaxVolSize=False,
             volSize='0',
             assignToHosts=False,
             hostList='',
@@ -3278,6 +3330,7 @@ class QuantastorClient(object):
             'externalSystemPoolId' : externalSystemPoolId,  #xsd:string
             'volPrefix' : volPrefix,  #xsd:string
             'volCount' : volCount,  #xsd:unsignedInt
+            'useMaxVolSize' : useMaxVolSize,  #xsd:boolean
             'volSize' : self.size_in_bytes(volSize),  #xsd:unsignedLong
             'assignToHosts' : assignToHosts,  #xsd:boolean
             'hostList' : hostList,  #xsd:string
@@ -3322,6 +3375,28 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('externalSystemVolumeGet', payload)
         return ExternalSystemVolumeGetResponse.responseParse(jsonOutput)
+
+    def fc_remote_port_enum(
+            self,
+            storageSystem='',
+            flags='0'):
+        payload = {
+            'storageSystem' : storageSystem,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('fcRemotePortEnum', payload)
+        return FcRemotePortEnumResponse.responseParse(jsonOutput)
+
+    def fc_remote_port_get(
+            self,
+            port='',
+            flags='0'):
+        payload = {
+            'port' : port,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('fcRemotePortGet', payload)
+        return FcRemotePortGetResponse.responseParse(jsonOutput)
 
     def fc_target_port_disable(
             self,
@@ -3370,6 +3445,19 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('fcTargetPortGet', payload)
         return FcTargetPortGetResponse.responseParse(jsonOutput)
+
+    def fc_target_port_issue_lip(
+            self,
+            port='',
+            storageSystem='',
+            flags='0'):
+        payload = {
+            'port' : port,  #xsd:string
+            'storageSystem' : storageSystem,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('fcTargetPortIssueLip', payload)
+        return FcTargetPortIssueLipResponse.responseParse(jsonOutput)
 
     def get_assoc_config(
             self,
@@ -3975,6 +4063,19 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('hwDiskUnmarkHotSpare', payload)
         return HwDiskUnmarkHotSpareResponse.responseParse(jsonOutput)
+
+    def hw_enclosure_clear_missing(
+            self,
+            storageSystemId='',
+            controllerId='',
+            flags='0'):
+        payload = {
+            'storageSystemId' : storageSystemId,  #xsd:string
+            'controllerId' : controllerId,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('hwEnclosureClearMissing', payload)
+        return HwEnclosureClearMissingResponse.responseParse(jsonOutput)
 
     def hw_enclosure_enum(
             self,
@@ -5040,10 +5141,12 @@ class QuantastorClient(object):
             self,
             networkShareId='',
             networkShareClientId='',
+            retainClientConnections=False,
             flags='0'):
         payload = {
             'networkShareId' : networkShareId,  #xsd:string
             'networkShareClientId' : networkShareClientId,  #xsd:string
+            'retainClientConnections' : retainClientConnections,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareClientRemove', payload)
@@ -5153,6 +5256,8 @@ class QuantastorClient(object):
             immutabilityMode='0',
             daysOfImmutability='0',
             smallBlockThreshold='0',
+            fileQuota='0',
+            permissionMask='',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -5190,6 +5295,8 @@ class QuantastorClient(object):
             'immutabilityMode' : immutabilityMode,  #xsd:unsignedInt
             'daysOfImmutability' : daysOfImmutability,  #xsd:unsignedInt
             'smallBlockThreshold' : smallBlockThreshold,  #xsd:unsignedInt
+            'fileQuota' : self.size_in_bytes(fileQuota),  #xsd:unsignedLong
+            'permissionMask' : permissionMask,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareCreateEx', payload)
@@ -5411,6 +5518,7 @@ class QuantastorClient(object):
             minDefaultUid='0',
             maxDefaultUid='0',
             rangeSize='0',
+            joinWithSSSD=False,
             flags='0'):
         payload = {
             'storageSystemId' : storageSystemId,  #xsd:string
@@ -5427,6 +5535,7 @@ class QuantastorClient(object):
             'minDefaultUid' : self.size_in_bytes(minDefaultUid),  #xsd:unsignedLong
             'maxDefaultUid' : self.size_in_bytes(maxDefaultUid),  #xsd:unsignedLong
             'rangeSize' : self.size_in_bytes(rangeSize),  #xsd:unsignedLong
+            'joinWithSSSD' : joinWithSSSD,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareJoinDomain', payload)
@@ -5491,6 +5600,8 @@ class QuantastorClient(object):
             disableNfsSnapsDir=False,
             enableNfsSnapBrowsing=False,
             smallBlockThreshold='0',
+            fileQuota='0',
+            permissionMask='',
             flags='0'):
         payload = {
             'networkShare' : networkShare,  #xsd:string
@@ -5520,6 +5631,8 @@ class QuantastorClient(object):
             'disableNfsSnapsDir' : disableNfsSnapsDir,  #xsd:boolean
             'enableNfsSnapBrowsing' : enableNfsSnapBrowsing,  #xsd:boolean
             'smallBlockThreshold' : smallBlockThreshold,  #xsd:unsignedInt
+            'fileQuota' : self.size_in_bytes(fileQuota),  #xsd:unsignedLong
+            'permissionMask' : permissionMask,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('networkShareModify', payload)
@@ -5992,6 +6105,9 @@ class QuantastorClient(object):
             maxLength='0',
             allowedLoginAttemptsUntilShortLockout='0',
             allowedLoginAttemptsUntilPermLockout='0',
+            shortLockoutSamplePeriod='0',
+            permLockoutSamplePeriod='0',
+            shortLockoutDuration='0',
             daysUntilExpiration='0',
             uniquePasswordsUntilReuse='0',
             minDaysBetweenPasswordChange='0',
@@ -6008,6 +6124,9 @@ class QuantastorClient(object):
             'maxLength' : maxLength,  #xsd:unsignedInt
             'allowedLoginAttemptsUntilShortLockout' : allowedLoginAttemptsUntilShortLockout,  #xsd:unsignedInt
             'allowedLoginAttemptsUntilPermLockout' : allowedLoginAttemptsUntilPermLockout,  #xsd:unsignedInt
+            'shortLockoutSamplePeriod' : shortLockoutSamplePeriod,  #xsd:unsignedInt
+            'permLockoutSamplePeriod' : permLockoutSamplePeriod,  #xsd:unsignedInt
+            'shortLockoutDuration' : shortLockoutDuration,  #xsd:unsignedInt
             'daysUntilExpiration' : daysUntilExpiration,  #xsd:unsignedInt
             'uniquePasswordsUntilReuse' : uniquePasswordsUntilReuse,  #xsd:unsignedInt
             'minDaysBetweenPasswordChange' : minDaysBetweenPasswordChange,  #xsd:unsignedInt
@@ -6693,6 +6812,7 @@ class QuantastorClient(object):
             retentionCountSumReports='0',
             enableRecursiveNestedShares=False,
             enableResumableReplication=False,
+            absorbOldSnapshots=False,
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -6728,6 +6848,7 @@ class QuantastorClient(object):
             'retentionCountSumReports' : retentionCountSumReports,  #xsd:unsignedInt
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
             'enableResumableReplication' : enableResumableReplication,  #xsd:boolean
+            'absorbOldSnapshots' : absorbOldSnapshots,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('replicationScheduleCreate', payload)
@@ -6833,6 +6954,8 @@ class QuantastorClient(object):
             retentionCountSumReports='0',
             enableRecursiveNestedShares=False,
             enableResumableReplication=False,
+            absorbOldSnapshots=False,
+            oldScheduleId='',
             flags='0'):
         payload = {
             'schedule' : schedule,  #xsd:string
@@ -6863,6 +6986,8 @@ class QuantastorClient(object):
             'retentionCountSumReports' : retentionCountSumReports,  #xsd:unsignedInt
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
             'enableResumableReplication' : enableResumableReplication,  #xsd:boolean
+            'absorbOldSnapshots' : absorbOldSnapshots,  #xsd:boolean
+            'oldScheduleId' : oldScheduleId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('replicationScheduleModify', payload)
@@ -6894,6 +7019,10 @@ class QuantastorClient(object):
             maxDepth='0',
             maxSubdirs='0',
             minSubdirUsedSpace='0',
+            maxBuckets='0',
+            maxUsers='0',
+            minUserUtilizedSpace='0',
+            minBucketUtilizedSpace='0',
             flags='0'):
         payload = {
             'reportType' : reportType,  #xsd:unsignedInt
@@ -6905,6 +7034,10 @@ class QuantastorClient(object):
             'maxDepth' : maxDepth,  #xsd:unsignedInt
             'maxSubdirs' : maxSubdirs,  #xsd:unsignedInt
             'minSubdirUsedSpace' : self.size_in_bytes(minSubdirUsedSpace),  #xsd:unsignedLong
+            'maxBuckets' : maxBuckets,  #xsd:unsignedInt
+            'maxUsers' : maxUsers,  #xsd:unsignedInt
+            'minUserUtilizedSpace' : self.size_in_bytes(minUserUtilizedSpace),  #xsd:unsignedLong
+            'minBucketUtilizedSpace' : self.size_in_bytes(minBucketUtilizedSpace),  #xsd:unsignedLong
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('reportGenerate', payload)
@@ -6966,6 +7099,10 @@ class QuantastorClient(object):
             maxSubdirsPerShare='0',
             minSubdirUsedSpace='0',
             reportableIdList='',
+            maxBuckets='0',
+            maxUsers='0',
+            minUserUtilizedSpace='0',
+            minBucketUtilizedSpace='0',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -6985,6 +7122,10 @@ class QuantastorClient(object):
             'maxSubdirsPerShare' : maxSubdirsPerShare,  #xsd:unsignedInt
             'minSubdirUsedSpace' : self.size_in_bytes(minSubdirUsedSpace),  #xsd:unsignedLong
             'reportableIdList' : reportableIdList,  #xsd:string
+            'maxBuckets' : maxBuckets,  #xsd:unsignedInt
+            'maxUsers' : maxUsers,  #xsd:unsignedInt
+            'minUserUtilizedSpace' : self.size_in_bytes(minUserUtilizedSpace),  #xsd:unsignedLong
+            'minBucketUtilizedSpace' : self.size_in_bytes(minBucketUtilizedSpace),  #xsd:unsignedLong
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('reportScheduleCreate', payload)
@@ -7062,6 +7203,10 @@ class QuantastorClient(object):
             maxSubdirDepth='0',
             maxSubdirsPerShare='0',
             minSubdirUsedSpace='0',
+            maxBuckets='0',
+            maxUsers='0',
+            minUserUtilizedSpace='0',
+            minBucketUtilizedSpace='0',
             flags='0'):
         payload = {
             'schedule' : schedule,  #xsd:string
@@ -7081,6 +7226,10 @@ class QuantastorClient(object):
             'maxSubdirDepth' : maxSubdirDepth,  #xsd:unsignedInt
             'maxSubdirsPerShare' : maxSubdirsPerShare,  #xsd:unsignedInt
             'minSubdirUsedSpace' : self.size_in_bytes(minSubdirUsedSpace),  #xsd:unsignedLong
+            'maxBuckets' : maxBuckets,  #xsd:unsignedInt
+            'maxUsers' : maxUsers,  #xsd:unsignedInt
+            'minUserUtilizedSpace' : self.size_in_bytes(minUserUtilizedSpace),  #xsd:unsignedLong
+            'minBucketUtilizedSpace' : self.size_in_bytes(minBucketUtilizedSpace),  #xsd:unsignedLong
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('reportScheduleModify', payload)
@@ -7657,57 +7806,6 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('s3ProxyModify', payload)
         return S3ProxyModifyResponse.responseParse(jsonOutput)
-
-    def s3_quota_enum(
-            self,
-            cephClusterId='',
-            quotaScope='0',
-            flags='0'):
-        payload = {
-            'cephClusterId' : cephClusterId,  #xsd:string
-            'quotaScope' : quotaScope,  #xsd:unsignedInt
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('s3QuotaEnum', payload)
-        return S3QuotaEnumResponse.responseParse(jsonOutput)
-
-    def s3_quota_get(
-            self,
-            bucketQuotaId='',
-            flags='0'):
-        payload = {
-            'bucketQuotaId' : bucketQuotaId,  #xsd:string
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('s3QuotaGet', payload)
-        return S3QuotaGetResponse.responseParse(jsonOutput)
-
-    def s3_quota_set_global(
-            self,
-            cephClusterId='',
-            bucketMaxObjectCountEnable=False,
-            bucketMaxObjectCount='0',
-            bucketMaxSizeEnable=False,
-            bucketMaxSize='0',
-            userMaxObjectCountEnable=False,
-            userMaxObjectCount='0',
-            userMaxSizeEnable=False,
-            userMaxSize='0',
-            flags='0'):
-        payload = {
-            'cephClusterId' : cephClusterId,  #xsd:string
-            'bucketMaxObjectCountEnable' : bucketMaxObjectCountEnable,  #xsd:boolean
-            'bucketMaxObjectCount' : self.size_in_bytes(bucketMaxObjectCount),  #xsd:unsignedLong
-            'bucketMaxSizeEnable' : bucketMaxSizeEnable,  #xsd:boolean
-            'bucketMaxSize' : self.size_in_bytes(bucketMaxSize),  #xsd:unsignedLong
-            'userMaxObjectCountEnable' : userMaxObjectCountEnable,  #xsd:boolean
-            'userMaxObjectCount' : self.size_in_bytes(userMaxObjectCount),  #xsd:unsignedLong
-            'userMaxSizeEnable' : userMaxSizeEnable,  #xsd:boolean
-            'userMaxSize' : self.size_in_bytes(userMaxSize),  #xsd:unsignedLong
-            'flags' : flags,  #xsd:unsignedInt
-            }
-        jsonOutput = self.make_call('s3QuotaSetGlobal', payload)
-        return S3QuotaSetGlobalResponse.responseParse(jsonOutput)
 
     def s3_tenant_create(
             self,
@@ -8354,6 +8452,7 @@ class QuantastorClient(object):
             retentionCountMonthlies='0',
             retentionCountQuarterlies='0',
             enableRecursiveNestedShares=False,
+            absorbOldSnapshots=False,
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -8375,6 +8474,7 @@ class QuantastorClient(object):
             'retentionCountMonthlies' : retentionCountMonthlies,  #xsd:unsignedInt
             'retentionCountQuarterlies' : retentionCountQuarterlies,  #xsd:unsignedInt
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
+            'absorbOldSnapshots' : absorbOldSnapshots,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('snapshotScheduleCreate', payload)
@@ -8453,6 +8553,8 @@ class QuantastorClient(object):
             retentionCountMonthlies='0',
             retentionCountQuarterlies='0',
             enableRecursiveNestedShares=False,
+            absorbOldSnapshots=False,
+            oldScheduleId='',
             flags='0'):
         payload = {
             'schedule' : schedule,  #xsd:string
@@ -8473,6 +8575,8 @@ class QuantastorClient(object):
             'retentionCountMonthlies' : retentionCountMonthlies,  #xsd:unsignedInt
             'retentionCountQuarterlies' : retentionCountQuarterlies,  #xsd:unsignedInt
             'enableRecursiveNestedShares' : enableRecursiveNestedShares,  #xsd:boolean
+            'absorbOldSnapshots' : absorbOldSnapshots,  #xsd:boolean
+            'oldScheduleId' : oldScheduleId,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('snapshotScheduleModify', payload)
@@ -8760,6 +8864,17 @@ class QuantastorClient(object):
         jsonOutput = self.make_call('storagePoolHaFailoverGroupActivate', payload)
         return StoragePoolHaFailoverGroupActivateResponse.responseParse(jsonOutput)
 
+    def storage_pool_ha_failover_group_check_health_status(
+            self,
+            poolIdList='',
+            flags='0'):
+        payload = {
+            'poolIdList' : poolIdList,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storagePoolHaFailoverGroupCheckHealthStatus', payload)
+        return StoragePoolHaFailoverGroupCheckHealthStatusResponse.responseParse(jsonOutput)
+
     def storage_pool_ha_failover_group_create(
             self,
             storagePoolId='',
@@ -8833,11 +8948,15 @@ class QuantastorClient(object):
             failoverGroup='',
             targetStorageSystem='',
             failoverReason='0',
+            importHealthChecks=False,
+            exportHealthChecks=False,
             flags='0'):
         payload = {
             'failoverGroup' : failoverGroup,  #xsd:string
             'targetStorageSystem' : targetStorageSystem,  #xsd:string
             'failoverReason' : failoverReason,  #xsd:unsignedInt
+            'importHealthChecks' : importHealthChecks,  #xsd:boolean
+            'exportHealthChecks' : exportHealthChecks,  #xsd:boolean
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storagePoolHaFailoverGroupFailover', payload)
@@ -8853,6 +8972,17 @@ class QuantastorClient(object):
             }
         jsonOutput = self.make_call('storagePoolHaFailoverGroupGet', payload)
         return StoragePoolHaFailoverGroupGetResponse.responseParse(jsonOutput)
+
+    def storage_pool_ha_failover_group_get_health_status(
+            self,
+            poolIdList='',
+            flags='0'):
+        payload = {
+            'poolIdList' : poolIdList,  #xsd:string
+            'flags' : flags,  #xsd:unsignedInt
+            }
+        jsonOutput = self.make_call('storagePoolHaFailoverGroupGetHealthStatus', payload)
+        return StoragePoolHaFailoverGroupGetHealthStatusResponse.responseParse(jsonOutput)
 
     def storage_pool_ha_failover_group_modify(
             self,
@@ -9922,6 +10052,9 @@ class QuantastorClient(object):
             firewallMask='0',
             disableIoFencing=False,
             wwnEmulationMode='0',
+            proxyUrlHttp='',
+            proxyUrlHttps='',
+            proxyUrlNoProxy='',
             flags='0'):
         payload = {
             'storageSystem' : storageSystem,  #xsd:string
@@ -9944,6 +10077,9 @@ class QuantastorClient(object):
             'firewallMask' : firewallMask,  #xsd:unsignedInt
             'disableIoFencing' : disableIoFencing,  #xsd:boolean
             'wwnEmulationMode' : wwnEmulationMode,  #xsd:unsignedInt
+            'proxyUrlHttp' : proxyUrlHttp,  #xsd:string
+            'proxyUrlHttps' : proxyUrlHttps,  #xsd:string
+            'proxyUrlNoProxy' : proxyUrlNoProxy,  #xsd:string
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemModify', payload)
@@ -10221,6 +10357,7 @@ class QuantastorClient(object):
             coreOnly=False,
             cephUpgrade=False,
             workerTask=False,
+            timeoutPaddingSec='0',
             flags='0'):
         payload = {
             'storageSystemIdList' : storageSystemIdList,  #xsd:string
@@ -10230,6 +10367,7 @@ class QuantastorClient(object):
             'coreOnly' : coreOnly,  #xsd:boolean
             'cephUpgrade' : cephUpgrade,  #xsd:boolean
             'workerTask' : workerTask,  #xsd:boolean
+            'timeoutPaddingSec' : timeoutPaddingSec,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageSystemUpgrade', payload)
@@ -10359,11 +10497,13 @@ class QuantastorClient(object):
             storageVolume='',
             modType='0',
             hostList='',
+            lun='0',
             flags='0'):
         payload = {
             'storageVolume' : storageVolume,  #xsd:string
             'modType' : modType,  #xsd:unsignedInt
             'hostList' : hostList,  #xsd:string
+            'lun' : lun,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeAclAddRemove', payload)
@@ -10444,6 +10584,7 @@ class QuantastorClient(object):
             qosPolicy='',
             profile='',
             disableMapping=False,
+            lun='0',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -10459,6 +10600,7 @@ class QuantastorClient(object):
             'qosPolicy' : qosPolicy,  #xsd:string
             'profile' : profile,  #xsd:string
             'disableMapping' : disableMapping,  #xsd:boolean
+            'lun' : lun,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeCreate', payload)
@@ -10488,6 +10630,7 @@ class QuantastorClient(object):
             profile='',
             spaceReserved='0',
             disableMapping=False,
+            lun='0',
             flags='0'):
         payload = {
             'name' : name,  #xsd:string
@@ -10512,6 +10655,7 @@ class QuantastorClient(object):
             'profile' : profile,  #xsd:string
             'spaceReserved' : self.size_in_bytes(spaceReserved),  #xsd:unsignedLong
             'disableMapping' : disableMapping,  #xsd:boolean
+            'lun' : lun,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeCreateEx', payload)
@@ -10810,6 +10954,7 @@ class QuantastorClient(object):
             qosPolicy='',
             profile='',
             spaceReserved='0',
+            lun='0',
             flags='0'):
         payload = {
             'storageVolume' : storageVolume,  #xsd:string
@@ -10830,6 +10975,7 @@ class QuantastorClient(object):
             'qosPolicy' : qosPolicy,  #xsd:string
             'profile' : profile,  #xsd:string
             'spaceReserved' : self.size_in_bytes(spaceReserved),  #xsd:unsignedLong
+            'lun' : lun,  #xsd:unsignedInt
             'flags' : flags,  #xsd:unsignedInt
             }
         jsonOutput = self.make_call('storageVolumeModify', payload)
@@ -12069,6 +12215,70 @@ class Object(object):
         }
         return thisJsonObj
 
+class CephPoolGroup(Object):
+    _cephClusterId=''
+    _description=''
+    _size='0'
+    _utilizedSpace='0'
+    _freeSpace='0'
+    _sizeMetaData='0'
+    _utilizedSpaceMetaData='0'
+    _poolAssocList=''
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(CephPoolGroup, self).jsonParse(jsonObj)
+        if 'cephClusterId' in jsonObj:
+            self._cephClusterId = jsonObj['cephClusterId']
+        else:
+            self._cephClusterId = ''
+        if 'description' in jsonObj:
+            self._description = jsonObj['description']
+        else:
+            self._description = ''
+        if 'size' in jsonObj:
+            self._size = jsonObj['size']
+        else:
+            self._size = '0'
+        if 'utilizedSpace' in jsonObj:
+            self._utilizedSpace = jsonObj['utilizedSpace']
+        else:
+            self._utilizedSpace = '0'
+        if 'freeSpace' in jsonObj:
+            self._freeSpace = jsonObj['freeSpace']
+        else:
+            self._freeSpace = '0'
+        if 'sizeMetaData' in jsonObj:
+            self._sizeMetaData = jsonObj['sizeMetaData']
+        else:
+            self._sizeMetaData = '0'
+        if 'utilizedSpaceMetaData' in jsonObj:
+            self._utilizedSpaceMetaData = jsonObj['utilizedSpaceMetaData']
+        else:
+            self._utilizedSpaceMetaData = '0'
+        if 'poolAssocList' in jsonObj:
+            self._poolAssocList = jsonObj['poolAssocList']
+        else:
+            self._poolAssocList = ''
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(CephPoolGroup,self).exportJson()
+        thisJsonObj = {
+            'cephClusterId' : self._cephClusterId,
+            'description' : self._description,
+            'size' : self._size,
+            'utilizedSpace' : self._utilizedSpace,
+            'freeSpace' : self._freeSpace,
+            'sizeMetaData' : self._sizeMetaData,
+            'utilizedSpaceMetaData' : self._utilizedSpaceMetaData,
+            'poolAssocList' : self._poolAssocList
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
 class NodeAssoc(object):
     _storageSystemId=''
     _isRemote=False
@@ -12179,6 +12389,8 @@ class Replicatable(Object):
     _cachePolicyPrimary='0'
     _cachePolicySecondary='0'
     _resumeToken=''
+    _snapshotCount='0'
+    _createdByScheduleType='0'
     _replicaAssocList=''
 
     def __init__(self,jsonObj):
@@ -12286,6 +12498,14 @@ class Replicatable(Object):
             self._resumeToken = jsonObj['resumeToken']
         else:
             self._resumeToken = ''
+        if 'snapshotCount' in jsonObj:
+            self._snapshotCount = jsonObj['snapshotCount']
+        else:
+            self._snapshotCount = '0'
+        if 'createdByScheduleType' in jsonObj:
+            self._createdByScheduleType = jsonObj['createdByScheduleType']
+        else:
+            self._createdByScheduleType = '0'
         if 'replicaAssocList' in jsonObj:
             self._replicaAssocList = jsonObj['replicaAssocList']
         else:
@@ -12320,6 +12540,8 @@ class Replicatable(Object):
             'cachePolicyPrimary' : self._cachePolicyPrimary,
             'cachePolicySecondary' : self._cachePolicySecondary,
             'resumeToken' : self._resumeToken,
+            'snapshotCount' : self._snapshotCount,
+            'createdByScheduleType' : self._createdByScheduleType,
             'replicaAssocList' : self._replicaAssocList
         }
         thisJsonObj.update(superJsonObj)
@@ -12993,6 +13215,7 @@ class AlertConfigSettings(Object):
     _enableSyslogAlerts=False
     _snmpUsername=''
     _snmpPassword=''
+    _handlerList=''
     _endpointList=''
 
     def __init__(self,jsonObj):
@@ -13064,6 +13287,10 @@ class AlertConfigSettings(Object):
             self._snmpPassword = jsonObj['snmpPassword']
         else:
             self._snmpPassword = ''
+        if 'handlerList' in jsonObj:
+            self._handlerList = jsonObj['handlerList']
+        else:
+            self._handlerList = ''
         if 'endpointList' in jsonObj:
             self._endpointList = jsonObj['endpointList']
         else:
@@ -13089,6 +13316,7 @@ class AlertConfigSettings(Object):
             'enableSyslogAlerts' : self._enableSyslogAlerts,
             'snmpUsername' : self._snmpUsername,
             'snmpPassword' : self._snmpPassword,
+            'handlerList' : self._handlerList,
             'endpointList' : self._endpointList
         }
         thisJsonObj.update(superJsonObj)
@@ -13121,6 +13349,40 @@ class AlertGetResponse(object):
     def responseParse(cls,jsonObj):
         obj = Alert(jsonObj)
         return obj
+
+class AlertHandler(Object):
+    _endpointModule=''
+    _description=''
+    _docLink=''
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(AlertHandler, self).jsonParse(jsonObj)
+        if 'endpointModule' in jsonObj:
+            self._endpointModule = jsonObj['endpointModule']
+        else:
+            self._endpointModule = ''
+        if 'description' in jsonObj:
+            self._description = jsonObj['description']
+        else:
+            self._description = ''
+        if 'docLink' in jsonObj:
+            self._docLink = jsonObj['docLink']
+        else:
+            self._docLink = ''
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(AlertHandler,self).exportJson()
+        thisJsonObj = {
+            'endpointModule' : self._endpointModule,
+            'description' : self._description,
+            'docLink' : self._docLink
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
 
 class AlertRaiseResponse(object):
     _task=''
@@ -13214,7 +13476,7 @@ class AlertTypeGetResponse(object):
         return obj
 
 class AssocConfiguration(Object):
-    _listCephFilesystemPoolAssoc=''
+    _listCephPoolGroupAssoc=''
     _listCephClusterHealthEvent=''
     _listCephClientKeyringResourceAssoc=''
     _listContainerConfigOption=''
@@ -13239,10 +13501,10 @@ class AssocConfiguration(Object):
 
     def jsonParse(self,jsonObj):
         super(AssocConfiguration, self).jsonParse(jsonObj)
-        if 'listCephFilesystemPoolAssoc' in jsonObj:
-            self._listCephFilesystemPoolAssoc = jsonObj['listCephFilesystemPoolAssoc']
+        if 'listCephPoolGroupAssoc' in jsonObj:
+            self._listCephPoolGroupAssoc = jsonObj['listCephPoolGroupAssoc']
         else:
-            self._listCephFilesystemPoolAssoc = ''
+            self._listCephPoolGroupAssoc = ''
         if 'listCephClusterHealthEvent' in jsonObj:
             self._listCephClusterHealthEvent = jsonObj['listCephClusterHealthEvent']
         else:
@@ -13320,7 +13582,7 @@ class AssocConfiguration(Object):
     def exportJson(self):
         superJsonObj = super(AssocConfiguration,self).exportJson()
         thisJsonObj = {
-            'listCephFilesystemPoolAssoc' : self._listCephFilesystemPoolAssoc,
+            'listCephPoolGroupAssoc' : self._listCephPoolGroupAssoc,
             'listCephClusterHealthEvent' : self._listCephClusterHealthEvent,
             'listCephClientKeyringResourceAssoc' : self._listCephClientKeyringResourceAssoc,
             'listContainerConfigOption' : self._listContainerConfigOption,
@@ -13449,41 +13711,32 @@ class BackupJobCancelResponse(object):
         return task, obj
 
 class BackupJobEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(BackupJob(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(BackupJob(var))
+        return objList
 
 class BackupJobGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = BackupJob(jsonObj['obj'])
-        return task, obj
+        obj = BackupJob(jsonObj)
+        return obj
 
 class BackupJobStartResponse(object):
     _task=''
@@ -13541,9 +13794,11 @@ class BackupPolicy(Schedule):
     _lastTieringTimestamp=''
     _smbSalt=''
     _remoteExportSubPath=''
-    _filterMode='0'
-    _filterString=''
-    _sizeThreshold='0'
+    _filterRuleInclude=''
+    _filterRuleExclude=''
+    _minSizeThreshold='0'
+    _maxSizeThreshold='0'
+    _minAutoTierThreshold='0'
     _autoCopy=False
     _forceRemoveTiered=False
     _backupJobList=''
@@ -13637,18 +13892,26 @@ class BackupPolicy(Schedule):
             self._remoteExportSubPath = jsonObj['remoteExportSubPath']
         else:
             self._remoteExportSubPath = ''
-        if 'filterMode' in jsonObj:
-            self._filterMode = jsonObj['filterMode']
+        if 'filterRuleInclude' in jsonObj:
+            self._filterRuleInclude = jsonObj['filterRuleInclude']
         else:
-            self._filterMode = '0'
-        if 'filterString' in jsonObj:
-            self._filterString = jsonObj['filterString']
+            self._filterRuleInclude = ''
+        if 'filterRuleExclude' in jsonObj:
+            self._filterRuleExclude = jsonObj['filterRuleExclude']
         else:
-            self._filterString = ''
-        if 'sizeThreshold' in jsonObj:
-            self._sizeThreshold = jsonObj['sizeThreshold']
+            self._filterRuleExclude = ''
+        if 'minSizeThreshold' in jsonObj:
+            self._minSizeThreshold = jsonObj['minSizeThreshold']
         else:
-            self._sizeThreshold = '0'
+            self._minSizeThreshold = '0'
+        if 'maxSizeThreshold' in jsonObj:
+            self._maxSizeThreshold = jsonObj['maxSizeThreshold']
+        else:
+            self._maxSizeThreshold = '0'
+        if 'minAutoTierThreshold' in jsonObj:
+            self._minAutoTierThreshold = jsonObj['minAutoTierThreshold']
+        else:
+            self._minAutoTierThreshold = '0'
         if 'autoCopy' in jsonObj:
             self._autoCopy = jsonObj['autoCopy']
         else:
@@ -13687,9 +13950,11 @@ class BackupPolicy(Schedule):
             'lastTieringTimestamp' : self._lastTieringTimestamp,
             'smbSalt' : self._smbSalt,
             'remoteExportSubPath' : self._remoteExportSubPath,
-            'filterMode' : self._filterMode,
-            'filterString' : self._filterString,
-            'sizeThreshold' : self._sizeThreshold,
+            'filterRuleInclude' : self._filterRuleInclude,
+            'filterRuleExclude' : self._filterRuleExclude,
+            'minSizeThreshold' : self._minSizeThreshold,
+            'maxSizeThreshold' : self._maxSizeThreshold,
+            'minAutoTierThreshold' : self._minAutoTierThreshold,
             'autoCopy' : self._autoCopy,
             'forceRemoveTiered' : self._forceRemoveTiered,
             'backupJobList' : self._backupJobList
@@ -13766,41 +14031,32 @@ class BackupPolicyEnableResponse(object):
         return task, obj
 
 class BackupPolicyEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(BackupPolicy(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(BackupPolicy(var))
+        return objList
 
 class BackupPolicyGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = BackupPolicy(jsonObj['obj'])
-        return task, obj
+        obj = BackupPolicy(jsonObj)
+        return obj
 
 class BackupPolicyModifyResponse(object):
     _task=''
@@ -13873,8 +14129,13 @@ class Bucket(Object):
     _enableNetworkShareAccess=False
     _tenantId=''
     _integrationOptions='0'
-    _quotaList=''
-    _userAssocList=''
+    _bucketUpdateRequested=False
+    _objectCount='0'
+    _ownerS3UserId=''
+    _bucketQuotaMaxObjectsEnable=False
+    _bucketQuotaMaxObjects='0'
+    _bucketQuotaMaxSizeEnable=False
+    _bucketQuotaMaxSize='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -13925,14 +14186,34 @@ class Bucket(Object):
             self._integrationOptions = jsonObj['integrationOptions']
         else:
             self._integrationOptions = '0'
-        if 'quotaList' in jsonObj:
-            self._quotaList = jsonObj['quotaList']
+        if 'bucketUpdateRequested' in jsonObj:
+            self._bucketUpdateRequested = jsonObj['bucketUpdateRequested']
         else:
-            self._quotaList = ''
-        if 'userAssocList' in jsonObj:
-            self._userAssocList = jsonObj['userAssocList']
+            self._bucketUpdateRequested = False
+        if 'objectCount' in jsonObj:
+            self._objectCount = jsonObj['objectCount']
         else:
-            self._userAssocList = ''
+            self._objectCount = '0'
+        if 'ownerS3UserId' in jsonObj:
+            self._ownerS3UserId = jsonObj['ownerS3UserId']
+        else:
+            self._ownerS3UserId = ''
+        if 'bucketQuotaMaxObjectsEnable' in jsonObj:
+            self._bucketQuotaMaxObjectsEnable = jsonObj['bucketQuotaMaxObjectsEnable']
+        else:
+            self._bucketQuotaMaxObjectsEnable = False
+        if 'bucketQuotaMaxObjects' in jsonObj:
+            self._bucketQuotaMaxObjects = jsonObj['bucketQuotaMaxObjects']
+        else:
+            self._bucketQuotaMaxObjects = '0'
+        if 'bucketQuotaMaxSizeEnable' in jsonObj:
+            self._bucketQuotaMaxSizeEnable = jsonObj['bucketQuotaMaxSizeEnable']
+        else:
+            self._bucketQuotaMaxSizeEnable = False
+        if 'bucketQuotaMaxSize' in jsonObj:
+            self._bucketQuotaMaxSize = jsonObj['bucketQuotaMaxSize']
+        else:
+            self._bucketQuotaMaxSize = '0'
         return self
 
     def exportJson(self):
@@ -13949,8 +14230,13 @@ class Bucket(Object):
             'enableNetworkShareAccess' : self._enableNetworkShareAccess,
             'tenantId' : self._tenantId,
             'integrationOptions' : self._integrationOptions,
-            'quotaList' : self._quotaList,
-            'userAssocList' : self._userAssocList
+            'bucketUpdateRequested' : self._bucketUpdateRequested,
+            'objectCount' : self._objectCount,
+            'ownerS3UserId' : self._ownerS3UserId,
+            'bucketQuotaMaxObjectsEnable' : self._bucketQuotaMaxObjectsEnable,
+            'bucketQuotaMaxObjects' : self._bucketQuotaMaxObjects,
+            'bucketQuotaMaxSizeEnable' : self._bucketQuotaMaxSizeEnable,
+            'bucketQuotaMaxSize' : self._bucketQuotaMaxSize
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -14095,6 +14381,30 @@ class BucketRescanResponse(object):
         obj = CephCluster(jsonObj['obj'])
         return task, obj
 
+class BucketSearchResponse(object):
+    _task=''
+    _list=''
+    _objCount='0'
+
+    def __init__(
+        self,
+        task='',
+        objList='',
+        objCount='0'):
+        self._task = task
+        self._list = objList
+        self._objCount = objCount
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(Bucket(var))
+        objCount = jsonObj['objCount']
+        return task, objList, objCount
+
 class BucketUnlinkResponse(object):
     _task=''
     _obj=''
@@ -14111,65 +14421,6 @@ class BucketUnlinkResponse(object):
         task = Task(jsonObj['task'])
         obj = Bucket(jsonObj['obj'])
         return task, obj
-
-class BucketUserAssoc(object):
-    _cephClusterId=''
-    _bucketId=''
-    _s3UserId=''
-
-    def __init__(self,jsonObj):
-        self.jsonParse(jsonObj)
-
-    def jsonParse(self,jsonObj):
-        if 'cephClusterId' in jsonObj:
-            self._cephClusterId = jsonObj['cephClusterId']
-        else:
-            self._cephClusterId = ''
-        if 'bucketId' in jsonObj:
-            self._bucketId = jsonObj['bucketId']
-        else:
-            self._bucketId = ''
-        if 's3UserId' in jsonObj:
-            self._s3UserId = jsonObj['s3UserId']
-        else:
-            self._s3UserId = ''
-        return self
-
-    def exportJson(self):
-        thisJsonObj = {
-            'cephClusterId' : self._cephClusterId,
-            'bucketId' : self._bucketId,
-            's3UserId' : self._s3UserId
-        }
-        return thisJsonObj
-
-class BucketUserAssocEnumResponse(object):
-    _list=''
-
-    def __init__(
-        self,
-        objList=''):
-        self._list = objList
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        objList = []
-        for var in jsonObj:
-            objList.append(BucketUserAssoc(var))
-        return objList
-
-class BucketUserAssocGetResponse(object):
-    _obj=''
-
-    def __init__(
-        self,
-        obj=''):
-        self._obj = obj
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        obj = BucketUserAssoc(jsonObj)
-        return obj
 
 class CapabilityMetaData(Object):
     _category=''
@@ -14469,14 +14720,21 @@ class CephCluster(Object):
     _rawUtilizedSpace='0'
     _rawFreeSpace='0'
     _clustersalt=''
-    _memberList=''
-    _osdList=''
-    _monitorList=''
-    _pgSetList=''
-    _rgwList=''
-    _mdsList=''
-    _quotaList=''
-    _healthEventList=''
+    _userQuotaMaxObjectsEnable=False
+    _userQuotaMaxObjects='0'
+    _userQuotaMaxSizeEnable=False
+    _userQuotaMaxSize='0'
+    _bucketQuotaMaxObjectsEnable=False
+    _bucketQuotaMaxObjects='0'
+    _bucketQuotaMaxSizeEnable=False
+    _bucketQuotaMaxSize='0'
+    _memberIdList=''
+    _osdIdList=''
+    _monitorIdList=''
+    _pgSetIdList=''
+    _rgwIdList=''
+    _mdsIdList=''
+    _healthEventIdList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -14587,38 +14845,66 @@ class CephCluster(Object):
             self._clustersalt = jsonObj['clustersalt']
         else:
             self._clustersalt = ''
-        if 'memberList' in jsonObj:
-            self._memberList = jsonObj['memberList']
+        if 'userQuotaMaxObjectsEnable' in jsonObj:
+            self._userQuotaMaxObjectsEnable = jsonObj['userQuotaMaxObjectsEnable']
         else:
-            self._memberList = ''
-        if 'osdList' in jsonObj:
-            self._osdList = jsonObj['osdList']
+            self._userQuotaMaxObjectsEnable = False
+        if 'userQuotaMaxObjects' in jsonObj:
+            self._userQuotaMaxObjects = jsonObj['userQuotaMaxObjects']
         else:
-            self._osdList = ''
-        if 'monitorList' in jsonObj:
-            self._monitorList = jsonObj['monitorList']
+            self._userQuotaMaxObjects = '0'
+        if 'userQuotaMaxSizeEnable' in jsonObj:
+            self._userQuotaMaxSizeEnable = jsonObj['userQuotaMaxSizeEnable']
         else:
-            self._monitorList = ''
-        if 'pgSetList' in jsonObj:
-            self._pgSetList = jsonObj['pgSetList']
+            self._userQuotaMaxSizeEnable = False
+        if 'userQuotaMaxSize' in jsonObj:
+            self._userQuotaMaxSize = jsonObj['userQuotaMaxSize']
         else:
-            self._pgSetList = ''
-        if 'rgwList' in jsonObj:
-            self._rgwList = jsonObj['rgwList']
+            self._userQuotaMaxSize = '0'
+        if 'bucketQuotaMaxObjectsEnable' in jsonObj:
+            self._bucketQuotaMaxObjectsEnable = jsonObj['bucketQuotaMaxObjectsEnable']
         else:
-            self._rgwList = ''
-        if 'mdsList' in jsonObj:
-            self._mdsList = jsonObj['mdsList']
+            self._bucketQuotaMaxObjectsEnable = False
+        if 'bucketQuotaMaxObjects' in jsonObj:
+            self._bucketQuotaMaxObjects = jsonObj['bucketQuotaMaxObjects']
         else:
-            self._mdsList = ''
-        if 'quotaList' in jsonObj:
-            self._quotaList = jsonObj['quotaList']
+            self._bucketQuotaMaxObjects = '0'
+        if 'bucketQuotaMaxSizeEnable' in jsonObj:
+            self._bucketQuotaMaxSizeEnable = jsonObj['bucketQuotaMaxSizeEnable']
         else:
-            self._quotaList = ''
-        if 'healthEventList' in jsonObj:
-            self._healthEventList = jsonObj['healthEventList']
+            self._bucketQuotaMaxSizeEnable = False
+        if 'bucketQuotaMaxSize' in jsonObj:
+            self._bucketQuotaMaxSize = jsonObj['bucketQuotaMaxSize']
         else:
-            self._healthEventList = ''
+            self._bucketQuotaMaxSize = '0'
+        if 'memberIdList' in jsonObj:
+            self._memberIdList = jsonObj['memberIdList']
+        else:
+            self._memberIdList = ''
+        if 'osdIdList' in jsonObj:
+            self._osdIdList = jsonObj['osdIdList']
+        else:
+            self._osdIdList = ''
+        if 'monitorIdList' in jsonObj:
+            self._monitorIdList = jsonObj['monitorIdList']
+        else:
+            self._monitorIdList = ''
+        if 'pgSetIdList' in jsonObj:
+            self._pgSetIdList = jsonObj['pgSetIdList']
+        else:
+            self._pgSetIdList = ''
+        if 'rgwIdList' in jsonObj:
+            self._rgwIdList = jsonObj['rgwIdList']
+        else:
+            self._rgwIdList = ''
+        if 'mdsIdList' in jsonObj:
+            self._mdsIdList = jsonObj['mdsIdList']
+        else:
+            self._mdsIdList = ''
+        if 'healthEventIdList' in jsonObj:
+            self._healthEventIdList = jsonObj['healthEventIdList']
+        else:
+            self._healthEventIdList = ''
         return self
 
     def exportJson(self):
@@ -14650,14 +14936,21 @@ class CephCluster(Object):
             'rawUtilizedSpace' : self._rawUtilizedSpace,
             'rawFreeSpace' : self._rawFreeSpace,
             'clustersalt' : self._clustersalt,
-            'memberList' : self._memberList,
-            'osdList' : self._osdList,
-            'monitorList' : self._monitorList,
-            'pgSetList' : self._pgSetList,
-            'rgwList' : self._rgwList,
-            'mdsList' : self._mdsList,
-            'quotaList' : self._quotaList,
-            'healthEventList' : self._healthEventList
+            'userQuotaMaxObjectsEnable' : self._userQuotaMaxObjectsEnable,
+            'userQuotaMaxObjects' : self._userQuotaMaxObjects,
+            'userQuotaMaxSizeEnable' : self._userQuotaMaxSizeEnable,
+            'userQuotaMaxSize' : self._userQuotaMaxSize,
+            'bucketQuotaMaxObjectsEnable' : self._bucketQuotaMaxObjectsEnable,
+            'bucketQuotaMaxObjects' : self._bucketQuotaMaxObjects,
+            'bucketQuotaMaxSizeEnable' : self._bucketQuotaMaxSizeEnable,
+            'bucketQuotaMaxSize' : self._bucketQuotaMaxSize,
+            'memberIdList' : self._memberIdList,
+            'osdIdList' : self._osdIdList,
+            'monitorIdList' : self._monitorIdList,
+            'pgSetIdList' : self._pgSetIdList,
+            'rgwIdList' : self._rgwIdList,
+            'mdsIdList' : self._mdsIdList,
+            'healthEventIdList' : self._healthEventIdList
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -14958,6 +15251,23 @@ class CephClusterModifyResponse(object):
         obj = CephCluster(jsonObj['obj'])
         return task, obj
 
+class CephClusterOsdKeyReplaceResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = CephCluster(jsonObj['obj'])
+        return task, obj
+
 class CephClusterRemoveNodeResponse(object):
     _task=''
     _obj=''
@@ -15046,6 +15356,23 @@ class CephClusterServiceEventEnumResponse(object):
         for var in jsonObj:
             objList.append(CephClusterServiceEvent(var))
         return objList
+
+class CephClusterSetGlobalS3QuotaResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = CephCluster(jsonObj['obj'])
+        return task, obj
 
 class CephCrushRule(Object):
     _ruleId='0'
@@ -15173,36 +15500,15 @@ class CephCrushRuleGetResponse(object):
         obj = CephCrushRule(jsonObj)
         return obj
 
-class CephFilesystem(Object):
-    _cephClusterId=''
-    _description=''
-    _size='0'
-    _utilizedSpace='0'
+class CephFilesystem(CephPoolGroup):
     _activeMdsCount='0'
     _standbyMdsCount='0'
-    _poolAssocList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
         super(CephFilesystem, self).jsonParse(jsonObj)
-        if 'cephClusterId' in jsonObj:
-            self._cephClusterId = jsonObj['cephClusterId']
-        else:
-            self._cephClusterId = ''
-        if 'description' in jsonObj:
-            self._description = jsonObj['description']
-        else:
-            self._description = ''
-        if 'size' in jsonObj:
-            self._size = jsonObj['size']
-        else:
-            self._size = '0'
-        if 'utilizedSpace' in jsonObj:
-            self._utilizedSpace = jsonObj['utilizedSpace']
-        else:
-            self._utilizedSpace = '0'
         if 'activeMdsCount' in jsonObj:
             self._activeMdsCount = jsonObj['activeMdsCount']
         else:
@@ -15211,22 +15517,13 @@ class CephFilesystem(Object):
             self._standbyMdsCount = jsonObj['standbyMdsCount']
         else:
             self._standbyMdsCount = '0'
-        if 'poolAssocList' in jsonObj:
-            self._poolAssocList = jsonObj['poolAssocList']
-        else:
-            self._poolAssocList = ''
         return self
 
     def exportJson(self):
         superJsonObj = super(CephFilesystem,self).exportJson()
         thisJsonObj = {
-            'cephClusterId' : self._cephClusterId,
-            'description' : self._description,
-            'size' : self._size,
-            'utilizedSpace' : self._utilizedSpace,
             'activeMdsCount' : self._activeMdsCount,
-            'standbyMdsCount' : self._standbyMdsCount,
-            'poolAssocList' : self._poolAssocList
+            'standbyMdsCount' : self._standbyMdsCount
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -15309,65 +15606,6 @@ class CephFilesystemModifyResponse(object):
         task = Task(jsonObj['task'])
         obj = CephFilesystem(jsonObj['obj'])
         return task, obj
-
-class CephFilesystemPoolAssoc(object):
-    _cephFileSystemId=''
-    _cephPoolId=''
-    _isMetadataPool=False
-
-    def __init__(self,jsonObj):
-        self.jsonParse(jsonObj)
-
-    def jsonParse(self,jsonObj):
-        if 'cephFileSystemId' in jsonObj:
-            self._cephFileSystemId = jsonObj['cephFileSystemId']
-        else:
-            self._cephFileSystemId = ''
-        if 'cephPoolId' in jsonObj:
-            self._cephPoolId = jsonObj['cephPoolId']
-        else:
-            self._cephPoolId = ''
-        if 'isMetadataPool' in jsonObj:
-            self._isMetadataPool = jsonObj['isMetadataPool']
-        else:
-            self._isMetadataPool = False
-        return self
-
-    def exportJson(self):
-        thisJsonObj = {
-            'cephFileSystemId' : self._cephFileSystemId,
-            'cephPoolId' : self._cephPoolId,
-            'isMetadataPool' : self._isMetadataPool
-        }
-        return thisJsonObj
-
-class CephFilesystemPoolAssocEnumResponse(object):
-    _list=''
-
-    def __init__(
-        self,
-        objList=''):
-        self._list = objList
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        objList = []
-        for var in jsonObj:
-            objList.append(CephFilesystemPoolAssoc(var))
-        return objList
-
-class CephFilesystemPoolAssocGetResponse(object):
-    _obj=''
-
-    def __init__(
-        self,
-        obj=''):
-        self._obj = obj
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        obj = CephFilesystemPoolAssoc(jsonObj)
-        return obj
 
 class CephJournalDevice(Object):
     _physicalDiskId=''
@@ -16035,32 +16273,18 @@ class CephMultiOsdDeleteResponse(object):
                 objList.append(CephOsd(var))
         return task, objList
 
-class CephObjectPoolGroup(Object):
-    _description=''
-    _cephClusterId=''
+class CephObjectPoolGroup(CephPoolGroup):
     _zone=''
     _zoneGroup=''
-    _size='0'
-    _utilizedSpace='0'
-    _freeSpace='0'
     _objectCount='0'
     _zoneId=''
     _zoneGroupId=''
-    _poolList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
 
     def jsonParse(self,jsonObj):
         super(CephObjectPoolGroup, self).jsonParse(jsonObj)
-        if 'description' in jsonObj:
-            self._description = jsonObj['description']
-        else:
-            self._description = ''
-        if 'cephClusterId' in jsonObj:
-            self._cephClusterId = jsonObj['cephClusterId']
-        else:
-            self._cephClusterId = ''
         if 'zone' in jsonObj:
             self._zone = jsonObj['zone']
         else:
@@ -16069,18 +16293,6 @@ class CephObjectPoolGroup(Object):
             self._zoneGroup = jsonObj['zoneGroup']
         else:
             self._zoneGroup = ''
-        if 'size' in jsonObj:
-            self._size = jsonObj['size']
-        else:
-            self._size = '0'
-        if 'utilizedSpace' in jsonObj:
-            self._utilizedSpace = jsonObj['utilizedSpace']
-        else:
-            self._utilizedSpace = '0'
-        if 'freeSpace' in jsonObj:
-            self._freeSpace = jsonObj['freeSpace']
-        else:
-            self._freeSpace = '0'
         if 'objectCount' in jsonObj:
             self._objectCount = jsonObj['objectCount']
         else:
@@ -16093,26 +16305,16 @@ class CephObjectPoolGroup(Object):
             self._zoneGroupId = jsonObj['zoneGroupId']
         else:
             self._zoneGroupId = ''
-        if 'poolList' in jsonObj:
-            self._poolList = jsonObj['poolList']
-        else:
-            self._poolList = ''
         return self
 
     def exportJson(self):
         superJsonObj = super(CephObjectPoolGroup,self).exportJson()
         thisJsonObj = {
-            'description' : self._description,
-            'cephClusterId' : self._cephClusterId,
             'zone' : self._zone,
             'zoneGroup' : self._zoneGroup,
-            'size' : self._size,
-            'utilizedSpace' : self._utilizedSpace,
-            'freeSpace' : self._freeSpace,
             'objectCount' : self._objectCount,
             'zoneId' : self._zoneId,
-            'zoneGroupId' : self._zoneGroupId,
-            'poolList' : self._poolList
+            'zoneGroupId' : self._zoneGroupId
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -16319,6 +16521,12 @@ class CephObjectStorageClassRule(Object):
     _patternMatch=''
     _capacityOperator='0'
     _capacityThreshold='0'
+    _bucketPatternMatch=''
+    _tenantPatternMatch=''
+    _isForced=False
+    _ruleType='0'
+    _overflowThresholdPercentage='0'
+    _overflowProtectsDeviceClass=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -16349,6 +16557,30 @@ class CephObjectStorageClassRule(Object):
             self._capacityThreshold = jsonObj['capacityThreshold']
         else:
             self._capacityThreshold = '0'
+        if 'bucketPatternMatch' in jsonObj:
+            self._bucketPatternMatch = jsonObj['bucketPatternMatch']
+        else:
+            self._bucketPatternMatch = ''
+        if 'tenantPatternMatch' in jsonObj:
+            self._tenantPatternMatch = jsonObj['tenantPatternMatch']
+        else:
+            self._tenantPatternMatch = ''
+        if 'isForced' in jsonObj:
+            self._isForced = jsonObj['isForced']
+        else:
+            self._isForced = False
+        if 'ruleType' in jsonObj:
+            self._ruleType = jsonObj['ruleType']
+        else:
+            self._ruleType = '0'
+        if 'overflowThresholdPercentage' in jsonObj:
+            self._overflowThresholdPercentage = jsonObj['overflowThresholdPercentage']
+        else:
+            self._overflowThresholdPercentage = '0'
+        if 'overflowProtectsDeviceClass' in jsonObj:
+            self._overflowProtectsDeviceClass = jsonObj['overflowProtectsDeviceClass']
+        else:
+            self._overflowProtectsDeviceClass = ''
         return self
 
     def exportJson(self):
@@ -16359,7 +16591,13 @@ class CephObjectStorageClassRule(Object):
             'storageClass' : self._storageClass,
             'patternMatch' : self._patternMatch,
             'capacityOperator' : self._capacityOperator,
-            'capacityThreshold' : self._capacityThreshold
+            'capacityThreshold' : self._capacityThreshold,
+            'bucketPatternMatch' : self._bucketPatternMatch,
+            'tenantPatternMatch' : self._tenantPatternMatch,
+            'isForced' : self._isForced,
+            'ruleType' : self._ruleType,
+            'overflowThresholdPercentage' : self._overflowThresholdPercentage,
+            'overflowProtectsDeviceClass' : self._overflowProtectsDeviceClass
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -16508,6 +16746,7 @@ class CephObjectZoneGroup(Object):
     _realmName=''
     _endPoints=''
     _cephObjectPoolGroupId=''
+    _hostnames=''
     _zoneIdList=''
 
     def __init__(self,jsonObj):
@@ -16551,6 +16790,10 @@ class CephObjectZoneGroup(Object):
             self._cephObjectPoolGroupId = jsonObj['cephObjectPoolGroupId']
         else:
             self._cephObjectPoolGroupId = ''
+        if 'hostnames' in jsonObj:
+            self._hostnames = jsonObj['hostnames']
+        else:
+            self._hostnames = ''
         if 'zoneIdList' in jsonObj:
             self._zoneIdList = jsonObj['zoneIdList']
         else:
@@ -16569,6 +16812,7 @@ class CephObjectZoneGroup(Object):
             'realmName' : self._realmName,
             'endPoints' : self._endPoints,
             'cephObjectPoolGroupId' : self._cephObjectPoolGroupId,
+            'hostnames' : self._hostnames,
             'zoneIdList' : self._zoneIdList
         }
         thisJsonObj.update(superJsonObj)
@@ -16602,6 +16846,23 @@ class CephObjectZoneGroupGetResponse(object):
         obj = CephObjectZoneGroup(jsonObj)
         return obj
 
+class CephObjectZoneGroupModifyResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = CephObjectZoneGroup(jsonObj['obj'])
+        return task, obj
+
 class CephOsd(Object):
     _cephClusterId=''
     _description=''
@@ -16629,6 +16890,9 @@ class CephOsd(Object):
     _diskEnclosure=''
     _diskSlot=''
     _replaceReady=False
+    _rekeyTimeStamp=''
+    _deviceClass=''
+    _encryptedOsd=False
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -16739,6 +17003,18 @@ class CephOsd(Object):
             self._replaceReady = jsonObj['replaceReady']
         else:
             self._replaceReady = False
+        if 'rekeyTimeStamp' in jsonObj:
+            self._rekeyTimeStamp = jsonObj['rekeyTimeStamp']
+        else:
+            self._rekeyTimeStamp = ''
+        if 'deviceClass' in jsonObj:
+            self._deviceClass = jsonObj['deviceClass']
+        else:
+            self._deviceClass = ''
+        if 'encryptedOsd' in jsonObj:
+            self._encryptedOsd = jsonObj['encryptedOsd']
+        else:
+            self._encryptedOsd = False
         return self
 
     def exportJson(self):
@@ -16769,7 +17045,10 @@ class CephOsd(Object):
             'physicalDiskScsiId' : self._physicalDiskScsiId,
             'diskEnclosure' : self._diskEnclosure,
             'diskSlot' : self._diskSlot,
-            'replaceReady' : self._replaceReady
+            'replaceReady' : self._replaceReady,
+            'rekeyTimeStamp' : self._rekeyTimeStamp,
+            'deviceClass' : self._deviceClass,
+            'encryptedOsd' : self._encryptedOsd
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -16838,6 +17117,23 @@ class CephOsdIdentifyResponse(object):
             for var in jsonObj['list']:
                 objList.append(CephOsd(var))
         return task, objList
+
+class CephOsdKeyReplaceResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = CephClusterMember(jsonObj['obj'])
+        return task, obj
 
 class CephOsdModifyResponse(object):
     _task=''
@@ -17002,7 +17298,6 @@ class CephPool(Object):
     _cephPoolProfileId=''
     _storageClassId=''
     _objectCount='0'
-    _osdList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -17069,10 +17364,6 @@ class CephPool(Object):
             self._objectCount = jsonObj['objectCount']
         else:
             self._objectCount = '0'
-        if 'osdList' in jsonObj:
-            self._osdList = jsonObj['osdList']
-        else:
-            self._osdList = ''
         return self
 
     def exportJson(self):
@@ -17092,8 +17383,7 @@ class CephPool(Object):
             'cephCrushRuleId' : self._cephCrushRuleId,
             'cephPoolProfileId' : self._cephPoolProfileId,
             'storageClassId' : self._storageClassId,
-            'objectCount' : self._objectCount,
-            'osdList' : self._osdList
+            'objectCount' : self._objectCount
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -17160,6 +17450,65 @@ class CephPoolGetResponse(object):
         obj = CephPool(jsonObj)
         return obj
 
+class CephPoolGroupAssoc(object):
+    _cephPoolGroupId=''
+    _cephPoolId=''
+    _isMetadataPool=False
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        if 'cephPoolGroupId' in jsonObj:
+            self._cephPoolGroupId = jsonObj['cephPoolGroupId']
+        else:
+            self._cephPoolGroupId = ''
+        if 'cephPoolId' in jsonObj:
+            self._cephPoolId = jsonObj['cephPoolId']
+        else:
+            self._cephPoolId = ''
+        if 'isMetadataPool' in jsonObj:
+            self._isMetadataPool = jsonObj['isMetadataPool']
+        else:
+            self._isMetadataPool = False
+        return self
+
+    def exportJson(self):
+        thisJsonObj = {
+            'cephPoolGroupId' : self._cephPoolGroupId,
+            'cephPoolId' : self._cephPoolId,
+            'isMetadataPool' : self._isMetadataPool
+        }
+        return thisJsonObj
+
+class CephPoolGroupAssocEnumResponse(object):
+    _list=''
+
+    def __init__(
+        self,
+        objList=''):
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        objList = []
+        for var in jsonObj:
+            objList.append(CephPoolGroupAssoc(var))
+        return objList
+
+class CephPoolGroupAssocGetResponse(object):
+    _obj=''
+
+    def __init__(
+        self,
+        obj=''):
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        obj = CephPoolGroupAssoc(jsonObj)
+        return obj
+
 class CephPoolModifyResponse(object):
     _task=''
     _obj=''
@@ -17176,59 +17525,6 @@ class CephPoolModifyResponse(object):
         task = Task(jsonObj['task'])
         obj = CephPool(jsonObj['obj'])
         return task, obj
-
-class CephPoolOsdAssoc(object):
-    _cephPoolId=''
-    _cephOsdId=''
-
-    def __init__(self,jsonObj):
-        self.jsonParse(jsonObj)
-
-    def jsonParse(self,jsonObj):
-        if 'cephPoolId' in jsonObj:
-            self._cephPoolId = jsonObj['cephPoolId']
-        else:
-            self._cephPoolId = ''
-        if 'cephOsdId' in jsonObj:
-            self._cephOsdId = jsonObj['cephOsdId']
-        else:
-            self._cephOsdId = ''
-        return self
-
-    def exportJson(self):
-        thisJsonObj = {
-            'cephPoolId' : self._cephPoolId,
-            'cephOsdId' : self._cephOsdId
-        }
-        return thisJsonObj
-
-class CephPoolOsdAssocEnumResponse(object):
-    _list=''
-
-    def __init__(
-        self,
-        objList=''):
-        self._list = objList
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        objList = []
-        for var in jsonObj:
-            objList.append(CephPoolOsdAssoc(var))
-        return objList
-
-class CephPoolOsdAssocGetResponse(object):
-    _obj=''
-
-    def __init__(
-        self,
-        obj=''):
-        self._obj = obj
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        obj = CephPoolOsdAssoc(jsonObj)
-        return obj
 
 class CephPoolProfile(Object):
     _description=''
@@ -17375,6 +17671,7 @@ class CephRadosGateway(Object):
     _certificatePemFilePath=''
     _enableHttpsRedirect=False
     _enableLoadBalancer=False
+    _useTcpChecks=False
     _loadBalancerMappingMode='0'
 
     def __init__(self,jsonObj):
@@ -17430,6 +17727,10 @@ class CephRadosGateway(Object):
             self._enableLoadBalancer = jsonObj['enableLoadBalancer']
         else:
             self._enableLoadBalancer = False
+        if 'useTcpChecks' in jsonObj:
+            self._useTcpChecks = jsonObj['useTcpChecks']
+        else:
+            self._useTcpChecks = False
         if 'loadBalancerMappingMode' in jsonObj:
             self._loadBalancerMappingMode = jsonObj['loadBalancerMappingMode']
         else:
@@ -17451,6 +17752,7 @@ class CephRadosGateway(Object):
             'certificatePemFilePath' : self._certificatePemFilePath,
             'enableHttpsRedirect' : self._enableHttpsRedirect,
             'enableLoadBalancer' : self._enableLoadBalancer,
+            'useTcpChecks' : self._useTcpChecks,
             'loadBalancerMappingMode' : self._loadBalancerMappingMode
         }
         thisJsonObj.update(superJsonObj)
@@ -18695,41 +18997,32 @@ class ContainerConfigDeleteResponse(object):
         return task, obj
 
 class ContainerConfigEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ContainerConfig(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ContainerConfig(var))
+        return objList
 
 class ContainerConfigGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ContainerConfig(jsonObj['obj'])
-        return task, obj
+        obj = ContainerConfig(jsonObj)
+        return obj
 
 class ContainerConfigOption(object):
     _key=''
@@ -18780,78 +19073,60 @@ class ContainerConfigOptionAddRemoveResponse(object):
         return task, obj
 
 class ContainerConfigOptionEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ContainerConfigOption(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ContainerConfigOption(var))
+        return objList
 
 class ContainerConfigOptionGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ContainerConfigOption(jsonObj['obj'])
-        return task, obj
+        obj = ContainerConfigOption(jsonObj)
+        return obj
 
 class ContainerEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(Container(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(Container(var))
+        return objList
 
 class ContainerGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = Container(jsonObj['obj'])
-        return task, obj
+        obj = Container(jsonObj)
+        return obj
 
 class ContainerServiceDef(Object):
     _tag=''
@@ -18912,41 +19187,32 @@ class ContainerServiceDef(Object):
         return thisJsonObj
 
 class ContainerServiceDefEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ContainerServiceDef(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ContainerServiceDef(var))
+        return objList
 
 class ContainerServiceDefGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ContainerServiceDef(jsonObj['obj'])
-        return task, obj
+        obj = ContainerServiceDef(jsonObj)
+        return obj
 
 class CustomApiResponse(object):
     _task=''
@@ -19713,41 +19979,32 @@ class ExternalSystemHost(Object):
         return thisJsonObj
 
 class ExternalSystemHostEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ExternalSystemHost(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ExternalSystemHost(var))
+        return objList
 
 class ExternalSystemHostGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ExternalSystemHost(jsonObj['obj'])
-        return task, obj
+        obj = ExternalSystemHost(jsonObj)
+        return obj
 
 class ExternalSystemHostVolumeAssoc(object):
     _externalSystemVolumeId=''
@@ -19775,24 +20032,19 @@ class ExternalSystemHostVolumeAssoc(object):
         return thisJsonObj
 
 class ExternalSystemHostVolumeAssocEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ExternalSystemHostVolumeAssoc(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ExternalSystemHostVolumeAssoc(var))
+        return objList
 
 class ExternalSystemMedia(Object):
     _altName=''
@@ -20308,41 +20560,32 @@ class ExternalSystemProfileApplyResponse(object):
         return task, obj
 
 class ExternalSystemProfileEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ExternalSystemProfile(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ExternalSystemProfile(var))
+        return objList
 
 class ExternalSystemProfileGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ExternalSystemProfile(jsonObj['obj'])
-        return task, obj
+        obj = ExternalSystemProfile(jsonObj)
+        return obj
 
 class ExternalSystemScanResponse(object):
     _task=''
@@ -20540,6 +20783,62 @@ class ExternalSystemVolumeGetResponse(object):
         obj = ExternalSystemVolume(jsonObj)
         return obj
 
+class FcRemotePort(Object):
+    _fcTargetPortId=''
+    _portWwn=''
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(FcRemotePort, self).jsonParse(jsonObj)
+        if 'fcTargetPortId' in jsonObj:
+            self._fcTargetPortId = jsonObj['fcTargetPortId']
+        else:
+            self._fcTargetPortId = ''
+        if 'portWwn' in jsonObj:
+            self._portWwn = jsonObj['portWwn']
+        else:
+            self._portWwn = ''
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(FcRemotePort,self).exportJson()
+        thisJsonObj = {
+            'fcTargetPortId' : self._fcTargetPortId,
+            'portWwn' : self._portWwn
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class FcRemotePortEnumResponse(object):
+    _list=''
+
+    def __init__(
+        self,
+        objList=''):
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        objList = []
+        for var in jsonObj:
+            objList.append(FcRemotePort(var))
+        return objList
+
+class FcRemotePortGetResponse(object):
+    _obj=''
+
+    def __init__(
+        self,
+        obj=''):
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        obj = FcRemotePort(jsonObj)
+        return obj
+
 class FcTargetPort(Object):
     _description=''
     _isVirtualPort=False
@@ -20559,7 +20858,7 @@ class FcTargetPort(Object):
     _status=''
     _fabricWwn=''
     _activeMode='0'
-    _npivPortList=''
+    _remotePortList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -20638,10 +20937,10 @@ class FcTargetPort(Object):
             self._activeMode = jsonObj['activeMode']
         else:
             self._activeMode = '0'
-        if 'npivPortList' in jsonObj:
-            self._npivPortList = jsonObj['npivPortList']
+        if 'remotePortList' in jsonObj:
+            self._remotePortList = jsonObj['remotePortList']
         else:
-            self._npivPortList = ''
+            self._remotePortList = ''
         return self
 
     def exportJson(self):
@@ -20665,7 +20964,7 @@ class FcTargetPort(Object):
             'status' : self._status,
             'fabricWwn' : self._fabricWwn,
             'activeMode' : self._activeMode,
-            'npivPortList' : self._npivPortList
+            'remotePortList' : self._remotePortList
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -20731,6 +21030,23 @@ class FcTargetPortGetResponse(object):
     def responseParse(cls,jsonObj):
         obj = FcTargetPort(jsonObj)
         return obj
+
+class FcTargetPortIssueLipResponse(object):
+    _task=''
+    _obj=''
+
+    def __init__(
+        self,
+        task='',
+        obj=''):
+        self._task = task
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        obj = FcTargetPort(jsonObj['obj'])
+        return task, obj
 
 class GetAssocConfigResponse(object):
     _assocConfig=''
@@ -20846,6 +21162,7 @@ class HardwareConfiguration(Object):
     _listHwEnclosure=''
     _listHwEnclosureLayout=''
     _listHwEnclosureLayoutVendorGroup=''
+    _listHwSlot=''
     _listHwLogicalDrive=''
     _listHwUnit=''
     _listHwUnitDiskAssoc=''
@@ -20931,6 +21248,10 @@ class HardwareConfiguration(Object):
             self._listHwEnclosureLayoutVendorGroup = jsonObj['listHwEnclosureLayoutVendorGroup']
         else:
             self._listHwEnclosureLayoutVendorGroup = ''
+        if 'listHwSlot' in jsonObj:
+            self._listHwSlot = jsonObj['listHwSlot']
+        else:
+            self._listHwSlot = ''
         if 'listHwLogicalDrive' in jsonObj:
             self._listHwLogicalDrive = jsonObj['listHwLogicalDrive']
         else:
@@ -20982,6 +21303,7 @@ class HardwareConfiguration(Object):
             'listHwEnclosure' : self._listHwEnclosure,
             'listHwEnclosureLayout' : self._listHwEnclosureLayout,
             'listHwEnclosureLayoutVendorGroup' : self._listHwEnclosureLayoutVendorGroup,
+            'listHwSlot' : self._listHwSlot,
             'listHwLogicalDrive' : self._listHwLogicalDrive,
             'listHwUnit' : self._listHwUnit,
             'listHwUnitDiskAssoc' : self._listHwUnitDiskAssoc,
@@ -20989,6 +21311,58 @@ class HardwareConfiguration(Object):
             'listSwControllerGroup' : self._listSwControllerGroup,
             'listSwControllerTarget' : self._listSwControllerTarget,
             'listSwDiskSession' : self._listSwDiskSession
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
+
+class HealthStatusEvent(Object):
+    _objectId=''
+    _objectType='0'
+    _title=''
+    _description=''
+    _recommendedAction=''
+    _healthStatusSeverity='0'
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(HealthStatusEvent, self).jsonParse(jsonObj)
+        if 'objectId' in jsonObj:
+            self._objectId = jsonObj['objectId']
+        else:
+            self._objectId = ''
+        if 'objectType' in jsonObj:
+            self._objectType = jsonObj['objectType']
+        else:
+            self._objectType = '0'
+        if 'title' in jsonObj:
+            self._title = jsonObj['title']
+        else:
+            self._title = ''
+        if 'description' in jsonObj:
+            self._description = jsonObj['description']
+        else:
+            self._description = ''
+        if 'recommendedAction' in jsonObj:
+            self._recommendedAction = jsonObj['recommendedAction']
+        else:
+            self._recommendedAction = ''
+        if 'healthStatusSeverity' in jsonObj:
+            self._healthStatusSeverity = jsonObj['healthStatusSeverity']
+        else:
+            self._healthStatusSeverity = '0'
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(HealthStatusEvent,self).exportJson()
+        thisJsonObj = {
+            'objectId' : self._objectId,
+            'objectType' : self._objectType,
+            'title' : self._title,
+            'description' : self._description,
+            'recommendedAction' : self._recommendedAction,
+            'healthStatusSeverity' : self._healthStatusSeverity
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -21171,41 +21545,32 @@ class HostGroupDeleteResponse(object):
         return task, obj
 
 class HostGroupEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(HostGroup(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(HostGroup(var))
+        return objList
 
 class HostGroupGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = HostGroup(jsonObj['obj'])
-        return task, obj
+        obj = HostGroup(jsonObj)
+        return obj
 
 class HostGroupHostAddRemoveResponse(object):
     _task=''
@@ -22446,6 +22811,26 @@ class HwEnclosure(Object):
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
 
+class HwEnclosureClearMissingResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(HwEnclosure(var))
+        return task, objList
+
 class HwEnclosureEnumResponse(object):
     _list=''
 
@@ -22894,6 +23279,58 @@ class HwLogicalDriveGetResponse(object):
     def responseParse(cls,jsonObj):
         obj = HwLogicalDrive(jsonObj)
         return obj
+
+class HwSlot(Object):
+    _controllerId=''
+    _hwEnclosureId=''
+    _hwDiskId=''
+    _slot='0'
+    _isOccupied=False
+    _isBlinking=False
+
+    def __init__(self,jsonObj):
+        self.jsonParse(jsonObj)
+
+    def jsonParse(self,jsonObj):
+        super(HwSlot, self).jsonParse(jsonObj)
+        if 'controllerId' in jsonObj:
+            self._controllerId = jsonObj['controllerId']
+        else:
+            self._controllerId = ''
+        if 'hwEnclosureId' in jsonObj:
+            self._hwEnclosureId = jsonObj['hwEnclosureId']
+        else:
+            self._hwEnclosureId = ''
+        if 'hwDiskId' in jsonObj:
+            self._hwDiskId = jsonObj['hwDiskId']
+        else:
+            self._hwDiskId = ''
+        if 'slot' in jsonObj:
+            self._slot = jsonObj['slot']
+        else:
+            self._slot = '0'
+        if 'isOccupied' in jsonObj:
+            self._isOccupied = jsonObj['isOccupied']
+        else:
+            self._isOccupied = False
+        if 'isBlinking' in jsonObj:
+            self._isBlinking = jsonObj['isBlinking']
+        else:
+            self._isBlinking = False
+        return self
+
+    def exportJson(self):
+        superJsonObj = super(HwSlot,self).exportJson()
+        thisJsonObj = {
+            'controllerId' : self._controllerId,
+            'hwEnclosureId' : self._hwEnclosureId,
+            'hwDiskId' : self._hwDiskId,
+            'slot' : self._slot,
+            'isOccupied' : self._isOccupied,
+            'isBlinking' : self._isBlinking
+        }
+        thisJsonObj.update(superJsonObj)
+        return thisJsonObj
 
 class HwUnit(Object):
     _controllerId=''
@@ -23965,6 +24402,7 @@ class License(Object):
     _resellerContactNumber=''
     _resellerEmail=''
     _supportContractRef=''
+    _terabytesUtilized='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -24135,6 +24573,10 @@ class License(Object):
             self._supportContractRef = jsonObj['supportContractRef']
         else:
             self._supportContractRef = ''
+        if 'terabytesUtilized' in jsonObj:
+            self._terabytesUtilized = jsonObj['terabytesUtilized']
+        else:
+            self._terabytesUtilized = '0'
         return self
 
     def exportJson(self):
@@ -24180,7 +24622,8 @@ class License(Object):
             'resellerName' : self._resellerName,
             'resellerContactNumber' : self._resellerContactNumber,
             'resellerEmail' : self._resellerEmail,
-            'supportContractRef' : self._supportContractRef
+            'supportContractRef' : self._supportContractRef,
+            'terabytesUtilized' : self._terabytesUtilized
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -24445,6 +24888,7 @@ class Lock(Object):
     _objectType='0'
     _lockType='0'
     _taskId=''
+    _taskParentId=''
     _createdTimeStamp=''
     _lastCheckTimeStamp=''
     _overrideId=''
@@ -24470,6 +24914,10 @@ class Lock(Object):
             self._taskId = jsonObj['taskId']
         else:
             self._taskId = ''
+        if 'taskParentId' in jsonObj:
+            self._taskParentId = jsonObj['taskParentId']
+        else:
+            self._taskParentId = ''
         if 'createdTimeStamp' in jsonObj:
             self._createdTimeStamp = jsonObj['createdTimeStamp']
         else:
@@ -24491,6 +24939,7 @@ class Lock(Object):
             'objectType' : self._objectType,
             'lockType' : self._lockType,
             'taskId' : self._taskId,
+            'taskParentId' : self._taskParentId,
             'createdTimeStamp' : self._createdTimeStamp,
             'lastCheckTimeStamp' : self._lastCheckTimeStamp,
             'overrideId' : self._overrideId
@@ -24767,41 +25216,32 @@ class MaintenanceScheduleEnableResponse(object):
         return task, obj
 
 class MaintenanceScheduleEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(MaintenanceSchedule(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(MaintenanceSchedule(var))
+        return objList
 
 class MaintenanceScheduleGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = MaintenanceSchedule(jsonObj['obj'])
-        return task, obj
+        obj = MaintenanceSchedule(jsonObj)
+        return obj
 
 class MaintenanceScheduleModifyResponse(object):
     _task=''
@@ -25153,6 +25593,9 @@ class NetworkShare(Replicatable):
     _fullAuditSuccess=''
     _smallBlockThreshold='0'
     _nestedName=''
+    _fileQuota='0'
+    _isMounted=False
+    _permissionMask=''
     _snapshotIdList=''
     _subshareIdList=''
     _nfsClients=''
@@ -25317,6 +25760,18 @@ class NetworkShare(Replicatable):
             self._nestedName = jsonObj['nestedName']
         else:
             self._nestedName = ''
+        if 'fileQuota' in jsonObj:
+            self._fileQuota = jsonObj['fileQuota']
+        else:
+            self._fileQuota = '0'
+        if 'isMounted' in jsonObj:
+            self._isMounted = jsonObj['isMounted']
+        else:
+            self._isMounted = False
+        if 'permissionMask' in jsonObj:
+            self._permissionMask = jsonObj['permissionMask']
+        else:
+            self._permissionMask = ''
         if 'snapshotIdList' in jsonObj:
             self._snapshotIdList = jsonObj['snapshotIdList']
         else:
@@ -25384,6 +25839,9 @@ class NetworkShare(Replicatable):
             'fullAuditSuccess' : self._fullAuditSuccess,
             'smallBlockThreshold' : self._smallBlockThreshold,
             'nestedName' : self._nestedName,
+            'fileQuota' : self._fileQuota,
+            'isMounted' : self._isMounted,
+            'permissionMask' : self._permissionMask,
             'snapshotIdList' : self._snapshotIdList,
             'subshareIdList' : self._subshareIdList,
             'nfsClients' : self._nfsClients,
@@ -25832,24 +26290,19 @@ class NetworkShareEnumQuotasResponse(object):
         return userSpaceList, groupSpaceList
 
 class NetworkShareEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(NetworkShare(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(NetworkShare(var))
+        return objList
 
 class NetworkShareFile(object):
     _name=''
@@ -26025,21 +26478,17 @@ class NetworkShareFileLockEnumResponse(object):
         return objList
 
 class NetworkShareGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = NetworkShare(jsonObj['obj'])
-        return task, obj
+        obj = NetworkShare(jsonObj)
+        return obj
 
 class NetworkShareHealthCheckResponse(object):
     _obj=''
@@ -26568,24 +27017,19 @@ class NetworkShareRollbackResponse(object):
         return task, obj
 
 class NetworkShareSearchResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(NetworkShare(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(NetworkShare(var))
+        return objList
 
 class NetworkShareServiceConfig(Object):
     _nfsMode='0'
@@ -26603,6 +27047,7 @@ class NetworkShareServiceConfig(Object):
     _preserveAdUserAccessEntries=False
     _defaultNfsSecurityPolicy='0'
     _nfsServerType='0'
+    _joinWithSSSD=False
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -26669,6 +27114,10 @@ class NetworkShareServiceConfig(Object):
             self._nfsServerType = jsonObj['nfsServerType']
         else:
             self._nfsServerType = '0'
+        if 'joinWithSSSD' in jsonObj:
+            self._joinWithSSSD = jsonObj['joinWithSSSD']
+        else:
+            self._joinWithSSSD = False
         return self
 
     def exportJson(self):
@@ -26688,7 +27137,8 @@ class NetworkShareServiceConfig(Object):
             'allowTrustedDomains' : self._allowTrustedDomains,
             'preserveAdUserAccessEntries' : self._preserveAdUserAccessEntries,
             'defaultNfsSecurityPolicy' : self._defaultNfsSecurityPolicy,
-            'nfsServerType' : self._nfsServerType
+            'nfsServerType' : self._nfsServerType,
+            'joinWithSSSD' : self._joinWithSSSD
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -27114,6 +27564,9 @@ class PasswordPolicy(Object):
     _systemUseNotification=''
     _webAccessMode='0'
     _defaultLoginUsername=''
+    _shortLockoutSamplePeriod='0'
+    _permLockoutSamplePeriod='0'
+    _shortLockoutDuration='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -27176,6 +27629,18 @@ class PasswordPolicy(Object):
             self._defaultLoginUsername = jsonObj['defaultLoginUsername']
         else:
             self._defaultLoginUsername = ''
+        if 'shortLockoutSamplePeriod' in jsonObj:
+            self._shortLockoutSamplePeriod = jsonObj['shortLockoutSamplePeriod']
+        else:
+            self._shortLockoutSamplePeriod = '0'
+        if 'permLockoutSamplePeriod' in jsonObj:
+            self._permLockoutSamplePeriod = jsonObj['permLockoutSamplePeriod']
+        else:
+            self._permLockoutSamplePeriod = '0'
+        if 'shortLockoutDuration' in jsonObj:
+            self._shortLockoutDuration = jsonObj['shortLockoutDuration']
+        else:
+            self._shortLockoutDuration = '0'
         return self
 
     def exportJson(self):
@@ -27194,7 +27659,10 @@ class PasswordPolicy(Object):
             'accountInactiveDaysUntilLockout' : self._accountInactiveDaysUntilLockout,
             'systemUseNotification' : self._systemUseNotification,
             'webAccessMode' : self._webAccessMode,
-            'defaultLoginUsername' : self._defaultLoginUsername
+            'defaultLoginUsername' : self._defaultLoginUsername,
+            'shortLockoutSamplePeriod' : self._shortLockoutSamplePeriod,
+            'permLockoutSamplePeriod' : self._permLockoutSamplePeriod,
+            'shortLockoutDuration' : self._shortLockoutDuration
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -28101,24 +28569,19 @@ class ProviderApp(Object):
         return thisJsonObj
 
 class ProviderAppEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ProviderApp(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ProviderApp(var))
+        return objList
 
 class ProviderAppGetResponse(object):
     _obj=''
@@ -29283,41 +29746,32 @@ class ReplicationScheduleEnableResponse(object):
         return task, obj
 
 class ReplicationScheduleEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ReplicationSchedule(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ReplicationSchedule(var))
+        return objList
 
 class ReplicationScheduleGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ReplicationSchedule(jsonObj['obj'])
-        return task, obj
+        obj = ReplicationSchedule(jsonObj)
+        return obj
 
 class ReplicationScheduleModifyResponse(object):
     _task=''
@@ -29504,6 +29958,10 @@ class ReportSchedule(Schedule):
     _maxSubdirsPerShare='0'
     _minSubdirUsedSpace='0'
     _lastReportStartTimeStamp=''
+    _maxBuckets='0'
+    _maxUsers='0'
+    _minBucketUtilizedSpace='0'
+    _minUserUtilizedSpace='0'
     _assocList=''
 
     def __init__(self,jsonObj):
@@ -29543,6 +30001,22 @@ class ReportSchedule(Schedule):
             self._lastReportStartTimeStamp = jsonObj['lastReportStartTimeStamp']
         else:
             self._lastReportStartTimeStamp = ''
+        if 'maxBuckets' in jsonObj:
+            self._maxBuckets = jsonObj['maxBuckets']
+        else:
+            self._maxBuckets = '0'
+        if 'maxUsers' in jsonObj:
+            self._maxUsers = jsonObj['maxUsers']
+        else:
+            self._maxUsers = '0'
+        if 'minBucketUtilizedSpace' in jsonObj:
+            self._minBucketUtilizedSpace = jsonObj['minBucketUtilizedSpace']
+        else:
+            self._minBucketUtilizedSpace = '0'
+        if 'minUserUtilizedSpace' in jsonObj:
+            self._minUserUtilizedSpace = jsonObj['minUserUtilizedSpace']
+        else:
+            self._minUserUtilizedSpace = '0'
         if 'assocList' in jsonObj:
             self._assocList = jsonObj['assocList']
         else:
@@ -29560,6 +30034,10 @@ class ReportSchedule(Schedule):
             'maxSubdirsPerShare' : self._maxSubdirsPerShare,
             'minSubdirUsedSpace' : self._minSubdirUsedSpace,
             'lastReportStartTimeStamp' : self._lastReportStartTimeStamp,
+            'maxBuckets' : self._maxBuckets,
+            'maxUsers' : self._maxUsers,
+            'minBucketUtilizedSpace' : self._minBucketUtilizedSpace,
+            'minUserUtilizedSpace' : self._minUserUtilizedSpace,
             'assocList' : self._assocList
         }
         thisJsonObj.update(superJsonObj)
@@ -29710,41 +30188,32 @@ class ReportScheduleEnableResponse(object):
         return task, obj
 
 class ReportScheduleEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ReportSchedule(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ReportSchedule(var))
+        return objList
 
 class ReportScheduleGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ReportSchedule(jsonObj['obj'])
-        return task, obj
+        obj = ReportSchedule(jsonObj)
+        return obj
 
 class ReportScheduleModifyResponse(object):
     _task=''
@@ -30171,41 +30640,32 @@ class ResourceGroupDeleteResponse(object):
         return task, obj
 
 class ResourceGroupEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ResourceGroup(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ResourceGroup(var))
+        return objList
 
 class ResourceGroupGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ResourceGroup(jsonObj['obj'])
-        return task, obj
+        obj = ResourceGroup(jsonObj)
+        return obj
 
 class ResourceGroupModifyResponse(object):
     _task=''
@@ -30270,41 +30730,32 @@ class ResourceGroupNetworkAddRemoveResponse(object):
         return task, obj
 
 class ResourceGroupNetworkEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ResourceGroupNetwork(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ResourceGroupNetwork(var))
+        return objList
 
 class ResourceGroupNetworkGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ResourceGroupNetwork(jsonObj['obj'])
-        return task, obj
+        obj = ResourceGroupNetwork(jsonObj)
+        return obj
 
 class ResourceGroupResourceAddRemoveResponse(object):
     _task=''
@@ -30361,41 +30812,32 @@ class ResourceGroupResourceAssoc(object):
         return thisJsonObj
 
 class ResourceGroupResourceAssocEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ResourceGroupResourceAssoc(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ResourceGroupResourceAssoc(var))
+        return objList
 
 class ResourceGroupResourceAssocGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ResourceGroupResourceAssoc(jsonObj['obj'])
-        return task, obj
+        obj = ResourceGroupResourceAssoc(jsonObj)
+        return obj
 
 class ResourceGroupResourceSetModeResponse(object):
     _task=''
@@ -30446,41 +30888,32 @@ class ResourceGroupSubjectAssoc(object):
         return thisJsonObj
 
 class ResourceGroupSubjectAssocEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ResourceGroupSubjectAssoc(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ResourceGroupSubjectAssoc(var))
+        return objList
 
 class ResourceGroupSubjectAssocGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = ResourceGroupSubjectAssoc(jsonObj['obj'])
-        return task, obj
+        obj = ResourceGroupSubjectAssoc(jsonObj)
+        return obj
 
 class ResourceGroupUserAddRemoveResponse(object):
     _task=''
@@ -30629,41 +31062,32 @@ class RoleDeleteResponse(object):
         return task, obj
 
 class RoleEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(Role(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(Role(var))
+        return objList
 
 class RoleGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = Role(jsonObj['obj'])
-        return task, obj
+        obj = Role(jsonObj)
+        return obj
 
 class RoleModifyResponse(object):
     _task=''
@@ -30705,41 +31129,32 @@ class RolePermissionAssignment(PermissionAssignment):
         return thisJsonObj
 
 class RolePermissionAssignmentEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(RolePermissionAssignment(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(RolePermissionAssignment(var))
+        return objList
 
 class RolePermissionAssignmentGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = RolePermissionAssignment(jsonObj['obj'])
-        return task, obj
+        obj = RolePermissionAssignment(jsonObj)
+        return obj
 
 class RolePermissionsAddRemoveResponse(object):
     _task=''
@@ -30784,41 +31199,32 @@ class RoleSubjectAssoc(object):
         return thisJsonObj
 
 class RoleSubjectAssocEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(RoleSubjectAssoc(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(RoleSubjectAssoc(var))
+        return objList
 
 class RoleSubjectAssocGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = RoleSubjectAssoc(jsonObj['obj'])
-        return task, obj
+        obj = RoleSubjectAssoc(jsonObj)
+        return obj
 
 class S3Object(Object):
     _bucketId=''
@@ -31045,126 +31451,14 @@ class S3ProxyModifyResponse(object):
         obj = S3Proxy(jsonObj['obj'])
         return task, obj
 
-class S3Quota(Object):
-    _cephClusterId=''
-    _bucketId=''
-    _s3UserId=''
-    _quotaScope='0'
-    _maxObjectCountEnable=False
-    _maxObjectCount='0'
-    _maxSizeEnable=False
-    _maxSize='0'
-
-    def __init__(self,jsonObj):
-        self.jsonParse(jsonObj)
-
-    def jsonParse(self,jsonObj):
-        super(S3Quota, self).jsonParse(jsonObj)
-        if 'cephClusterId' in jsonObj:
-            self._cephClusterId = jsonObj['cephClusterId']
-        else:
-            self._cephClusterId = ''
-        if 'bucketId' in jsonObj:
-            self._bucketId = jsonObj['bucketId']
-        else:
-            self._bucketId = ''
-        if 's3UserId' in jsonObj:
-            self._s3UserId = jsonObj['s3UserId']
-        else:
-            self._s3UserId = ''
-        if 'quotaScope' in jsonObj:
-            self._quotaScope = jsonObj['quotaScope']
-        else:
-            self._quotaScope = '0'
-        if 'maxObjectCountEnable' in jsonObj:
-            self._maxObjectCountEnable = jsonObj['maxObjectCountEnable']
-        else:
-            self._maxObjectCountEnable = False
-        if 'maxObjectCount' in jsonObj:
-            self._maxObjectCount = jsonObj['maxObjectCount']
-        else:
-            self._maxObjectCount = '0'
-        if 'maxSizeEnable' in jsonObj:
-            self._maxSizeEnable = jsonObj['maxSizeEnable']
-        else:
-            self._maxSizeEnable = False
-        if 'maxSize' in jsonObj:
-            self._maxSize = jsonObj['maxSize']
-        else:
-            self._maxSize = '0'
-        return self
-
-    def exportJson(self):
-        superJsonObj = super(S3Quota,self).exportJson()
-        thisJsonObj = {
-            'cephClusterId' : self._cephClusterId,
-            'bucketId' : self._bucketId,
-            's3UserId' : self._s3UserId,
-            'quotaScope' : self._quotaScope,
-            'maxObjectCountEnable' : self._maxObjectCountEnable,
-            'maxObjectCount' : self._maxObjectCount,
-            'maxSizeEnable' : self._maxSizeEnable,
-            'maxSize' : self._maxSize
-        }
-        thisJsonObj.update(superJsonObj)
-        return thisJsonObj
-
-class S3QuotaEnumResponse(object):
-    _list=''
-
-    def __init__(
-        self,
-        objList=''):
-        self._list = objList
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        objList = []
-        for var in jsonObj:
-            objList.append(S3Quota(var))
-        return objList
-
-class S3QuotaGetResponse(object):
-    _obj=''
-
-    def __init__(
-        self,
-        obj=''):
-        self._obj = obj
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        obj = S3Quota(jsonObj)
-        return obj
-
-class S3QuotaSetGlobalResponse(object):
-    _task=''
-    _list=''
-
-    def __init__(
-        self,
-        task='',
-        objList=''):
-        self._task = task
-        self._list = objList
-
-    @classmethod
-    def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(S3Quota(var))
-        return task, objList
-
 class S3Tenant(Object):
     _description=''
     _displayName=''
     _utilizedSpace='0'
     _bucketCount='0'
     _cephClusterId=''
+    _objectCount='0'
     _s3UserIdList=''
-    _bucketIdList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -31191,14 +31485,14 @@ class S3Tenant(Object):
             self._cephClusterId = jsonObj['cephClusterId']
         else:
             self._cephClusterId = ''
+        if 'objectCount' in jsonObj:
+            self._objectCount = jsonObj['objectCount']
+        else:
+            self._objectCount = '0'
         if 's3UserIdList' in jsonObj:
             self._s3UserIdList = jsonObj['s3UserIdList']
         else:
             self._s3UserIdList = ''
-        if 'bucketIdList' in jsonObj:
-            self._bucketIdList = jsonObj['bucketIdList']
-        else:
-            self._bucketIdList = ''
         return self
 
     def exportJson(self):
@@ -31209,8 +31503,8 @@ class S3Tenant(Object):
             'utilizedSpace' : self._utilizedSpace,
             'bucketCount' : self._bucketCount,
             'cephClusterId' : self._cephClusterId,
-            's3UserIdList' : self._s3UserIdList,
-            'bucketIdList' : self._bucketIdList
+            'objectCount' : self._objectCount,
+            's3UserIdList' : self._s3UserIdList
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -31288,8 +31582,16 @@ class S3User(Object):
     _maxBuckets='0'
     _utilizedSpace='0'
     _bucketCount='0'
-    _quotaList=''
-    _keyList=''
+    _userQuotaMaxObjectsEnable=False
+    _userQuotaMaxObjects='0'
+    _userQuotaMaxSizeEnable=False
+    _userQuotaMaxSize='0'
+    _bucketQuotaMaxObjectsEnable=False
+    _bucketQuotaMaxObjects='0'
+    _bucketQuotaMaxSizeEnable=False
+    _bucketQuotaMaxSize='0'
+    _objectCount='0'
+    _s3UserAccessKeyIdList=''
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -31336,14 +31638,46 @@ class S3User(Object):
             self._bucketCount = jsonObj['bucketCount']
         else:
             self._bucketCount = '0'
-        if 'quotaList' in jsonObj:
-            self._quotaList = jsonObj['quotaList']
+        if 'userQuotaMaxObjectsEnable' in jsonObj:
+            self._userQuotaMaxObjectsEnable = jsonObj['userQuotaMaxObjectsEnable']
         else:
-            self._quotaList = ''
-        if 'keyList' in jsonObj:
-            self._keyList = jsonObj['keyList']
+            self._userQuotaMaxObjectsEnable = False
+        if 'userQuotaMaxObjects' in jsonObj:
+            self._userQuotaMaxObjects = jsonObj['userQuotaMaxObjects']
         else:
-            self._keyList = ''
+            self._userQuotaMaxObjects = '0'
+        if 'userQuotaMaxSizeEnable' in jsonObj:
+            self._userQuotaMaxSizeEnable = jsonObj['userQuotaMaxSizeEnable']
+        else:
+            self._userQuotaMaxSizeEnable = False
+        if 'userQuotaMaxSize' in jsonObj:
+            self._userQuotaMaxSize = jsonObj['userQuotaMaxSize']
+        else:
+            self._userQuotaMaxSize = '0'
+        if 'bucketQuotaMaxObjectsEnable' in jsonObj:
+            self._bucketQuotaMaxObjectsEnable = jsonObj['bucketQuotaMaxObjectsEnable']
+        else:
+            self._bucketQuotaMaxObjectsEnable = False
+        if 'bucketQuotaMaxObjects' in jsonObj:
+            self._bucketQuotaMaxObjects = jsonObj['bucketQuotaMaxObjects']
+        else:
+            self._bucketQuotaMaxObjects = '0'
+        if 'bucketQuotaMaxSizeEnable' in jsonObj:
+            self._bucketQuotaMaxSizeEnable = jsonObj['bucketQuotaMaxSizeEnable']
+        else:
+            self._bucketQuotaMaxSizeEnable = False
+        if 'bucketQuotaMaxSize' in jsonObj:
+            self._bucketQuotaMaxSize = jsonObj['bucketQuotaMaxSize']
+        else:
+            self._bucketQuotaMaxSize = '0'
+        if 'objectCount' in jsonObj:
+            self._objectCount = jsonObj['objectCount']
+        else:
+            self._objectCount = '0'
+        if 's3UserAccessKeyIdList' in jsonObj:
+            self._s3UserAccessKeyIdList = jsonObj['s3UserAccessKeyIdList']
+        else:
+            self._s3UserAccessKeyIdList = ''
         return self
 
     def exportJson(self):
@@ -31359,8 +31693,16 @@ class S3User(Object):
             'maxBuckets' : self._maxBuckets,
             'utilizedSpace' : self._utilizedSpace,
             'bucketCount' : self._bucketCount,
-            'quotaList' : self._quotaList,
-            'keyList' : self._keyList
+            'userQuotaMaxObjectsEnable' : self._userQuotaMaxObjectsEnable,
+            'userQuotaMaxObjects' : self._userQuotaMaxObjects,
+            'userQuotaMaxSizeEnable' : self._userQuotaMaxSizeEnable,
+            'userQuotaMaxSize' : self._userQuotaMaxSize,
+            'bucketQuotaMaxObjectsEnable' : self._bucketQuotaMaxObjectsEnable,
+            'bucketQuotaMaxObjects' : self._bucketQuotaMaxObjects,
+            'bucketQuotaMaxSizeEnable' : self._bucketQuotaMaxSizeEnable,
+            'bucketQuotaMaxSize' : self._bucketQuotaMaxSize,
+            'objectCount' : self._objectCount,
+            's3UserAccessKeyIdList' : self._s3UserAccessKeyIdList
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -31754,24 +32096,19 @@ class ServiceFirewallDef(Object):
         return thisJsonObj
 
 class ServiceFirewallDefEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(ServiceFirewallDef(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(ServiceFirewallDef(var))
+        return objList
 
 class Session(Object):
     _storageVolumeId=''
@@ -32694,41 +33031,32 @@ class SnapshotScheduleEnableResponse(object):
         return task, obj
 
 class SnapshotScheduleEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(SnapshotSchedule(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(SnapshotSchedule(var))
+        return objList
 
 class SnapshotScheduleGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = SnapshotSchedule(jsonObj['obj'])
-        return task, obj
+        obj = SnapshotSchedule(jsonObj)
+        return obj
 
 class SnapshotScheduleModifyResponse(object):
     _task=''
@@ -33935,6 +34263,26 @@ class StoragePoolHaFailoverGroupActivateResponse(object):
         obj = StoragePoolHaFailoverGroup(jsonObj['obj'])
         return task, obj
 
+class StoragePoolHaFailoverGroupCheckHealthStatusResponse(object):
+    _task=''
+    _list=''
+
+    def __init__(
+        self,
+        task='',
+        objList=''):
+        self._task = task
+        self._list = objList
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        task = Task(jsonObj['task'])
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(HealthStatusEvent(var))
+        return task, objList
+
 class StoragePoolHaFailoverGroupCreateResponse(object):
     _task=''
     _obj=''
@@ -33987,24 +34335,19 @@ class StoragePoolHaFailoverGroupDeleteResponse(object):
         return task, obj
 
 class StoragePoolHaFailoverGroupEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(StoragePoolHaFailoverGroup(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(StoragePoolHaFailoverGroup(var))
+        return objList
 
 class StoragePoolHaFailoverGroupFailoverResponse(object):
     _task=''
@@ -34023,22 +34366,38 @@ class StoragePoolHaFailoverGroupFailoverResponse(object):
         obj = StoragePoolHaFailoverGroup(jsonObj['obj'])
         return task, obj
 
-class StoragePoolHaFailoverGroupGetResponse(object):
+class StoragePoolHaFailoverGroupGetHealthStatusResponse(object):
     _task=''
-    _obj=''
+    _list=''
 
     def __init__(
         self,
         task='',
-        obj=''):
+        objList=''):
         self._task = task
-        self._obj = obj
+        self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
         task = Task(jsonObj['task'])
-        obj = StoragePoolHaFailoverGroup(jsonObj['obj'])
-        return task, obj
+        objList = []
+        if 'list' in jsonObj:
+            for var in jsonObj['list']:
+                objList.append(HealthStatusEvent(var))
+        return task, objList
+
+class StoragePoolHaFailoverGroupGetResponse(object):
+    _obj=''
+
+    def __init__(
+        self,
+        obj=''):
+        self._obj = obj
+
+    @classmethod
+    def responseParse(cls,jsonObj):
+        obj = StoragePoolHaFailoverGroup(jsonObj)
+        return obj
 
 class StoragePoolHaFailoverGroupModifyResponse(object):
     _task=''
@@ -34114,41 +34473,32 @@ class StoragePoolHaFailoverInterfaceDeleteResponse(object):
         return task, obj
 
 class StoragePoolHaFailoverInterfaceEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(StoragePoolHaFailoverInterface(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(StoragePoolHaFailoverInterface(var))
+        return objList
 
 class StoragePoolHaFailoverInterfaceGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = StoragePoolHaFailoverInterface(jsonObj['obj'])
-        return task, obj
+        obj = StoragePoolHaFailoverInterface(jsonObj)
+        return obj
 
 class StoragePoolHealthCheckResponse(object):
     _obj=''
@@ -34737,41 +35087,32 @@ class StorageQuotaDeleteResponse(object):
         return task, obj
 
 class StorageQuotaEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(StorageQuota(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(StorageQuota(var))
+        return objList
 
 class StorageQuotaGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = StorageQuota(jsonObj['obj'])
-        return task, obj
+        obj = StorageQuota(jsonObj)
+        return obj
 
 class StorageQuotaModifyResponse(object):
     _task=''
@@ -34982,9 +35323,12 @@ class StorageSystem(Object):
     _firewallMask='0'
     _disableIoFencing=False
     _wwnEmulationMode='0'
-    _targetPortList=''
-    _fcTargetPortList=''
-    _ibTargetPortList=''
+    _proxyUrlHttp=''
+    _proxyUrlHttps=''
+    _proxyUrlNoProxy=''
+    _targetPortIdList=''
+    _fcTargetPortIdList=''
+    _ibTargetPortIdList=''
     _dnsServerList=''
 
     def __init__(self,jsonObj):
@@ -35196,18 +35540,30 @@ class StorageSystem(Object):
             self._wwnEmulationMode = jsonObj['wwnEmulationMode']
         else:
             self._wwnEmulationMode = '0'
-        if 'targetPortList' in jsonObj:
-            self._targetPortList = jsonObj['targetPortList']
+        if 'proxyUrlHttp' in jsonObj:
+            self._proxyUrlHttp = jsonObj['proxyUrlHttp']
         else:
-            self._targetPortList = ''
-        if 'fcTargetPortList' in jsonObj:
-            self._fcTargetPortList = jsonObj['fcTargetPortList']
+            self._proxyUrlHttp = ''
+        if 'proxyUrlHttps' in jsonObj:
+            self._proxyUrlHttps = jsonObj['proxyUrlHttps']
         else:
-            self._fcTargetPortList = ''
-        if 'ibTargetPortList' in jsonObj:
-            self._ibTargetPortList = jsonObj['ibTargetPortList']
+            self._proxyUrlHttps = ''
+        if 'proxyUrlNoProxy' in jsonObj:
+            self._proxyUrlNoProxy = jsonObj['proxyUrlNoProxy']
         else:
-            self._ibTargetPortList = ''
+            self._proxyUrlNoProxy = ''
+        if 'targetPortIdList' in jsonObj:
+            self._targetPortIdList = jsonObj['targetPortIdList']
+        else:
+            self._targetPortIdList = ''
+        if 'fcTargetPortIdList' in jsonObj:
+            self._fcTargetPortIdList = jsonObj['fcTargetPortIdList']
+        else:
+            self._fcTargetPortIdList = ''
+        if 'ibTargetPortIdList' in jsonObj:
+            self._ibTargetPortIdList = jsonObj['ibTargetPortIdList']
+        else:
+            self._ibTargetPortIdList = ''
         if 'dnsServerList' in jsonObj:
             self._dnsServerList = jsonObj['dnsServerList']
         else:
@@ -35268,9 +35624,12 @@ class StorageSystem(Object):
             'firewallMask' : self._firewallMask,
             'disableIoFencing' : self._disableIoFencing,
             'wwnEmulationMode' : self._wwnEmulationMode,
-            'targetPortList' : self._targetPortList,
-            'fcTargetPortList' : self._fcTargetPortList,
-            'ibTargetPortList' : self._ibTargetPortList,
+            'proxyUrlHttp' : self._proxyUrlHttp,
+            'proxyUrlHttps' : self._proxyUrlHttps,
+            'proxyUrlNoProxy' : self._proxyUrlNoProxy,
+            'targetPortIdList' : self._targetPortIdList,
+            'fcTargetPortIdList' : self._fcTargetPortIdList,
+            'ibTargetPortIdList' : self._ibTargetPortIdList,
             'dnsServerList' : self._dnsServerList
         }
         thisJsonObj.update(superJsonObj)
@@ -35896,6 +36255,7 @@ class StorageSystemHwConfig(Object):
     _ipmiMacAddress=''
     _ipmiGateway=''
     _memoryEccType='0'
+    _currentPowerWatts='0'
 
     def __init__(self,jsonObj):
         self.jsonParse(jsonObj)
@@ -35994,6 +36354,10 @@ class StorageSystemHwConfig(Object):
             self._memoryEccType = jsonObj['memoryEccType']
         else:
             self._memoryEccType = '0'
+        if 'currentPowerWatts' in jsonObj:
+            self._currentPowerWatts = jsonObj['currentPowerWatts']
+        else:
+            self._currentPowerWatts = '0'
         return self
 
     def exportJson(self):
@@ -36021,7 +36385,8 @@ class StorageSystemHwConfig(Object):
             'ipmiSubnetMask' : self._ipmiSubnetMask,
             'ipmiMacAddress' : self._ipmiMacAddress,
             'ipmiGateway' : self._ipmiGateway,
-            'memoryEccType' : self._memoryEccType
+            'memoryEccType' : self._memoryEccType,
+            'currentPowerWatts' : self._currentPowerWatts
         }
         thisJsonObj.update(superJsonObj)
         return thisJsonObj
@@ -38821,21 +39186,17 @@ class SwControllerTargetEnumResponse(object):
         return objList
 
 class SwControllerTargetGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = SwControllerTarget(jsonObj['obj'])
-        return task, obj
+        obj = SwControllerTarget(jsonObj)
+        return obj
 
 class SwControllerTargetLoginResponse(object):
     _task=''
@@ -38963,21 +39324,17 @@ class SwDiskSessionEnumResponse(object):
         return objList
 
 class SwDiskSessionGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = SwDiskSession(jsonObj['obj'])
-        return task, obj
+        obj = SwDiskSession(jsonObj)
+        return obj
 
 class SystemCapabilityMetaDataGetResponse(object):
     _list=''
@@ -38998,6 +39355,7 @@ class SystemConfiguration(Object):
     _listAlert=''
     _listAlertConfigSettings=''
     _listAlertConfigEndpoint=''
+    _listAlertHandler=''
     _listAlertType=''
     _listBucket=''
     _listCephCluster=''
@@ -39029,6 +39387,7 @@ class SystemConfiguration(Object):
     _listClusterRing=''
     _listClusterRingMember=''
     _listFcTargetPort=''
+    _listFcRemotePort=''
     _listHost=''
     _listHostGroup=''
     _listIbTargetPort=''
@@ -39050,7 +39409,6 @@ class SystemConfiguration(Object):
     _listResourceGroup=''
     _listResourceGroupNetwork=''
     _listS3Proxy=''
-    _listS3Quota=''
     _listS3User=''
     _listS3UserAccessKey=''
     _listS3Tenant=''
@@ -39111,6 +39469,7 @@ class SystemConfiguration(Object):
     _listHwEnclosure=''
     _listHwEnclosureLayout=''
     _listHwEnclosureLayoutVendorGroup=''
+    _listHwSlot=''
     _listHwLogicalDrive=''
     _listHwUnit=''
     _listSwController=''
@@ -39120,6 +39479,7 @@ class SystemConfiguration(Object):
     _listContainerConfig=''
     _listContainer=''
     _listContainerServiceDef=''
+    _listHealthStatusEvent=''
     _gridObj=''
     _passwordPolicyObj=''
     _singleSignOnPolicyObj=''
@@ -39141,6 +39501,10 @@ class SystemConfiguration(Object):
             self._listAlertConfigEndpoint = jsonObj['listAlertConfigEndpoint']
         else:
             self._listAlertConfigEndpoint = ''
+        if 'listAlertHandler' in jsonObj:
+            self._listAlertHandler = jsonObj['listAlertHandler']
+        else:
+            self._listAlertHandler = ''
         if 'listAlertType' in jsonObj:
             self._listAlertType = jsonObj['listAlertType']
         else:
@@ -39265,6 +39629,10 @@ class SystemConfiguration(Object):
             self._listFcTargetPort = jsonObj['listFcTargetPort']
         else:
             self._listFcTargetPort = ''
+        if 'listFcRemotePort' in jsonObj:
+            self._listFcRemotePort = jsonObj['listFcRemotePort']
+        else:
+            self._listFcRemotePort = ''
         if 'listHost' in jsonObj:
             self._listHost = jsonObj['listHost']
         else:
@@ -39349,10 +39717,6 @@ class SystemConfiguration(Object):
             self._listS3Proxy = jsonObj['listS3Proxy']
         else:
             self._listS3Proxy = ''
-        if 'listS3Quota' in jsonObj:
-            self._listS3Quota = jsonObj['listS3Quota']
-        else:
-            self._listS3Quota = ''
         if 'listS3User' in jsonObj:
             self._listS3User = jsonObj['listS3User']
         else:
@@ -39593,6 +39957,10 @@ class SystemConfiguration(Object):
             self._listHwEnclosureLayoutVendorGroup = jsonObj['listHwEnclosureLayoutVendorGroup']
         else:
             self._listHwEnclosureLayoutVendorGroup = ''
+        if 'listHwSlot' in jsonObj:
+            self._listHwSlot = jsonObj['listHwSlot']
+        else:
+            self._listHwSlot = ''
         if 'listHwLogicalDrive' in jsonObj:
             self._listHwLogicalDrive = jsonObj['listHwLogicalDrive']
         else:
@@ -39629,6 +39997,10 @@ class SystemConfiguration(Object):
             self._listContainerServiceDef = jsonObj['listContainerServiceDef']
         else:
             self._listContainerServiceDef = ''
+        if 'listHealthStatusEvent' in jsonObj:
+            self._listHealthStatusEvent = jsonObj['listHealthStatusEvent']
+        else:
+            self._listHealthStatusEvent = ''
         if 'gridObj' in jsonObj:
             self._gridObj = jsonObj['gridObj']
         else:
@@ -39649,6 +40021,7 @@ class SystemConfiguration(Object):
             'listAlert' : self._listAlert,
             'listAlertConfigSettings' : self._listAlertConfigSettings,
             'listAlertConfigEndpoint' : self._listAlertConfigEndpoint,
+            'listAlertHandler' : self._listAlertHandler,
             'listAlertType' : self._listAlertType,
             'listBucket' : self._listBucket,
             'listCephCluster' : self._listCephCluster,
@@ -39680,6 +40053,7 @@ class SystemConfiguration(Object):
             'listClusterRing' : self._listClusterRing,
             'listClusterRingMember' : self._listClusterRingMember,
             'listFcTargetPort' : self._listFcTargetPort,
+            'listFcRemotePort' : self._listFcRemotePort,
             'listHost' : self._listHost,
             'listHostGroup' : self._listHostGroup,
             'listIbTargetPort' : self._listIbTargetPort,
@@ -39701,7 +40075,6 @@ class SystemConfiguration(Object):
             'listResourceGroup' : self._listResourceGroup,
             'listResourceGroupNetwork' : self._listResourceGroupNetwork,
             'listS3Proxy' : self._listS3Proxy,
-            'listS3Quota' : self._listS3Quota,
             'listS3User' : self._listS3User,
             'listS3UserAccessKey' : self._listS3UserAccessKey,
             'listS3Tenant' : self._listS3Tenant,
@@ -39762,6 +40135,7 @@ class SystemConfiguration(Object):
             'listHwEnclosure' : self._listHwEnclosure,
             'listHwEnclosureLayout' : self._listHwEnclosureLayout,
             'listHwEnclosureLayoutVendorGroup' : self._listHwEnclosureLayoutVendorGroup,
+            'listHwSlot' : self._listHwSlot,
             'listHwLogicalDrive' : self._listHwLogicalDrive,
             'listHwUnit' : self._listHwUnit,
             'listSwController' : self._listSwController,
@@ -39771,6 +40145,7 @@ class SystemConfiguration(Object):
             'listContainerConfig' : self._listContainerConfig,
             'listContainer' : self._listContainer,
             'listContainerServiceDef' : self._listContainerServiceDef,
+            'listHealthStatusEvent' : self._listHealthStatusEvent,
             'gridObj' : self._gridObj,
             'passwordPolicyObj' : self._passwordPolicyObj,
             'singleSignOnPolicyObj' : self._singleSignOnPolicyObj
@@ -40731,6 +41106,7 @@ class User(Subject):
     _passwordTokenAlg='0'
     _isLdapUser=False
     _passwordSalt=''
+    _shortLockoutTimeStamp=''
     _customPermissionList=''
     _userAppTokenIdList=''
 
@@ -40867,6 +41243,10 @@ class User(Subject):
             self._passwordSalt = jsonObj['passwordSalt']
         else:
             self._passwordSalt = ''
+        if 'shortLockoutTimeStamp' in jsonObj:
+            self._shortLockoutTimeStamp = jsonObj['shortLockoutTimeStamp']
+        else:
+            self._shortLockoutTimeStamp = ''
         if 'customPermissionList' in jsonObj:
             self._customPermissionList = jsonObj['customPermissionList']
         else:
@@ -40912,6 +41292,7 @@ class User(Subject):
             'passwordTokenAlg' : self._passwordTokenAlg,
             'isLdapUser' : self._isLdapUser,
             'passwordSalt' : self._passwordSalt,
+            'shortLockoutTimeStamp' : self._shortLockoutTimeStamp,
             'customPermissionList' : self._customPermissionList,
             'userAppTokenIdList' : self._userAppTokenIdList
         }
@@ -41023,41 +41404,32 @@ class UserAppTokenCreateResponse(object):
         return task, obj
 
 class UserAppTokenEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(UserAppToken(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(UserAppToken(var))
+        return objList
 
 class UserAppTokenGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = UserAppToken(jsonObj['obj'])
-        return task, obj
+        obj = UserAppToken(jsonObj)
+        return obj
 
 class UserAppTokenRegenResponse(object):
     _task=''
@@ -41094,24 +41466,19 @@ class UserAppTokenRemoveResponse(object):
         return task, obj
 
 class UserEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(User(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(User(var))
+        return objList
 
 class UserGenerateOtpAuthSecretResponse(object):
     _responseSecretToken=''
@@ -41127,21 +41494,17 @@ class UserGenerateOtpAuthSecretResponse(object):
         return responseSecretToken
 
 class UserGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = User(jsonObj['obj'])
-        return task, obj
+        obj = User(jsonObj)
+        return obj
 
 class UserGroup(Subject):
     _posixGid='0'
@@ -41253,41 +41616,32 @@ class UserGroupDeleteResponse(object):
         return task, obj
 
 class UserGroupEnumResponse(object):
-    _task=''
     _list=''
 
     def __init__(
         self,
-        task='',
         objList=''):
-        self._task = task
         self._list = objList
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
         objList = []
-        if 'list' in jsonObj:
-            for var in jsonObj['list']:
-                objList.append(UserGroup(var))
-        return task, objList
+        for var in jsonObj:
+            objList.append(UserGroup(var))
+        return objList
 
 class UserGroupGetResponse(object):
-    _task=''
     _obj=''
 
     def __init__(
         self,
-        task='',
         obj=''):
-        self._task = task
         self._obj = obj
 
     @classmethod
     def responseParse(cls,jsonObj):
-        task = Task(jsonObj['task'])
-        obj = UserGroup(jsonObj['obj'])
-        return task, obj
+        obj = UserGroup(jsonObj)
+        return obj
 
 class UserGroupModifyResponse(object):
     _task=''

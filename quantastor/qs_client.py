@@ -21,11 +21,12 @@ class QuantastorClient(object):
     _username = ""
     _password = ""
     _cert = ""
-    def __init__(self, hostname="", username="", password="", cert=""):
+    def __init__(self, hostname="", username="", password="", cert="", timeout=None):
         self._hostname = hostname
         self._username = username
         self._password = password
         self._cert = cert
+        self._timeout = timeout
 
 
         if environ.get('QS_HOSTNAME') and hostname == "":
@@ -53,7 +54,7 @@ class QuantastorClient(object):
         if not path.exists(self._cert) or not self._cert:
             print ("Warning - SSL certificate path: '" + str(self._cert) + "' either doesn't exist, or was not given. HTTPS request cannot be verified.")
             certPath = False
-        r = requests.get(strURL,  params=payload, verify=certPath, auth=self._auth)
+        r = requests.get(strURL,  params=payload, verify=certPath, auth=self._auth, timeout=self._timeout)
         if r.status_code != 200:
             raise Exception("Failed to make a request '" + api + "' payload '" + str(payload) + "' status code = " + str(r.status_code) + "strUrl " + strURL)
         jsonOutput = r.json()
